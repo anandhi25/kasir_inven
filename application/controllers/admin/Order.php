@@ -21,6 +21,8 @@ class Order extends MY_Controller
         $this->load->model('order_model');
         $this->load->model('outlet_model');
         $this->load->model('global_model');
+        $this->load->model('settings_model');
+        $this->load->model('tax_model');
 
         $this->load->helper('ckeditor');
         $this->data['ckeditor'] = array(
@@ -174,6 +176,19 @@ class Order extends MY_Controller
             $this->session->set_userdata($order_no);
         }
         $data['outlets'] = $this->outlet_model->get_outlet_info();
+        $this->settings_model->_table_name = 'tbl_business_profile';
+        $this->settings_model->_order_by = 'business_profile_id';
+        $result = $this->settings_model->get_by(array('business_profile_id' => 1), true);
+        $persen_tax = 0;
+        if($result) {
+            if ($result->tax_sale != '0') {
+                $this->tax_model->_table_name = 'tbl_tax';
+                $this->tax_model->_order_by = 'tax_id';
+                $res_tax = $this->tax_model->get_by(array('tax_id' => $result->tax_sale), true);
+                $persen_tax = $res_tax->tax_rate;
+            }
+        }
+        $data['persen_tax'] = $persen_tax;
         // view page
         $data['title'] = 'Add New Order';
         $data['editor'] = $this->data;

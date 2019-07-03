@@ -83,3 +83,12 @@ function print_invoice(printableArea) {
     location.reload(document.body.innerHTML = originalContents);
     //document.body.innerHTML = originalContents;
 }
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function removeCommas(x) {
+    var num1 = parseFloat(x.replace(/,/g, ''));
+    return num1;
+}

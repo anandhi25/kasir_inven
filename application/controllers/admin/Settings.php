@@ -34,7 +34,8 @@ class Settings extends MY_Controller
         if ($result) {
             $data['business_info'] = $result;
         }
-
+        $this->tbl_tax('tax_id');
+        $data['tax_info'] = $this->global_model->get();
         // view page
         $data['title'] = 'Business Profile';
         $data['subview'] = $this->load->view('admin/settings/business_profile', $data, true);
@@ -46,7 +47,7 @@ class Settings extends MY_Controller
     {
         $this->settings_model->_table_name = 'tbl_business_profile';
         $this->settings_model->_primary_key = 'business_profile_id';
-        $data = $this->settings_model->array_from_post(array('company_name', 'email', 'address', 'phone', 'currency'));
+        $data = $this->settings_model->array_from_post(array('company_name', 'email', 'address', 'phone', 'currency','tax_sale','tax_purchase'));
 
         //logo Upload
         if ($_FILES['logo']['name']) { // logo name is exist

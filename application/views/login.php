@@ -16,7 +16,7 @@ $error = $this->session->flashdata('error');
             <?php echo validation_errors(); ?>
             <?php if (!empty($error)) { echo '<div class="alert alert-danger">'.$error.'</div>'; }?>
             <div class="form-group has-feedback">
-                <input type="text" name="user_name" class="form-control" placeholder="Username" required="required" />
+                <input type="text" name="user_name" class="form-control" placeholder="Username" autofocus required="required" />
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">

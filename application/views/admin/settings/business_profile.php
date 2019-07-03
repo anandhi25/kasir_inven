@@ -87,6 +87,39 @@
                                            class="form-control">
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Pajak Penjualan</label>
+                                    <select name="tax_sale" id="tax_sale" class="form-control">
+                                        <option value="0">Tidak ada pajak</option>
+                                        <?php
+                                        if(count($tax_info) > 0)
+                                        {
+                                            foreach ($tax_info as $tax)
+                                            {
+                                                echo '<option value="'.$tax->tax_id.'">'.$tax->tax_title.'</option>';
+                                            }
+
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Pajak Pembelian</label>
+                                    <select name="tax_purchase" id="tax_purchase" class="form-control">
+                                        <option value="0">Tidak ada pajak</option>
+                                        <?php
+                                        if(count($tax_info) > 0)
+                                        {
+                                            foreach ($tax_info as $tax)
+                                            {
+                                                echo '<option value="'.$tax->tax_id.'">'.$tax->tax_title.'</option>';
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
                                 <!-- /.Company Logo -->
                                 <div class="form-group">
                                     <label>Company Logo</label>
