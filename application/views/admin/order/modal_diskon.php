@@ -32,12 +32,16 @@
 
 
 <div class="modal-footer" >
-    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-    <button type="button" class="btn btn-primary pull-right" onclick="simpan_disk();" id="save_btn">Simpan</button>
+    <button type="button" class="btn btn-default pull-left" onclick="close_modal_diskon();">Close</button>
+    <button type="button" class="btn btn-primary pull-right" onclick="simpan_diskon_br()" id="save_diskon_btn">Simpan</button>
 </div>
 
 <script>
-    function simpan_disk()
+
+    function close_modal_diskon() {
+        $('#modal_diskon').modal('toggle');
+    }
+    function simpan_diskon_br()
     {
         var form_post = $('#diskon_form');
         var data_post = form_post.serializeArray();
@@ -53,7 +57,7 @@
                 if (res.success) {
                     $("#order").load(location.href + " #order");
                     $("#div_grand_total").load(location.href + " #div_grand_total");
-                    $('#myModal').modal('toggle');
+                    $('#modal_diskon').modal('toggle');
 
                 } else {
                     alert('Data gagal disimpan');

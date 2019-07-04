@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 02, 2019 at 05:18 AM
+-- Generation Time: Jul 04, 2019 at 12:51 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -11,12 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `inventory`
@@ -139,8 +133,17 @@ CREATE TABLE `tbl_business_profile` (
   `email` varchar(100) NOT NULL,
   `address` text NOT NULL,
   `phone` varchar(100) NOT NULL,
-  `currency` varchar(100) NOT NULL
+  `currency` varchar(100) NOT NULL,
+  `tax_sale` int(11) NOT NULL,
+  `tax_purchase` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_business_profile`
+--
+
+INSERT INTO `tbl_business_profile` (`business_profile_id`, `company_name`, `logo`, `full_path`, `email`, `address`, `phone`, `currency`, `tax_sale`, `tax_purchase`) VALUES
+(1, 'Sembakoku', NULL, NULL, 'admin@sembakoku.co.id', 'Sidoarjo', '03158555555', 'Rp', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -354,7 +357,23 @@ CREATE TABLE `tbl_order` (
   `order_status` int(2) NOT NULL DEFAULT '0' COMMENT '0= pending; 1= cancel; 2=confirm',
   `note` text NOT NULL,
   `sales_person` varchar(100) NOT NULL,
-  `outlet_id` int(11) NOT NULL
+  `outlet_id` int(11) NOT NULL,
+  `uang_muka` double NOT NULL,
+  `jatuh_tempo` varchar(65) DEFAULT NULL,
+  `discount_type` varchar(65) DEFAULT NULL,
+  `persen_pajak` decimal(10,0) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_order_attribute`
+--
+
+CREATE TABLE `tbl_order_attribute` (
+  `id` int(11) NOT NULL,
+  `attribute_id` int(11) NOT NULL,
+  `order_detail_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -375,6 +394,18 @@ CREATE TABLE `tbl_order_details` (
   `sub_total` double NOT NULL,
   `price_option` varchar(100) NOT NULL,
   `purchase_product_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_order_serial`
+--
+
+CREATE TABLE `tbl_order_serial` (
+  `id` int(11) NOT NULL,
+  `serial_no` varchar(254) NOT NULL,
+  `order_detail_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -626,6 +657,13 @@ CREATE TABLE `tbl_tax` (
   `tax_type` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `tbl_tax`
+--
+
+INSERT INTO `tbl_tax` (`tax_id`, `tax_title`, `tax_rate`, `tax_type`) VALUES
+(1, 'PPN', 10, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -766,10 +804,22 @@ ALTER TABLE `tbl_order`
   ADD PRIMARY KEY (`order_id`);
 
 --
+-- Indexes for table `tbl_order_attribute`
+--
+ALTER TABLE `tbl_order_attribute`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_order_details`
 --
 ALTER TABLE `tbl_order_details`
   ADD PRIMARY KEY (`order_details_id`);
+
+--
+-- Indexes for table `tbl_order_serial`
+--
+ALTER TABLE `tbl_order_serial`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tbl_outlets`
@@ -887,7 +937,7 @@ ALTER TABLE `tbl_brand`
 -- AUTO_INCREMENT for table `tbl_business_profile`
 --
 ALTER TABLE `tbl_business_profile`
-  MODIFY `business_profile_id` int(2) NOT NULL AUTO_INCREMENT;
+  MODIFY `business_profile_id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_campaign`
@@ -944,10 +994,22 @@ ALTER TABLE `tbl_order`
   MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tbl_order_attribute`
+--
+ALTER TABLE `tbl_order_attribute`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tbl_order_details`
 --
 ALTER TABLE `tbl_order_details`
   MODIFY `order_details_id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_order_serial`
+--
+ALTER TABLE `tbl_order_serial`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_outlets`
@@ -1019,7 +1081,7 @@ ALTER TABLE `tbl_tag`
 -- AUTO_INCREMENT for table `tbl_tax`
 --
 ALTER TABLE `tbl_tax`
-  MODIFY `tax_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `tax_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_tier_price`
@@ -1039,7 +1101,3 @@ ALTER TABLE `tbl_user`
 ALTER TABLE `tbl_user_role`
   MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

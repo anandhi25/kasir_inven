@@ -19,7 +19,7 @@ if(!empty($info->currency))
     }
 
 </style>
-<form method="post" id="form_order" action="<?php echo base_url()?>admin/order/save_order">
+<form method="post" id="form_order" action="<?php echo $url_method;?>">
 <div class="box-background">
     <div class="box-body">
         <div class="row">
@@ -69,16 +69,9 @@ if(!empty($info->currency))
     <div class="row">
 
         <div class="col-md-12">
-            <div class="input-group">
-                  <span class="input-group-btn">
-                    <button type="submit" class="btn bg-blue" type="button" data-placement="top" data-toggle="tooltip" data-original-title="Search Customer by ID/Number">Customer</button>
-                  </span>
-                <input type="text" name="customer" id="customer" class="form-control" placeholder="Customer" >
-                <input type="hidden" name="customer_id" id="customer_id" value="0">
-                <span class="input-group-btn">
-                        <a href="<?php echo base_url('admin/customer/modal')?>" class="btn btn-success" data-toggle="modal" data-placement="top" title="View" data-target="#myModal"><span class="glyphicon glyphicon-search"></span></a>
-                </span>
-            </div>
+            <?php
+            echo $person_div;
+            ?>
 
         </div>
     </div>
@@ -105,7 +98,7 @@ if(!empty($info->currency))
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-5 control-label">Discount <?php echo btn_add_modal(base_url('admin/order/modal_diskon')) ?></label>
+                            <label class="col-sm-5 control-label">Discount <?php echo btn_add_modal(base_url('admin/order/modal_diskon'),'modal_diskon') ?></label>
 
                             <div class="col-sm-7">
                                 <?php
@@ -126,8 +119,10 @@ if(!empty($info->currency))
                                   }
 
                                 ?>
-                                <input type="text" name="diskon_txt" id="diskon_txt" value="<?php if(!empty($discount)) {echo number_format($discount_amount, 0, '.', ',') ; }else{ echo '0'; }
+                                <input type="hidden" value="<?php if(!empty($discount)) {echo $discount; }else{ echo '0'; } ?>" name="discount">
+                                <input type="text" name="discount_amount" id="diskon_txt" value="<?php if(!empty($discount)) {echo number_format($discount_amount, 0, '.', ',') ; }else{ echo '0'; }
                                 ?>" readonly class="form-control unite" style="text-align: right;">
+                                <input type="hidden" value="<?php if(!empty($tipe)) {echo $tipe; }else{ echo ''; } ?>" name="discount_type">
                             </div>
                         </div>
 
@@ -140,7 +135,7 @@ if(!empty($info->currency))
                             {
                                 $ck_tax = 'checked';
 
-                                $total_all = $cart_total + $discount_amount;
+                                $total_all = $cart_total - $discount_amount;
                                 $total_tax = ($persen_tax / 100) * $total_all;
                             }
                         ?>
@@ -150,7 +145,7 @@ if(!empty($info->currency))
 
                             <div class="col-sm-7">
                                 <input type="hidden" name="persen_pajak" id="persen_pajak" value="<?php echo $persen_tax;?>">
-                                <input type="text" name="tax_sale" id="tax_sale" value="<?php
+                                <input type="text" name="total_tax" id="tax_sale" value="<?php
                                 if(empty($cart)){
                                     echo '0';
                                 }else {
@@ -191,6 +186,7 @@ if(!empty($info->currency))
                                     echo number_format($grand_total , 0, '.', ',') ;
                                 }
                                 ?></h2>
+                            <input type="hidden" value="<?php echo $grand_total; ?>" name="grand_total" id="grand_total">
                         </div>
                     </div>
                 </div>
@@ -207,10 +203,8 @@ if(!empty($info->currency))
 
                             <div class="col-sm-7">
                                 <select name="payment_method" class="form-control" id="order_payment_type">
-                                    <option value="cash">Cash Payment</option>
-                                    <option value="cheque">Cheque Payment</option>
-                                    <option value="card">Credit Card</option>
-                                    <option value="pending">Pending Order</option>
+                                    <option value="cash">Tunai</option>
+                                    <option value="kredit">Kredit</option>
                                 </select>
                             </div>
                         </div>
@@ -219,10 +213,14 @@ if(!empty($info->currency))
                     <div class="col-md-12" style="display: none" id="payment">
 
                         <div class="form-group">
-                            <label class="col-sm-5 control-label">cheque/card Ref.</label>
+                            <label class="col-sm-5 control-label">Tanggal Jatuh Tempo</label>
 
-                            <div class="col-sm-7">
-                                <input class="form-control" name="payment_ref">
+                            <div class="col-sm-7 input-group">
+                                <input type="text" class="form-control datepicker" name="due_date" data-format="yyyy-mm-dd" value="<?php echo date("Y-m-d");?>">
+
+                                <div class="input-group-addon">
+                                    <a href="#"><i class="entypo-calendar"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -261,8 +259,9 @@ if(!empty($info->currency))
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <button type="submit" id="btn_order" class="btn bg-navy btn-block " type="submit" <?php echo !empty($cart)?'':'disabled' ?>>Submit Order
-                    </button>
+                    <?php
+                    echo btn_submit_modal(base_url('admin/order/modal_payment'),'modal_submit');
+                    ?>
                 </div>
             </div>
         </div>
@@ -271,11 +270,7 @@ if(!empty($info->currency))
 
             <input type="hidden" name="customer_id" value="<?php  echo $this->session->userdata('customer_code') ?>">
             <input type="hidden" value="<?php echo $this->session->userdata('order_no'); ?>" name="order_no">
-            <input type="hidden" value="<?php echo $grand_total; ?>" name="grand_total">
-            <input type="hidden" value="<?php echo $total_tax; ?>" name="total_tax">
-            <input type="hidden" value="<?php if(!empty($discount_amount)) echo $discount_amount ; ?>" name="discount_amount">
-            <input type="hidden" value="<?php if(!empty($discount)) {echo number_format($discount, 0, '.', ',') ; }else{ echo '0'; }
-            ?>" name="discount">
+
 
 
 </form>
@@ -283,7 +278,15 @@ if(!empty($info->currency))
     function tax_ck(comp) {
         if(comp.checked == true)
         {
-
+            var sub_total = removeCommas($('#subtotal_txt').val());
+            var disk = removeCommas($('#diskon_txt').val());
+            var total = sub_total - disk;
+            var tax_persen = '<?php echo $persen_tax;?>';
+            var hit_tax = (parseFloat(tax_persen) / 100) * total;
+            var grand = total + hit_tax;
+            $('#grand_total_txt').html(numberWithCommas(grand));
+            $('#grand_total').val(grand);
+            $('#tax_sale').val(numberWithCommas(hit_tax));
         }
         else
         {
@@ -291,7 +294,8 @@ if(!empty($info->currency))
             var sub_total = removeCommas($('#subtotal_txt').val());
             var disk = removeCommas($('#diskon_txt').val());
             var total = sub_total - disk;
-            $('#grand_total_txt').val(numberWithCommas(total));
+            $('#grand_total_txt').html(numberWithCommas(total));
+            $('#grand_total').val(total);
 
         }
     }

@@ -28,16 +28,20 @@ function btn_view_modal($uri) {
     return anchor($uri, '<span class="glyphicon glyphicon-search"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'View', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
 }
 
-function btn_add_modal($uri) {
-    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Tambah', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
+function btn_add_modal($uri,$modal_name='myModal') {
+    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Tambah', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
 }
 
-function btn_serial_modal($uri) {
-    return anchor($uri, '<span class="glyphicon glyphicon-sort-by-order"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Input Serial', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
+function btn_serial_modal($uri,$modal_name='myModal') {
+    return anchor($uri, '<span class="glyphicon glyphicon-sort-by-order"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Input Serial', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
 }
 
-function btn_variasi_modal($uri) {
-    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span> Variasi', array('class' => "btn bg-primary btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Input Serial', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
+function btn_variasi_modal($uri,$modal_name='myModal') {
+    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span> Variasi', array('class' => "btn bg-primary btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Input Serial', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
+}
+
+function btn_submit_modal($uri,$modal_name='myModal',$title='Submit') {
+    return anchor($uri, $title, array('class' => "btn bg-navy btn-block",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>$title, 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
 }
 
 function btn_delete($uri) {

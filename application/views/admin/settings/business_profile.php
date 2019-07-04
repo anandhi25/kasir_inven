@@ -96,7 +96,12 @@
                                         {
                                             foreach ($tax_info as $tax)
                                             {
-                                                echo '<option value="'.$tax->tax_id.'">'.$tax->tax_title.'</option>';
+                                                $sel = '';
+                                                if($tax->tax_id == $business_info->tax_sale)
+                                                {
+                                                    $sel = 'selected';
+                                                }
+                                                echo '<option value="'.$tax->tax_id.'" '.$sel.'>'.$tax->tax_title.'</option>';
                                             }
 
                                         }
@@ -113,7 +118,12 @@
                                         {
                                             foreach ($tax_info as $tax)
                                             {
-                                                echo '<option value="'.$tax->tax_id.'">'.$tax->tax_title.'</option>';
+                                                $sel = '';
+                                                if($tax->tax_id == $business_info->tax_purchase)
+                                                {
+                                                    $sel = 'selected';
+                                                }
+                                                echo '<option value="'.$tax->tax_id.'" '.$sel.'>'.$tax->tax_title.'</option>';
                                             }
                                         }
                                         ?>

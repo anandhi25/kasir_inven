@@ -36,7 +36,7 @@
                 <?php
                 if($item['has_attribute'] == 'yes')
                 {
-                    echo  btn_variasi_modal('admin/order/modal_variasi/'.$item['rowid']);
+                    echo  btn_variasi_modal('admin/order/modal_variasi/'.$item['rowid'],'modal_variasi');
                 }
 
                 ?>

@@ -37,7 +37,7 @@ class Customer extends MY_Controller
     public function modal()
     {
         $data['title'] = 'Cari Customer';
-        $data['modal_subview'] = $this->load->view('admin/customer/modal', $data, FALSE);
+        $data['modal_subview'] = $this->load->view('admin/customer/modal', $data, false);
         $this->load->view('admin/_layout_modal', $data);
     }
 

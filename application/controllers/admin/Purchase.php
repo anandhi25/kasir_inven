@@ -20,6 +20,9 @@ class Purchase extends MY_Controller
         parent::__construct();
         $this->load->model('purchase_model');
         $this->load->model('global_model');
+        $this->load->model('outlet_model');
+        $this->load->model('settings_model');
+        $this->load->model('tax_model');
 
         $this->load->helper('ckeditor');
         $this->data['ckeditor'] = array(
@@ -29,6 +32,15 @@ class Purchase extends MY_Controller
                 'toolbar' => 'Full',
                 'width' => '100%',
                 'height' => '150px',
+            ),
+        );
+        $this->data2['ckeditor2'] = array(
+            'id' => 'ck_editor2',
+            'path' => 'asset/js/ckeditor',
+            'config' => array(
+                'toolbar' => 'Full',
+                'width' => '100%',
+                'height' => '100px',
             ),
         );
 
@@ -58,6 +70,14 @@ class Purchase extends MY_Controller
         $data['editor'] = $this->data;
         $data['subview'] = $this->load->view('admin/purchase/add_supplier', $data, true);
         $this->load->view('admin/_layout_main', $data);
+    }
+
+
+    public function add_supplier_modal()
+    {
+        $data['title'] = 'Tambah Supplier';
+        $data['modal_subview'] = $this->load->view('admin/purchase/add_supplier_modal', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
     }
 
     /*** Save Supplier ***/
@@ -98,14 +118,51 @@ class Purchase extends MY_Controller
         if(empty($flag))
         {
             $this->cart->destroy();
+            $random_number = rand(10000000, 99999);
+
+            $order_no = array(
+                'order_no'  => $random_number,
+            );
+            $this->session->set_userdata($order_no);
         }
-        $data['product'] = $this->purchase_model->get_all_product_info();
-        $this->tbl_supplier('supplier_id');
-        $data['supplier'] = $this->global_model->get();
+        //$data['product'] = $this->purchase_model->get_all_product_info();
+        //$this->tbl_supplier('supplier_id');
+       // $data['supplier'] = $this->global_model->get();
 
         // view page
-        $data['title'] = 'Add New Supplier';
-        $data['subview'] = $this->load->view('admin/purchase/purchase', $data, true);
+        //$data['title'] = 'Add New Supplier';
+        //$data['subview'] = $this->load->view('admin/purchase/purchase', $data, true);
+        $data['outlets'] = $this->outlet_model->get_outlet_info();
+        $this->settings_model->_table_name = 'tbl_business_profile';
+        $this->settings_model->_order_by = 'business_profile_id';
+        $result = $this->settings_model->get_by(array('business_profile_id' => 1), true);
+        $persen_tax = 0;
+        if($result) {
+            if ($result->tax_sale != '0') {
+                $this->tax_model->_table_name = 'tbl_tax';
+                $this->tax_model->_order_by = 'tax_id';
+                $res_tax = $this->tax_model->get_by(array('tax_id' => $result->tax_sale), true);
+                $persen_tax = $res_tax->tax_rate;
+            }
+        }
+        $data['persen_tax'] = $persen_tax;
+        // view page
+        $data['title'] = 'Add New Order';
+        $data['editor'] = $this->data;
+        $data['editor2'] = $this->data2;
+        $data_mod['modal_id'] = 'id="modal_diskon" >';
+        $data['modal_div'] = $this->load->view('admin/_layout_custom_modal',$data_mod,true);
+        $data_submit['modal_id'] = 'id="modal_submit" >';
+        $data['modal_submit_div'] = $this->load->view('admin/_layout_custom_modal',$data_submit,true);
+
+        $data_variasi['modal_id'] = 'id="modal_variasi" >';
+        $data['modal_variasi_div'] = $this->load->view('admin/_layout_custom_modal',$data_variasi,true);
+
+        $data['person_div'] = $this->load->view('admin/order/cart/supplier_div',$data,true);
+
+        $data['url_method'] = base_url().'admin/purchase/save_purchase';
+
+        $data['subview'] = $this->load->view('admin/order/new_order', $data, true);
         $this->load->view('admin/_layout_main', $data);
     }
 
@@ -316,6 +373,68 @@ class Purchase extends MY_Controller
         $data['title'] = 'Supplier History';
         $data['subview'] = $this->load->view('admin/purchase/supplier_history', $data, true);
         $this->load->view('admin/_layout_main', $data);
+    }
+
+    public function modal_supplier()
+    {
+        $data['title'] = 'Cari Supplier';
+        $data['modal_subview'] = $this->load->view('admin/purchase/modal_supplier', $data, false);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
+    public function supplier_table()
+    {
+        $getData = array();
+        $where = '';
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'company_name',
+            1 => 'supplier_name',
+        );
+        if(isset($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE company_name LIKE '%".$_GET["search"]["value"]."%' OR supplier_name LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND company_name LIKE '%".$_GET["search"]["value"]."%' OR supplier_name LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY supplier_name ASC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_supplier ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_supplier ".$where);
+        $total = count($listAll);
+        foreach ($list as $post) {
+            $subdata = array();
+            $subdata[] = $post->company_name;
+            $subdata[] = $post->supplier_name;
+            $subdata[] = $post->phone;
+            $subdata[] = '<a href="#" onclick="'.htmlspecialchars('choose_supplier('.json_encode($post).')', ENT_QUOTES).'"><i class="fa fa-plus"></i>Pilih</a>';
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
     }
 
 

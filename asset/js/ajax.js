@@ -415,14 +415,11 @@ $(function() {
     $('#order_payment_type').change(function(){
         var val = $( "#order_payment_type" ).val();
 
-        if(val == 'cheque')
+        if(val == 'kredit')
         {
             $('#payment').show();
         }
-        else if (val == 'card')
-        {
-            $('#payment').show();
-        } else
+        else
         {
             $('#payment').hide();
         }

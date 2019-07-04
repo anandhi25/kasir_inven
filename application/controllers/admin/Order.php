@@ -55,7 +55,7 @@ class Order extends MY_Controller
         $data['all_attribute'] = $this->order_model->get();
         $data['url'] = base_url('admin/order/update_variasi');
         $data['modal_subview'] = $this->load->view('admin/order/modal_qty_product', $data, FALSE);
-        $this->load->view('admin/_layout_modal', $data);
+        $this->load->view('admin/_layout_custom_modal', $data);
     }
 
     public function modal_serial($row_id)
@@ -73,7 +73,14 @@ class Order extends MY_Controller
         $data['nominal_diskon'] = $this->session->userdata('nominal');
         $data['tipe_diskon'] = $this->session->userdata('tipe');
         $data['modal_subview'] = $this->load->view('admin/order/modal_diskon', $data, FALSE);
-        $this->load->view('admin/_layout_modal', $data);
+        $this->load->view('admin/_layout_custom_modal', $data);
+    }
+
+    public function modal_payment()
+    {
+        $data['title'] = 'Pembayaran';
+        $data['modal_subview'] = $this->load->view('admin/order/modal_bayar', $data, FALSE);
+        $this->load->view('admin/_layout_custom_modal', $data);
     }
 
     public function save_diskon()
@@ -193,7 +200,20 @@ class Order extends MY_Controller
         $data['title'] = 'Add New Order';
         $data['editor'] = $this->data;
         $data['editor2'] = $this->data2;
+        $data_mod['modal_id'] = 'id="modal_diskon" >';
+        $data['modal_div'] = $this->load->view('admin/_layout_custom_modal',$data_mod,true);
+        $data_submit['modal_id'] = 'id="modal_submit" >';
+        $data['modal_submit_div'] = $this->load->view('admin/_layout_custom_modal',$data_submit,true);
+
+        $data_variasi['modal_id'] = 'id="modal_variasi" >';
+        $data['modal_variasi_div'] = $this->load->view('admin/_layout_custom_modal',$data_variasi,true);
+
+        $data['person_div'] = $this->load->view('admin/order/cart/customer_div',$data,true);
+
+        $data['url_method'] = base_url().'admin/order/save_order';
+
         $data['subview'] = $this->load->view('admin/order/new_order', $data, true);
+
         $this->load->view('admin/_layout_main', $data);
     }
 
@@ -460,7 +480,7 @@ class Order extends MY_Controller
     /*** Save Order ***/
     public function save_order()
     {
-        $data_order = $this->global_model->array_from_post(array('grand_total', 'total_tax', 'discount','note', 'payment_ref', 'discount_amount'));
+        $data_order = $this->global_model->array_from_post(array('grand_total', 'total_tax', 'discount','note', 'payment_ref', 'discount_amount','discount_type'));
         $order_code = $this->input->post('order_no', true);
 
         $data_order['sub_total']  = $this->cart->total();
@@ -473,10 +493,12 @@ class Order extends MY_Controller
             $data_order['order_status'] = 2;
 
         }
+        $data_order['jatuh_tempo'] = $this->input->post('due_date', true);
+        $data_order['outlet_id'] = $this->input->post('outlet', true);
 
         //customer
         $customer_code =$this->input->post('customer_id', true);
-        if(empty($customer_code))
+        if($customer_code == '0')
         {
             $data_order['customer_name'] = 'walking Client';
         }else

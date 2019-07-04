@@ -152,6 +152,11 @@
     <!--/.col end -->
 </div>
 <!-- /.row -->
+    <?php
+    echo $modal_div;
+    echo $modal_submit_div;
+    echo $modal_variasi_div;
+    ?>
 
 </section>
 
@@ -270,4 +275,5 @@ if( !empty($cart_msg))
 
 </script>
 <?php } ?>
+
 

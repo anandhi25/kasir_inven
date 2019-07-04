@@ -147,7 +147,7 @@
         })
             .done(function(res) {
                 if (res.success) {
-                    $('#myModal').modal('toggle');
+                    $('#modal_variasi').modal('toggle');
 
                 } else {
                     alert('Data gagal disimpan');
