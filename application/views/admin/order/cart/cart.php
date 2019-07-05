@@ -42,21 +42,54 @@
                 ?>
             </td>
             <td class="vertical-td">
-                <input  type="text" name="qty" style="width: 50px" value="<?php echo $item['qty'] ?>" onblur ="order(this);" id="<?php echo 'qty'.$item['rowid'] ?>" class="form-control">
-
+                <?php
+                if ($cart_iden == 'purchase') {
+                    ?>
+                    <input type="text" name="qty" style="width: 50px" value="<?php echo $item['qty'] ?>"
+                           onblur="purchase(this);" id="<?php echo 'qty' . $item['rowid'] ?>" class="form-control">
+                    <?php
+                }
+                else
+                {
+                    ?>
+                    <input type="text" name="qty" style="width: 50px" value="<?php echo $item['qty'] ?>"
+                           onblur="order(this);" id="<?php echo 'qty' . $item['rowid'] ?>" class="form-control">
+                <?php
+                }
+                ?>
             </td>
             <td>
+                <?php
+                if(!empty($cart_iden)) {
+                    if ($cart_iden == 'purchase') {
+                        ?>
+                        <div class="input-group">
+                            <input type="text" name="price" value="<?php echo $item['price'] ?>"
+                                   onblur="purchase(this);"
+                                   id="<?php echo 'pri' . $item['rowid'] ?>" class="form-control">
+                        </div>
+                        <?php
+                    } else {
+                        ?>
 
-<!--                <input  type="text" name="price" value="--><?php //echo $item['price'] ?><!--"  onblur ="order(this);" id="--><?php //echo 'pri'.$item['rowid'] ?><!--" class="form-control">-->
-                <div class="input-group">
+                        <!--                <input  type="text" name="price" value="--><?php //echo $item['price']
+                        ?><!--"  onblur ="order(this);" id="--><?php //echo 'pri'.$item['rowid']
+                        ?><!--" class="form-control">-->
+                        <div class="input-group">
                         <span class="input-group-addon">
-                          <input type="checkbox" id="<?php echo 'opt'.$item['rowid'] ?>" onclick="return price_checkbox(this)" name="custom_price"
-                                 <?php echo $item['price_option'] == 'custom_price' ? 'checked':'' ?>
+                          <input type="checkbox" id="<?php echo 'opt' . $item['rowid'] ?>"
+                                 onclick="return price_checkbox(this)" name="custom_price"
+                              <?php echo $item['price_option'] == 'custom_price' ? 'checked' : '' ?>
                                  data-placement="top" data-toggle="tooltip" data-original-title="Custom Price">
                         </span>
-                    <input  type="text" name="price" value="<?php echo $item['price'] ?>"  onblur ="order(this);" id="<?php echo 'pri'.$item['rowid'] ?>" class="form-control"
-                            <?php echo $item['price_option'] == 'custom_price' ? '':'disabled' ?> >
-                </div>
+                            <input type="text" name="price" value="<?php echo $item['price'] ?>" onblur="order(this);"
+                                   id="<?php echo 'pri' . $item['rowid'] ?>" class="form-control"
+                                <?php echo $item['price_option'] == 'custom_price' ? '' : 'disabled' ?> >
+                        </div>
+                        <?php
+                    }
+                }
+                ?>
 
 
                 <input type="hidden" name="product_code" value="<?php echo $item['id']  ?>" id="<?php echo 'code'.$item['rowid'] ?>">

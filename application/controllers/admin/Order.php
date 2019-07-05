@@ -211,6 +211,7 @@ class Order extends MY_Controller
         $data['person_div'] = $this->load->view('admin/order/cart/customer_div',$data,true);
 
         $data['url_method'] = base_url().'admin/order/save_order';
+        $data['cart_iden'] = 'order';
 
         $data['subview'] = $this->load->view('admin/order/new_order', $data, true);
 
@@ -221,6 +222,7 @@ class Order extends MY_Controller
     public function add_cart_item(){
 
             $product_code = $this->uri->segment(4);
+            $iden = $this->uri->segment(5);
             $qty = $this->input->post('qty');
             $result = $this->order_model->validate_add_cart_item($product_code);
 
@@ -241,24 +243,53 @@ class Order extends MY_Controller
 
                 $arr = array();
                 $arr_attr = array();
-                $data = array(
-                    'id' => $result->product_code,
-                    'qty' => $qty,
-                    'price' => $price,
-                    'buying_price' => $result->buying_price,
-                    'name' => $result->product_name,
-                    'product_id' => $result->product_id,
-                    'tax' => $tax,
-                    'price_option' => 'general',
-                    'has_serial' => $result->serial,
-                    'has_attribute' => $has_attr,
-                    'attribute' => $arr_attr,
-                    'serial' => $arr
-                );
-                $this->cart->insert($data);
+                if($iden == 'purchase')
+                {
+                    $data = array(
+                        'id' => $result->product_code,
+                        'qty' => $qty,
+                        'price' => $result->buying_price,
+                        'name' => $result->product_name,
+                        'product_id' => $result->product_id,
+                        'tax' => $tax,
+                        'price_option' => 'general',
+                        'has_serial' => $result->serial,
+                        'has_attribute' => $has_attr,
+                        'attribute' => $arr_attr,
+                        'serial' => $arr
+                    );
+                    $this->cart->insert($data);
+                }
+                else
+                {
+                    $data = array(
+                        'id' => $result->product_code,
+                        'qty' => $qty,
+                        'price' => $price,
+                        'buying_price' => $result->buying_price,
+                        'name' => $result->product_name,
+                        'product_id' => $result->product_id,
+                        'tax' => $tax,
+                        'price_option' => 'general',
+                        'has_serial' => $result->serial,
+                        'has_attribute' => $has_attr,
+                        'attribute' => $arr_attr,
+                        'serial' => $arr
+                    );
+                    $this->cart->insert($data);
+                }
+
                 $this->session->set_flashdata('cart_msg', 'add');
             }
-        redirect('admin/order/new_order/'.$flag ='add');
+            if($iden == 'purchase')
+            {
+                redirect('admin/purchase/new_purchase/'.$flag ='add');
+            }
+            else
+            {
+                redirect('admin/order/new_order/'.$flag ='add');
+            }
+
     }
 
     /*** Multiple Product add to cart ***/
@@ -454,6 +485,7 @@ class Order extends MY_Controller
     }
     /*** Show cart ***/
     function show_cart(){
+        $data['cart_iden'] = 'order';
         $this->load->view('admin/order/cart/cart');
     }
     /*** cart Summery ***/

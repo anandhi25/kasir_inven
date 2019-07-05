@@ -1118,7 +1118,7 @@ class Product extends MY_Controller
         echo $HTML;
     }
 
-    public function cart_product_table()
+    public function cart_product_table($iden='')
     {
         $getData = array();
         $where = '';
@@ -1161,7 +1161,7 @@ class Product extends MY_Controller
             $subdata[] = $post->product_code;
             $subdata[] = $post->product_name;
             $subdata[] = '<input type="hidden" name="product_id" value="'.$post->product_code.'">
-                        <a href="'.base_url().'admin/order/add_cart_item/'.$post->product_code.'" data-original-title="Add to Cart" class="btn btn-primary btn-xs" title="" data-toggle="tooltip" data-placement="top">
+                        <a href="'.base_url().'admin/order/add_cart_item/'.$post->product_code.'/'.$iden.'" data-original-title="Add to Cart" class="btn btn-primary btn-xs" title="" data-toggle="tooltip" data-placement="top">
                             <i class="fa fa-shopping-cart"></i></a>';
             $getData[] = $subdata;
         }

@@ -92,6 +92,32 @@ class Purchase extends MY_Controller
 
     }
 
+    public function save_api_supplier()
+    {
+        $this->tbl_supplier('supplier_id');
+        $data = $this->global_model->array_from_post(array('company_name', 'supplier_name' , 'email', 'address', 'phone'));
+
+        $supp_id = $this->global_model->save($data);
+        if($supp_id)
+        {
+            $q_supp = $this->global_model->get_by(array('supplier_id' => $supp_id),true);
+            $arr = array(
+                'success' => true,
+                'message' => 'Data berhasil disimpan',
+                'supplier' => $q_supp
+            );
+        }
+        else
+        {
+            $arr = array(
+                'success' => false,
+                'message' => 'Data gagal disimpan'
+            );
+        }
+        echo json_encode($arr);
+
+    }
+
     /*** Manage Supplier ***/
     public function manage_supplier($id = null)
     {
@@ -161,6 +187,7 @@ class Purchase extends MY_Controller
         $data['person_div'] = $this->load->view('admin/order/cart/supplier_div',$data,true);
 
         $data['url_method'] = base_url().'admin/purchase/save_purchase';
+        $data['cart_iden'] = 'purchase';
 
         $data['subview'] = $this->load->view('admin/order/new_order', $data, true);
         $this->load->view('admin/_layout_main', $data);
@@ -250,7 +277,9 @@ class Purchase extends MY_Controller
     }
 
     function show_cart(){
-        $this->load->view('admin/purchase/cart/cart');
+        $data['cart_iden'] = 'purchase';
+      //  $this->load->view('admin/purchase/cart/cart',$data);
+        $this->load->view('admin/order/cart/cart',$data);
     }
 
     /*** Save Purchase Item Item ***/

@@ -32,5 +32,9 @@
         <script src="<?php echo base_url(); ?>asset/js/jquery-2.2.3.min.js"></script>
         <!-- ALl Custom Scripts -->
         <script src="<?php echo base_url(); ?>asset/js/admin.js"></script>
+        <script src="<?php echo base_url(); ?>asset/js/bootstrap.min.js" type="text/javascript"></script>
+
+        <script src="<?php echo base_url(); ?>asset/js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
+        <script src="<?php echo base_url(); ?>asset/js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
 
     </head>

@@ -162,6 +162,20 @@
 
 
 <script>
+
+    cart_table = $('#cart_table').DataTable({
+        processing: true,
+        serverSide: true,
+        "bDestroy": true,
+        aaSorting: [[0, 'desc']],
+        "ajax": {
+            url: '<?php echo base_url("admin/product/cart_product_table/".$cart_iden);?>',
+            "data": function (d) {
+
+            }
+        }
+    });
+
     $().ready(function() {
 
         // validate signup form on keyup and submit

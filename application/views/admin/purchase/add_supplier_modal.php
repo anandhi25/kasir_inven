@@ -50,7 +50,7 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $("#modalSmall").on('shown.bs.modal', function () {
         $('#save_btn').on('click',function () {
             var form_post = $('#addSupplierForm');
             var data_post = form_post.serializeArray();

@@ -170,7 +170,7 @@ if(!empty($info->currency))
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group" id="div_grand_total">
-                        <label class="col-sm-4 control-label" style="padding-top: 25px">Grand Total</label>
+                        <label class="col-sm-5 control-label" style="padding-top: 25px">Grand Total</label>
                             <?php $cart_total = $this->cart->total();
                             if(!empty($discount)){
                                 $grand_total = ($cart_total - $discount_amount) + $total_tax;
@@ -178,7 +178,7 @@ if(!empty($info->currency))
                                 $grand_total = $cart_total + $total_tax;
                             }
                             ?>
-                        <div class="col-sm-8">
+                        <div class="col-sm-7">
                             <h2 class="pull-right" id="grand_total_txt"><?php
                                 if(empty($cart)){
                                     echo '0';
