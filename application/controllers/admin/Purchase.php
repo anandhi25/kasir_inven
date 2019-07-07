@@ -138,8 +138,13 @@ class Purchase extends MY_Controller
 
     }
 
+    public function edit_purchase($id=null)
+    {
+        $this->new_purchase(null,$id);
+    }
+
     /*** New Purchase  ***/
-    public function new_purchase($flag = null)
+    public function new_purchase($flag = null,$id=null)
     {
         if(empty($flag))
         {
@@ -147,11 +152,12 @@ class Purchase extends MY_Controller
             $this->session->unset_userdata('nominal');
             $this->session->unset_userdata('tipe');
             $random_number = rand(10000000, 99999);
-
-            $order_no = array(
-                'order_no'  => $random_number,
-            );
-            $this->session->set_userdata($order_no);
+            if(empty($id)) {
+                $order_no = array(
+                    'order_no' => $random_number,
+                );
+                $this->session->set_userdata($order_no);
+            }
         }
         //$data['product'] = $this->purchase_model->get_all_product_info();
         //$this->tbl_supplier('supplier_id');
@@ -174,8 +180,19 @@ class Purchase extends MY_Controller
             }
         }
         $data['persen_tax'] = $persen_tax;
+        $title = 'Add New Purchase';
+        $url_action = base_url().'admin/purchase/save_purchase';
+        if(!empty($id))
+        {
+            $this->purchase_model->_table_name = 'tbl_purchase';
+            $this->purchase_model->_order_by = 'purchase_id';
+            $pembelian = $this->purchase_model->get_by(array('purchase_id' => $id),true);
+            $data['purchase'] = $pembelian;
+            $title = "Edit Purchase";
+            $url_action = base_url().'admin/purchase/edit_purchase';
+        }
         // view page
-        $data['title'] = 'Add New Order';
+        $data['title'] = $title;
         $data['editor'] = $this->data;
         $data['editor2'] = $this->data2;
         $data_mod['modal_id'] = 'id="modal_diskon" >';
@@ -189,7 +206,7 @@ class Purchase extends MY_Controller
         $data['person_div'] = $this->load->view('admin/order/cart/supplier_div',$data,true);
         //$data['cart_subtotal'] = $this->load->view('admin/order/cart/cart_subtotal',$data);
 
-        $data['url_method'] = base_url().'admin/purchase/save_purchase';
+        $data['url_method'] = $url_action;
         $data['cart_iden'] = 'purchase';
 
         $data['subview'] = $this->load->view('admin/order/new_order', $data, true);
@@ -363,6 +380,23 @@ class Purchase extends MY_Controller
                             'attribute_id' => $attr
                         );*/
                         $this->global_model->save($data_attr);
+                    }
+                }
+            }
+
+            if($item['has_serial'] == '1')
+            {
+                if(count($item['serial']) > 0)
+                {
+                    foreach ($item['serial'] as $serial)
+                    {
+                        $this->global_model->_table_name = 'tbl_purchase_serial';
+                        $this->global_model->_order_by = 'id';
+                        $this->global_model->_primary_key = 'id';
+                        $data_serial['purchase_product_id'] = $pur_detail_id;
+                        $data_serial['serial_no'] = $serial;
+
+                        $this->global_model->save($data_serial);
                     }
                 }
             }

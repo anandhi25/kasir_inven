@@ -55,6 +55,7 @@ if(!empty($info->currency))
 
                                 <td class="vertical-td">
                                     <?php echo btn_view('admin/purchase/purchase_invoice/' . $v_purchase->purchase_id); ?>
+                                    <?php echo btn_edit('admin/purchase/edit_purchase/'. $v_purchase->purchase_id);?>
 
                                 </td>
 
