@@ -47,7 +47,7 @@ if(!empty($info->currency))
                                 <td class="vertical-td">
                                     <?php echo  $counter ?>
                                 </td>
-                                <td class="vertical-td">PUR-<?php echo $v_purchase->purchase_order_number ?></td>
+                                <td class="vertical-td">PUR-<?php echo $v_purchase->order_no ?></td>
                                 <td class="vertical-td"><?php echo $v_purchase->supplier_name ?></td>
                                 <td class="vertical-td"><?php echo date('Y-m-d', strtotime($v_purchase->datetime )) ?></td>
                                 <td class="vertical-td"><?php echo $currency .' '. number_format($v_purchase->grand_total,2) ?></td>

@@ -41,7 +41,7 @@ if(!empty($info->currency))
                             <div class="email"><?php echo $purchase->email ?></div>
                         </div>
                         <div id="invoice">
-                            <h1>PUR <?php echo $purchase->purchase_order_number ?></h1>
+                            <h1>PUR <?php echo $purchase->order_no ?></h1>
                             <div class="date">Date of Invoice: <?php echo date('Y-m-d', strtotime($purchase->datetime )) ?></div>
                             <div class="date">Purchase by: <?php echo $purchase->purchase_by ?></div>
 
@@ -74,7 +74,17 @@ if(!empty($info->currency))
                         <tr>
                             <td colspan="2"></td>
                             <td colspan="2">SUBTOTAL</td>
-                            <td><?php echo $currency.' '.number_format($purchase->grand_total,2) ?></td>
+                            <td><?php echo $currency.' '.number_format($purchase->subtotal,2) ?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">DISKON</td>
+                            <td><?php echo $currency.' '.number_format($purchase->discount_amount,2) ?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">PAJAK</td>
+                            <td><?php echo $currency.' '.number_format($purchase->tax,2) ?></td>
                         </tr>
                         <tr>
 

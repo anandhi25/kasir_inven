@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 04, 2019 at 12:51 PM
+-- Generation Time: Jul 07, 2019 at 08:34 AM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -538,16 +538,35 @@ INSERT INTO `tbl_product_tag` (`product_tag_id`, `product_id`, `tag`) VALUES
 
 CREATE TABLE `tbl_purchase` (
   `purchase_id` int(11) NOT NULL,
-  `purchase_order_number` int(11) NOT NULL,
+  `order_no` int(11) NOT NULL,
   `supplier_id` int(11) NOT NULL,
   `supplier_name` varchar(128) NOT NULL,
   `grand_total` int(5) NOT NULL,
-  `purchase_ref` varchar(128) NOT NULL,
+  `note` varchar(250) NOT NULL,
   `payment_method` varchar(128) NOT NULL,
   `payment_ref` varchar(128) NOT NULL,
   `purchase_by` varchar(100) NOT NULL,
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `outlet_id` int(11) NOT NULL
+  `outlet_id` int(11) NOT NULL,
+  `tax` double NOT NULL,
+  `discount` double NOT NULL,
+  `discount_type` varchar(80) NOT NULL,
+  `due_date` varchar(65) NOT NULL,
+  `down_payment` double NOT NULL,
+  `subtotal` double NOT NULL,
+  `discount_amount` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_purchase_attribute`
+--
+
+CREATE TABLE `tbl_purchase_attribute` (
+  `id` int(11) NOT NULL,
+  `purchase_product_id` int(11) NOT NULL,
+  `attribute_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -565,6 +584,18 @@ CREATE TABLE `tbl_purchase_product` (
   `unit_price` int(5) NOT NULL,
   `sub_total` int(5) NOT NULL,
   `sisa_qty` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_purchase_serial`
+--
+
+CREATE TABLE `tbl_purchase_serial` (
+  `id` int(11) NOT NULL,
+  `purchase_product_id` int(11) NOT NULL,
+  `serial_no` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -858,10 +889,22 @@ ALTER TABLE `tbl_purchase`
   ADD PRIMARY KEY (`purchase_id`);
 
 --
+-- Indexes for table `tbl_purchase_attribute`
+--
+ALTER TABLE `tbl_purchase_attribute`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_purchase_product`
 --
 ALTER TABLE `tbl_purchase_product`
   ADD PRIMARY KEY (`purchase_product_id`);
+
+--
+-- Indexes for table `tbl_purchase_serial`
+--
+ALTER TABLE `tbl_purchase_serial`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tbl_special_offer`
@@ -1048,10 +1091,22 @@ ALTER TABLE `tbl_purchase`
   MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tbl_purchase_attribute`
+--
+ALTER TABLE `tbl_purchase_attribute`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tbl_purchase_product`
 --
 ALTER TABLE `tbl_purchase_product`
   MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_purchase_serial`
+--
+ALTER TABLE `tbl_purchase_serial`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_special_offer`

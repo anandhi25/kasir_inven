@@ -46,6 +46,7 @@
                 var isi = removeCommas(uang_muka);
                 var hit = removeCommas(grand_total) -  isi;
                 $('#uang_muka').val(numberWithCommas(isi.toString()));
+                $('#form_order #down_payment').val(isi.toString());
 
                 $('#sisa_bayar').val(numberWithCommas(hit));
             }

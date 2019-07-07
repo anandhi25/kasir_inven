@@ -46,14 +46,14 @@
                 if ($cart_iden == 'purchase') {
                     ?>
                     <input type="text" name="qty" style="width: 50px" value="<?php echo $item['qty'] ?>"
-                           onblur="purchase(this);" id="<?php echo 'qty' . $item['rowid'] ?>" class="form-control">
+                      oninput="purchase(this);" onblur="purchase(this);" id="<?php echo 'qty' . $item['rowid'] ?>" class="form-control">
                     <?php
                 }
                 else
                 {
                     ?>
                     <input type="text" name="qty" style="width: 50px" value="<?php echo $item['qty'] ?>"
-                           onblur="order(this);" id="<?php echo 'qty' . $item['rowid'] ?>" class="form-control">
+                    oninput="order(this)" onblur="order(this);" id="<?php echo 'qty' . $item['rowid'] ?>" class="form-control">
                 <?php
                 }
                 ?>
@@ -64,9 +64,7 @@
                     if ($cart_iden == 'purchase') {
                         ?>
                         <div class="input-group">
-                            <input type="text" name="price" value="<?php echo $item['price'] ?>"
-                                   onblur="purchase(this);"
-                                   id="<?php echo 'pri' . $item['rowid'] ?>" class="form-control">
+                            <input type="text" name="price" value="<?php echo $item['price'] ?>" oninput="purchase(this);" onblur="purchase(this);" id="<?php echo 'pri' . $item['rowid'] ?>" class="form-control">
                         </div>
                         <?php
                     } else {
@@ -83,7 +81,7 @@
                                  data-placement="top" data-toggle="tooltip" data-original-title="Custom Price">
                         </span>
                             <input type="text" name="price" value="<?php echo $item['price'] ?>" onblur="order(this);"
-                                   id="<?php echo 'pri' . $item['rowid'] ?>" class="form-control"
+                            oninput="order(this)" id="<?php echo 'pri' . $item['rowid'] ?>" class="form-control"
                                 <?php echo $item['price_option'] == 'custom_price' ? '' : 'disabled' ?> >
                         </div>
                         <?php
@@ -94,7 +92,7 @@
 
                 <input type="hidden" name="product_code" value="<?php echo $item['id']  ?>" id="<?php echo 'code'.$item['rowid'] ?>">
             </td>
-            <td class="vertical-td"><?php echo number_format($item['subtotal'], 2, '.', ',')  ?></td>
+            <td class="vertical-td" id="<?php echo 'subtot' . $item['rowid'] ?>"><?php echo number_format($item['subtotal'], 0, '.', ',')  ?></td>
 
             <td class="vertical-td">
                 <?php echo btn_delete('admin/order/delete_cart_item/' . $item['rowid']); ?>

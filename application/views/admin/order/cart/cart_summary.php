@@ -30,7 +30,7 @@ if(!empty($info->currency))
                     <label class="col-sm-4 control-label">Order No.</label>
 
                     <div class="col-sm-8">
-                        <input type="text" value="<?php echo $this->session->userdata('order_no'); ?>" disabled class="form-control ">
+                        <input type="text" name="order_no" value="<?php echo $this->session->userdata('order_no'); ?>" readonly class="form-control ">
                     </div>
                 </div>
 
@@ -41,7 +41,7 @@ if(!empty($info->currency))
                         <?php
                        // print_r($outlets);
                         ?>
-                            <select name="outlet" id="outlet" class="form-control">
+                            <select name="outlet_id" id="outlet_id" class="form-control">
                                 <?php
 
                                 if(!empty($outlets))
@@ -77,121 +77,124 @@ if(!empty($info->currency))
     </div>
 </div>
 
-        <div class="box-background" id="order">
-            <div class="box-body">
-                <div class="row">
-
-                    <div class="col-md-12">
-
-
-                       <div class="form-group">
-                            <label class="col-sm-5 control-label">Sub Total</label>
-
-                            <div class="col-sm-7">
-                                <input type="text" name="subtotal_txt" id="subtotal_txt" value="<?php
-                                if(empty($cart)){
-                                    echo '0';
-                                }else{ echo number_format($this->cart->total());  }
-
-                                ?>" readonly  class="form-control unite" style="text-align: right;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-5 control-label">Discount <?php echo btn_add_modal(base_url('admin/order/modal_diskon'),'modal_diskon') ?></label>
-
-                            <div class="col-sm-7">
-                                <?php
-                                  $discount = $this->session->userdata('nominal');
-                                  $tipe = $this->session->userdata('tipe');
-                                  $discount_amount = 0;
-                                  $cart_total = $this->cart->total();
-                                  if(!empty($discount))
-                                  {
-                                      if($tipe == 'persen')
-                                      {
-                                          $discount_amount = ($discount / 100) * $cart_total;
-                                      }
-                                      else
-                                      {
-                                          $discount_amount = $discount;
-                                      }
-                                  }
-
-                                ?>
-                                <input type="hidden" value="<?php if(!empty($discount)) {echo $discount; }else{ echo '0'; } ?>" name="discount">
-                                <input type="text" name="discount_amount" id="diskon_txt" value="<?php if(!empty($discount)) {echo number_format($discount_amount, 0, '.', ',') ; }else{ echo '0'; }
-                                ?>" readonly class="form-control unite" style="text-align: right;">
-                                <input type="hidden" value="<?php if(!empty($tipe)) {echo $tipe; }else{ echo ''; } ?>" name="discount_type">
-                            </div>
-                        </div>
-
-                        <?php
-                        $total_tax = 0;
-                        $ck_tax = '';
-                        ?>
-                        <?php
-                            if($persen_tax != '0')
-                            {
-                                $ck_tax = 'checked';
-
-                                $total_all = $cart_total - $discount_amount;
-                                $total_tax = ($persen_tax / 100) * $total_all;
-                            }
-                        ?>
-
-                        <div class="form-group">
-                            <label class="col-sm-5 control-label">Tax <input type="checkbox" <?php echo $ck_tax;?> name="pajak_ck" id="pajak_ck" value="yes" onclick="tax_ck(this)"></label>
-
-                            <div class="col-sm-7">
-                                <input type="hidden" name="persen_pajak" id="persen_pajak" value="<?php echo $persen_tax;?>">
-                                <input type="text" name="total_tax" id="tax_sale" value="<?php
-                                if(empty($cart)){
-                                    echo '0';
-                                }else {
-                                    echo number_format($total_tax, 0, '.', ',') ;
-                                }
-                                ?>" readonly class="form-control unite" style="text-align: right;">
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-            <!-- /.box-body -->
-        </div>
-
-
-
+<div id="order">
+    <?php
+    $discount = $this->session->userdata('nominal');
+    $tipe = $this->session->userdata('tipe');
+    $discount_amount = 0;
+    $cart_total = $this->cart->total();
+    $total_tax = 0;
+    $ck_tax = '';
+    ?>
+    <div class="box-background">
         <div class="box-body">
             <div class="row">
+
                 <div class="col-md-12">
-                    <div class="form-group" id="div_grand_total">
-                        <label class="col-sm-5 control-label" style="padding-top: 25px">Grand Total</label>
-                            <?php $cart_total = $this->cart->total();
-                            if(!empty($discount)){
-                                $grand_total = ($cart_total - $discount_amount) + $total_tax;
-                            }else{
-                                $grand_total = $cart_total + $total_tax;
-                            }
-                            ?>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label">Sub Total</label>
+
                         <div class="col-sm-7">
-                            <h2 class="pull-right" id="grand_total_txt"><?php
-                                if(empty($cart)){
-                                    echo '0';
-                                }else {
-                                    echo number_format($grand_total , 0, '.', ',') ;
-                                }
-                                ?></h2>
-                            <input type="hidden" value="<?php echo $grand_total; ?>" name="grand_total" id="grand_total">
+                            <input type="text" name="subtotal_txt" id="subtotal_txt" value="<?php
+                            if(empty($cart)){
+                                echo '0';
+                            }else{ echo number_format($this->cart->total());  }
+
+                            ?>" readonly  class="form-control unite" style="text-align: right;">
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label">Discount <?php echo btn_add_modal(base_url('admin/order/modal_diskon'),'modal_diskon') ?></label>
+
+                        <div class="col-sm-7">
+                            <?php
+
+                            if(!empty($discount))
+                            {
+                                if($tipe == 'persen')
+                                {
+                                    $discount_amount = ($discount / 100) * $cart_total;
+                                }
+                                else
+                                {
+                                    $discount_amount = $discount;
+                                }
+                            }
+
+                            ?>
+                            <input type="hidden" value="<?php if(!empty($discount)) {echo $discount; }else{ echo '0'; } ?>" name="discount">
+                            <input type="text" name="discount_amount" id="diskon_txt" value="<?php if(!empty($discount)) {echo number_format($discount_amount, 0, '.', ',') ; }else{ echo '0'; }
+                            ?>" readonly class="form-control unite" style="text-align: right;">
+                            <input type="hidden" value="<?php if(!empty($tipe)) {echo $tipe; }else{ echo ''; } ?>" name="discount_type">
+                        </div>
+                    </div>
+
+                    <?php
+
+                    ?>
+                    <?php
+                    if($persen_tax != '0')
+                    {
+                        $ck_tax = 'checked';
+
+                        $total_all = $cart_total - $discount_amount;
+                        $total_tax = ($persen_tax / 100) * $total_all;
+                    }
+                    ?>
+
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label">Tax <input type="checkbox" <?php echo $ck_tax;?> name="pajak_ck" id="pajak_ck" value="yes" onclick="tax_ck(this)"></label>
+
+                        <div class="col-sm-7">
+                            <input type="hidden" name="persen_pajak" id="persen_pajak" value="<?php echo $persen_tax;?>">
+                            <input type="text" name="total_tax" id="tax_sale" value="<?php
+                            if(empty($cart)){
+                                echo '0';
+                            }else {
+                                echo number_format($total_tax, 0, '.', ',') ;
+                            }
+                            ?>" readonly class="form-control unite" style="text-align: right;">
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="div_grand_total">
+                    <label class="col-sm-5 control-label" style="padding-top: 25px">Grand Total</label>
+                    <?php $cart_total = $this->cart->total();
+                    if(!empty($discount)){
+                        $grand_total = ($cart_total - $discount_amount) + $total_tax;
+                    }else{
+                        $grand_total = $cart_total + $total_tax;
+                    }
+                    ?>
+                    <div class="col-sm-7">
+                        <h2 class="pull-right" id="grand_total_txt"><?php
+                            if(empty($cart)){
+                                echo '0';
+                            }else {
+                                echo number_format($grand_total , 0, '.', ',') ;
+                            }
+                            ?></h2>
+                        <input type="hidden" value="<?php echo $grand_total; ?>" name="grand_total" id="grand_total">
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
 
         <div class="box-background">
             <div class="box-body">
@@ -229,7 +232,15 @@ if(!empty($info->currency))
                             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                                 <li class="active"><a href="#note" data-toggle="tab">Order Note</a>
                                 </li>
-                                <li><a href="#shipping_address" data-toggle="tab">Shipping</a></li>
+                                <?php
+                                if(!empty($cart_iden)) {
+                                    if ($cart_iden == 'order') {
+                                        ?>
+                                        <li><a href="#shipping_address" data-toggle="tab">Shipping</a></li>
+                                        <?php
+                                    }
+                                }
+                                ?>
                             </ul>
                         <div id="my-tab-content" class="tab-content">
 
@@ -255,6 +266,8 @@ if(!empty($info->currency))
             </div>
         </div>
 
+            <input type="hidden" value="0" name="down_payment" id="down_payment">
+
 
         <div class="box-body">
             <div class="row">
@@ -266,10 +279,6 @@ if(!empty($info->currency))
             </div>
         </div>
 
-            <!-- hidden field -->
-
-            <input type="hidden" name="customer_id" value="<?php  echo $this->session->userdata('customer_code') ?>">
-            <input type="hidden" value="<?php echo $this->session->userdata('order_no'); ?>" name="order_no">
 
 
 

@@ -112,29 +112,35 @@ function purchase(arg){
     // do your stuff
     var qty = $( "#qty"+id ).val();
     var price = $( "#pri"+id ).val();
+    if(qty == '')
+    {
+        qty = '1';
+    }
     //alert(price);
     var link = getBaseURL();
+
     $.post(link + "admin/purchase/update_cart_item", {rowid: id, qty: qty, price: price ,ajax: '1'},
         function (data) {
+            //console.log(data.subtotal);
 
-            if (data == 'true') {
 
               /*  $.get(link + "admin/purchase/show_cart", function (cart) {
                     $("#cart_content").html(cart);
                 });*/
-                $.get(link + "admin/purchase/show_cart", function (cart) {
-                    $("#cart_content").html(cart);
-                });
+                $("#subtot"+data.row).html(data.subtotal);
+                /*$.get(link + "admin/purchase/show_cart", function (cart) {
+                   // $("#cart_content").html(cart);
+                });*/
 
                 $.get(link + "admin/order/show_cart_summary", function (cart_summary) {
-                    //$("#cart_summary").html(cart_summary);
-                    $("#order").load(location.href + " #order");
-                    $("#div_grand_total").load(location.href + " #div_grand_total");
+                    $("#order").html(cart_summary);
+                    //$("#order").load(location.href + " #order");
+                   // $("#div_grand_total").load(location.href + " #div_grand_total");
                 });
 
-            }
 
-        });
+
+        },"json");
 
 }
 

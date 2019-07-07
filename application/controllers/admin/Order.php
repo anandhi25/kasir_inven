@@ -490,7 +490,21 @@ class Order extends MY_Controller
     }
     /*** cart Summery ***/
     function show_cart_summary(){
-        $this->load->view('admin/order/cart/cart_summary');
+        $data['cart'] = $this->cart->contents();
+        $this->settings_model->_table_name = 'tbl_business_profile';
+        $this->settings_model->_order_by = 'business_profile_id';
+        $result = $this->settings_model->get_by(array('business_profile_id' => 1), true);
+        $persen_tax = 0;
+        if($result) {
+            if ($result->tax_sale != '0') {
+                $this->tax_model->_table_name = 'tbl_tax';
+                $this->tax_model->_order_by = 'tax_id';
+                $res_tax = $this->tax_model->get_by(array('tax_id' => $result->tax_sale), true);
+                $persen_tax = $res_tax->tax_rate;
+            }
+        }
+        $data['persen_tax'] = $persen_tax;
+        $this->load->view('admin/order/cart/cart_subtotal',$data);
     }
 
     /*** Delete Cart Item ***/

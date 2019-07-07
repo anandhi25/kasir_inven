@@ -99,6 +99,14 @@ function btn_unpublish($uri) {
     ));
 }
 
+if(!function_exists('remove_commas')) {
+    function remove_commas($str)
+    {
+        $ret = str_replace(',','',$str);
+        return $ret;
+    }
+}
+
 
 
 

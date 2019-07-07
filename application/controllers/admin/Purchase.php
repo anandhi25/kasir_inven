@@ -144,6 +144,8 @@ class Purchase extends MY_Controller
         if(empty($flag))
         {
             $this->cart->destroy();
+            $this->session->unset_userdata('nominal');
+            $this->session->unset_userdata('tipe');
             $random_number = rand(10000000, 99999);
 
             $order_no = array(
@@ -185,6 +187,7 @@ class Purchase extends MY_Controller
         $data['modal_variasi_div'] = $this->load->view('admin/_layout_custom_modal',$data_variasi,true);
 
         $data['person_div'] = $this->load->view('admin/order/cart/supplier_div',$data,true);
+        //$data['cart_subtotal'] = $this->load->view('admin/order/cart/cart_subtotal',$data);
 
         $data['url_method'] = base_url().'admin/purchase/save_purchase';
         $data['cart_iden'] = 'purchase';
@@ -261,7 +264,21 @@ class Purchase extends MY_Controller
         if($this->input->post('ajax') != '1'){
             redirect('admin/purchase/new_purchase'); // If javascript is not enabled, reload the page with new data
         }else{
-            echo 'true'; // If javascript is enabled, return true, so the cart gets updated
+            $ca = $this->cart->contents();
+            $subtota = 0;
+            foreach ($ca as $item)
+            {
+                if($item['rowid'] == $rowid)
+                {
+                    $subtota= $item['subtotal'];
+                }
+            }
+            $arr = array(
+                'subtotal' => number_format($subtota),
+                'row' => $data['rowid'],
+                'success' => true
+            );
+            echo json_encode($arr); // If javascript is enabled, return true, so the cart gets updated
         }
     }
 
@@ -286,24 +303,33 @@ class Purchase extends MY_Controller
     public function save_purchase()
     {
 
-        $data = $this->global_model->array_from_post(array('supplier_id', 'purchase_ref', 'payment_method', 'payment_ref'));
+        $data = $this->global_model->array_from_post(array('supplier_id', 'note', 'payment_method', 'due_date','outlet_id','order_no'));
 
         //find out supplier details
         $this->tbl_supplier('supplier_id');
         $supplier = $this->global_model->get_by(array('supplier_id'=> $data['supplier_id']), true);
         $data['supplier_name'] = $supplier->company_name;
-        $data['grand_total']  = $this->cart->total();
+        $data['subtotal']  = $this->cart->total();
         $data['purchase_by'] = $this->session->userdata('name');
+        $data['tax'] = remove_commas($this->input->post('total_tax'));
+        $diskon = 0;
+        if($this->input->post('discount') != '')
+        {
+            $diskon = $this->input->post('discount');
+        }
+        $data['discount_amount'] = remove_commas($this->input->post('discount_amount'));
+        $data['discount'] = $diskon;
+        $data['discount_type'] = $this->input->post('discount_type');
+        $data['grand_total'] = remove_commas($this->input->post('grand_total'));
+        $dp =0;
+        if($data['payment_method'] == 'kredit')
+        {
+            $dp = $this->input->post('down_payment');
+        }
+        $data['down_payment'] = $dp;
         //save to purchase table
         $this->tbl_purchase('purchase_id');
         $purchase_id = $this->global_model->save($data);
-        //random number
-        $code = rand(10000000, 99999);
-
-        $data= array();
-        $data['purchase_order_number'] = $code.$purchase_id;
-        //save purchase order number to purchase table
-        $this->global_model->save($data, $purchase_id);
 
         $data= array();
         $cart = $this->cart->contents();
@@ -316,7 +342,30 @@ class Purchase extends MY_Controller
             $data['qty'] = $item['qty'];
             $data['unit_price'] = $item['price'];
             $data['sub_total'] = $item['subtotal'];
-            $this->global_model->save($data);
+            $data['sisa_qty'] = $item['qty'];
+            $pur_detail_id = $this->global_model->save($data);
+            $det = 3;
+
+            if($item['has_attribute'] == 'yes')
+            {
+
+                if(count($item['attribute']) > 0)
+                {
+                    foreach ($item['attribute'] as $attr)
+                    {
+                        $this->global_model->_table_name = 'tbl_purchase_attribute';
+                        $this->global_model->_order_by = 'id';
+                        $this->global_model->_primary_key = 'id';
+                        $data_attr['purchase_product_id'] = $pur_detail_id;
+                        $data_attr['attribute_id'] = $attr;
+                       /* $data_attr = array(
+                            'purchase_product_id' => '4',
+                            'attribute_id' => $attr
+                        );*/
+                        $this->global_model->save($data_attr);
+                    }
+                }
+            }
 
             // update product Quantity
             $this->tbl_product('product_id');
@@ -360,7 +409,7 @@ class Purchase extends MY_Controller
         $data['product'] = $this->global_model->get_by(array('purchase_id'=>$id), false);
 
         $view_file = $this->load->view('admin/purchase/pdf_invoice', $data, true);
-        $file_name =  'PUR-'.$data['purchase']->purchase_order_number;
+        $file_name =  'PUR-'.$data['purchase']->order_no.'.pdf';
         $this->load->library('pdf');
         $pdf = $this->pdf->load();
 
