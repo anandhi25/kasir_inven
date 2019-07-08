@@ -183,13 +183,7 @@ if(!empty($info->address)){
                         <tr>
                             <td colspan="2"></td>
                             <td colspan="2">SUBTOTAL</td>
-                            <td><?php echo number_format($order_info->sub_total,2) ?></td>
-                        </tr>
-
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">Tax</td>
-                            <td><?php echo number_format($order_info->total_tax,2) ?></td>
+                            <td><?php echo number_format($order_info->subtotal,2) ?></td>
                         </tr>
 
                         <?php if($order_info->discount):?>
@@ -199,6 +193,13 @@ if(!empty($info->address)){
                                 <td><?php echo number_format($order_info->discount_amount,2) ?></td>
                             </tr>
                         <?php endif; ?>
+
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">Tax</td>
+                            <td><?php echo number_format($order_info->tax,2) ?></td>
+                        </tr>
+
 
                         <tr>
                             <td colspan="2"></td>

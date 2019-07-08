@@ -114,8 +114,8 @@
                                         }
                                         ?></td>
                                     <td>
-                                        <?php echo btn_edit('admin/settings/outlet/' . $info->id); ?>
-                                        <?php echo btn_delete('admin/settings/delete_outlet/' . $info->id); ?>
+                                        <?php echo btn_edit('admin/settings/outlet/' . $info->outlet_id); ?>
+                                        <?php echo btn_delete('admin/settings/delete_outlet/' . $info->outlet_id); ?>
                                     </td>
 
                                 </tr>

@@ -179,7 +179,7 @@ $('#btn_order').attr('disabled','disabled');
             },
             function (data) {
 
-                if (data == 'false') {
+                if (data.success == false) {
                     var flag = 'inventory';
                     var url = link + "admin/order/new_order/"+flag;
                     $(location).attr("href", url);
@@ -187,14 +187,14 @@ $('#btn_order').attr('disabled','disabled');
 
                 }
 
-                if (data == 'true') {
+                if (data.success == true) {
 
 
 
-                    $.get(link + "admin/order/show_cart", function (cart) {
+                   /* $.get(link + "admin/order/show_cart", function (cart) {
                         $("#cart_content").html(cart);
-                    });
-
+                    });*/
+                    $("#subtot"+data.row).html(data.subtotal);
                     $.get(link + "admin/order/show_cart_summary", function (cart_summary) {
                         //$("#cart_summary").html(cart_summary);
                         $("#order").load(location.href + " #order");
@@ -205,7 +205,7 @@ $('#btn_order').attr('disabled','disabled');
 
                 }
 
-            });
+            },"json");
     }
 }
 

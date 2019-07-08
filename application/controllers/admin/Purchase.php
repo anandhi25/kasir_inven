@@ -19,6 +19,7 @@ class Purchase extends MY_Controller
     {
         parent::__construct();
         $this->load->model('purchase_model');
+        $this->load->model('order_model');
         $this->load->model('global_model');
         $this->load->model('outlet_model');
         $this->load->model('settings_model');
@@ -140,17 +141,22 @@ class Purchase extends MY_Controller
 
     public function edit_purchase($id=null)
     {
-        $this->new_purchase(null,$id);
+        $purchase_id = array(
+            'id_purchase' => $id,
+        );
+        $this->session->set_userdata($purchase_id);
+        redirect('admin/purchase/new_purchase/edit');
     }
 
     /*** New Purchase  ***/
-    public function new_purchase($flag = null,$id=null)
+    public function new_purchase($flag = null)
     {
         if(empty($flag))
         {
             $this->cart->destroy();
             $this->session->unset_userdata('nominal');
             $this->session->unset_userdata('tipe');
+            $this->session->unset_userdata('id_purchase');
             $random_number = rand(10000000, 99999);
             if(empty($id)) {
                 $order_no = array(
@@ -166,6 +172,81 @@ class Purchase extends MY_Controller
         // view page
         //$data['title'] = 'Add New Supplier';
         //$data['subview'] = $this->load->view('admin/purchase/purchase', $data, true);
+
+        $title = 'Add New Purchase';
+        $url_action = base_url().'admin/purchase/save_purchase';
+        $data['order_purchase'] = '';
+        if(!empty($this->session->userdata('id_purchase')))
+        {
+            $id = $this->session->userdata('id_purchase');
+            $this->purchase_model->_table_name = 'tbl_purchase';
+            $this->purchase_model->_order_by = 'purchase_id';
+            $pembelian = $this->purchase_model->get_by(array('purchase_id' => $id),true);
+
+            $title = "Edit Purchase";
+            //$url_action = base_url().'admin/purchase/update_purchase';
+            $order_no = array(
+                'order_no' => $pembelian->order_no,
+            );
+            $this->session->set_userdata($order_no);
+            $arr_diskon = array(
+                'nominal' => $pembelian->discount,
+                'tipe' => $pembelian->discount_type
+            );
+            $this->session->set_userdata($arr_diskon);
+            $this->purchase_model->init_table('tbl_purchase_product','purchase_product_id');
+            $beli_product = $this->purchase_model->get_by(array('purchase_id' => $id),false);
+            if(count($beli_product) > 0) {
+                if($flag == 'edit') {
+                    $this->cart->destroy();
+                    foreach ($beli_product as $beli) {
+                        $res_product = $this->order_model->validate_add_cart_item($beli->product_code);
+                        $where = array('product_id' => $res_product->product_id);
+                        $res_attr = $this->order_model->check_by($where, 'tbl_attribute');
+                        $has_attr = 'yes';
+                        if (empty($res_attr)) {
+                            $has_attr = 'no';
+                        }
+
+                        $this->purchase_model->init_table('tbl_purchase_attribute', 'id');
+                        $res_pur_attr = $this->purchase_model->get_by(array('purchase_product_id' => $beli->purchase_product_id), false);
+                        $arr_attr = array();
+                        $arr = array();
+                        if (count($res_pur_attr) > 0) {
+                            foreach ($res_pur_attr as $re_attr) {
+                                $arr_attr[] = $re_attr->attribute_id;
+                            }
+                        }
+
+                        $this->purchase_model->init_table('tbl_purchase_serial', 'id');
+                        $res_pur_serial = $this->purchase_model->get_by(array('purchase_product_id' => $beli->purchase_product_id), false);
+                        if (count($res_pur_serial) > 0) {
+                            foreach ($res_pur_serial as $re_serial) {
+                                $arr[] = $re_serial->serial_no;
+                            }
+                        }
+
+                        $data = array(
+                            'id' => $beli->product_code,
+                            'qty' => $beli->qty,
+                            'price' => $beli->unit_price,
+                            'name' => $res_product->product_name,
+                            'product_id' => $res_product->product_id,
+                            'tax' => '0',
+                            'price_option' => 'general',
+                            'has_serial' => $res_product->serial,
+                            'has_attribute' => $has_attr,
+                            'attribute' => $arr_attr,
+                            'serial' => $arr
+                        );
+                        $this->cart->insert($data);
+
+                    }
+                }
+            }
+            $data['order_purchase'] = $pembelian;
+        }
+
         $data['outlets'] = $this->outlet_model->get_outlet_info();
         $this->settings_model->_table_name = 'tbl_business_profile';
         $this->settings_model->_order_by = 'business_profile_id';
@@ -180,17 +261,6 @@ class Purchase extends MY_Controller
             }
         }
         $data['persen_tax'] = $persen_tax;
-        $title = 'Add New Purchase';
-        $url_action = base_url().'admin/purchase/save_purchase';
-        if(!empty($id))
-        {
-            $this->purchase_model->_table_name = 'tbl_purchase';
-            $this->purchase_model->_order_by = 'purchase_id';
-            $pembelian = $this->purchase_model->get_by(array('purchase_id' => $id),true);
-            $data['purchase'] = $pembelian;
-            $title = "Edit Purchase";
-            $url_action = base_url().'admin/purchase/edit_purchase';
-        }
         // view page
         $data['title'] = $title;
         $data['editor'] = $this->data;
@@ -316,6 +386,11 @@ class Purchase extends MY_Controller
         $this->load->view('admin/order/cart/cart',$data);
     }
 
+    public function update_purchase()
+    {
+        $data = $this->global_model->array_from_post(array('supplier_id', 'note', 'payment_method', 'due_date','outlet_id'));
+    }
+
     /*** Save Purchase Item Item ***/
     public function save_purchase()
     {
@@ -344,9 +419,32 @@ class Purchase extends MY_Controller
             $dp = $this->input->post('down_payment');
         }
         $data['down_payment'] = $dp;
+        $id = null;
+        if(!empty($this->session->userdata('id_purchase'))) {
+            $id = $this->session->userdata('id_purchase');
+
+        }
         //save to purchase table
         $this->tbl_purchase('purchase_id');
-        $purchase_id = $this->global_model->save($data);
+        $purchase_id = $this->global_model->save($data,$id);
+
+        if(!empty($this->session->userdata('id_purchase'))) {
+            $this->tbl_purchase_product('purchase_product_id');
+            $beli_product = $this->global_model->get_by(array('purchase_id' => $id),false);
+            if(count($beli_product) > 0)
+            {
+                foreach ($beli_product as $beli)
+                {
+                    $this->global_model->_table_name = 'tbl_purchase_attribute';
+                    $this->global_model->delete_all(array('purchase_product_id' => $beli->purchase_product_id));
+                    $this->global_model->_table_name = 'tbl_purchase_serial';
+                    $this->global_model->delete_all(array('purchase_product_id' => $beli->purchase_product_id));
+                }
+            }
+            $this->tbl_purchase_product('purchase_product_id');
+            $this->global_model->delete_all(array('purchase_id' => $id));
+
+        }
 
         $data= array();
         $cart = $this->cart->contents();
@@ -361,7 +459,6 @@ class Purchase extends MY_Controller
             $data['sub_total'] = $item['subtotal'];
             $data['sisa_qty'] = $item['qty'];
             $pur_detail_id = $this->global_model->save($data);
-            $det = 3;
 
             if($item['has_attribute'] == 'yes')
             {
@@ -402,10 +499,10 @@ class Purchase extends MY_Controller
             }
 
             // update product Quantity
-            $this->tbl_product('product_id');
-            $product = $this->global_model->get_by(array('product_code'=>$item['id'] ), true);
+           // $this->tbl_product('product_id');
+          //  $product = $this->global_model->get_by(array('product_code'=>$item['id'] ), true);
 
-            if(!empty($product)) {
+            /*if(!empty($product)) {
                 $product_id = $product->product_id;
 
                 $this->tbl_inventory('inventory_id');
@@ -413,7 +510,7 @@ class Purchase extends MY_Controller
                 $inventory_id = $inventory->inventory_id;
                 $inventory_qty['product_quantity'] = $item['qty'] + $inventory->product_quantity;
                 $this->global_model->save($inventory_qty, $inventory_id);
-            }
+            }*/
         }
 
         //destroy cart

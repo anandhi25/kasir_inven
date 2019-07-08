@@ -28,6 +28,12 @@ class MY_Model extends CI_Model
         parent::__construct();
     }
 
+    public function init_table($nama_table,$order_by)
+    {
+        $this->_table_name = $nama_table;
+        $this->_order_by = $order_by;
+    }
+
     // CURD FUNCTION
 
     public function array_from_post($fields)

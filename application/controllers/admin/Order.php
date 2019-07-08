@@ -23,6 +23,7 @@ class Order extends MY_Controller
         $this->load->model('global_model');
         $this->load->model('settings_model');
         $this->load->model('tax_model');
+        $this->load->model('purchase_model');
 
         $this->load->helper('ckeditor');
         $this->data['ckeditor'] = array(
@@ -137,6 +138,15 @@ class Order extends MY_Controller
         echo json_encode($blk);
     }
 
+    public function edit_order($id)
+    {
+        $order_id = array(
+            'id_order' => $id,
+        );
+        $this->session->set_userdata($order_id);
+        redirect('admin/order/new_order/edit');
+    }
+
     /*** New Order ***/
     public function new_order($flag=null)
     {
@@ -175,12 +185,87 @@ class Order extends MY_Controller
             $customer_session = array('customer_name' => '', 'customer_code' => '', 'discount' => '', 'order_no' => '');
             $this->session->unset_userdata($customer_session);
             $this->cart->destroy();
+            $this->session->unset_userdata('nominal');
+            $this->session->unset_userdata('tipe');
+            $this->session->unset_userdata('id_order');
             $random_number = rand(10000000, 99999);
 
             $order_no = array(
                 'order_no'  => $random_number,
             );
             $this->session->set_userdata($order_no);
+        }
+        $title = 'Tambah order penjualan';
+        if(!empty($this->session->userdata('id_order')))
+        {
+           $id = $this->session->userdata('id_order');
+            $this->order_model->_table_name = 'tbl_order';
+            $this->order_model->_order_by = 'order_id';
+            $penjualan = $this->order_model->get_by(array('order_id' => $id),true);
+
+            $title = "Edit order penjualan";
+
+            $order_no = array(
+                'order_no'  => $penjualan->order_no,
+            );
+            $this->session->set_userdata($order_no);
+            $arr_diskon = array(
+                'nominal' => $penjualan->discount,
+                'tipe' => $penjualan->discount_type
+            );
+            $this->session->set_userdata($arr_diskon);
+            $this->order_model->init_table('tbl_order_details','order_details_id');
+            $jual_product = $this->order_model->get_by(array('order_id' => $id),false);
+            if(count($jual_product) > 0) {
+                if($flag == 'edit') {
+                    $this->cart->destroy();
+                    foreach ($jual_product as $beli) {
+                        $res_product = $this->order_model->validate_add_cart_item($beli->product_code);
+                        $where = array('product_id' => $res_product->product_id);
+                        $res_attr = $this->order_model->check_by($where, 'tbl_attribute');
+                        $has_attr = 'yes';
+                        if (empty($res_attr)) {
+                            $has_attr = 'no';
+                        }
+
+                        $this->order_model->init_table('tbl_order_attribute', 'id');
+                        $res_pur_attr = $this->order_model->get_by(array('order_detail_id' => $beli->order_details_id), false);
+                        $arr_attr = array();
+                        $arr = array();
+                        if (count($res_pur_attr) > 0) {
+                            foreach ($res_pur_attr as $re_attr) {
+                                $arr_attr[] = $re_attr->attribute_id;
+                            }
+                        }
+
+                        $this->order_model->init_table('tbl_order_serial', 'id');
+                        $res_pur_serial = $this->order_model->get_by(array('order_detail_id' => $beli->order_details_id), false);
+                        if (count($res_pur_serial) > 0) {
+                            foreach ($res_pur_serial as $re_serial) {
+                                $arr[] = $re_serial->serial_no;
+                            }
+                        }
+
+                        $data = array(
+                            'id' => $beli->product_code,
+                            'qty' => $beli->product_quantity,
+                            'price' => $beli->selling_price,
+                            'name' => $res_product->product_name,
+                            'product_id' => $res_product->product_id,
+                            'tax' => '0',
+                            'price_option' => 'general',
+                            'has_serial' => $res_product->serial,
+                            'has_attribute' => $has_attr,
+                            'attribute' => $arr_attr,
+                            'serial' => $arr
+                        );
+                        $this->cart->insert($data);
+
+                    }
+                }
+            }
+
+            $data['order_purchase'] = $penjualan;
         }
         $data['outlets'] = $this->outlet_model->get_outlet_info();
         $this->settings_model->_table_name = 'tbl_business_profile';
@@ -197,7 +282,7 @@ class Order extends MY_Controller
         }
         $data['persen_tax'] = $persen_tax;
         // view page
-        $data['title'] = 'Add New Order';
+        $data['title'] = $title;
         $data['editor'] = $this->data;
         $data['editor2'] = $this->data2;
         $data_mod['modal_id'] = 'id="modal_diskon" >';
@@ -218,69 +303,74 @@ class Order extends MY_Controller
         $this->load->view('admin/_layout_main', $data);
     }
 
+    public function cart_system($product_code,$iden)
+    {
+        $result = $this->order_model->validate_add_cart_item($product_code);
+        $qty = 1;
+        if($result){
+
+            //product price check
+            $price = $this->check_product_rate($result->product_id, $qty=1);
+            //product tax check
+            $tax = $this->product_tax_calculate($result->tax_id, $qty=1, $price);
+
+            $where = array('product_id' => $result->product_id);
+            $res_attr = $this->order_model->check_by($where, 'tbl_attribute');
+            $has_attr = 'yes';
+            if(empty($res_attr))
+            {
+                $has_attr = 'no';
+            }
+
+            $arr = array();
+            $arr_attr = array();
+            if($iden == 'purchase')
+            {
+                $data = array(
+                    'id' => $result->product_code,
+                    'qty' => $qty,
+                    'price' => $result->buying_price,
+                    'name' => $result->product_name,
+                    'product_id' => $result->product_id,
+                    'tax' => $tax,
+                    'price_option' => 'general',
+                    'has_serial' => $result->serial,
+                    'has_attribute' => $has_attr,
+                    'attribute' => $arr_attr,
+                    'serial' => $arr
+                );
+                $this->cart->insert($data);
+            }
+            else
+            {
+                $data = array(
+                    'id' => $result->product_code,
+                    'qty' => $qty,
+                    'price' => $price,
+                    'buying_price' => $result->buying_price,
+                    'name' => $result->product_name,
+                    'product_id' => $result->product_id,
+                    'tax' => $tax,
+                    'price_option' => 'general',
+                    'has_serial' => $result->serial,
+                    'has_attribute' => $has_attr,
+                    'attribute' => $arr_attr,
+                    'serial' => $arr
+                );
+                $this->cart->insert($data);
+            }
+
+            $this->session->set_flashdata('cart_msg', 'add');
+        }
+    }
+
     /*** Product add to cart ***/
     public function add_cart_item(){
 
             $product_code = $this->uri->segment(4);
             $iden = $this->uri->segment(5);
-            $qty = $this->input->post('qty');
-            $result = $this->order_model->validate_add_cart_item($product_code);
-
-            if($result){
-
-                //product price check
-                $price = $this->check_product_rate($result->product_id, $qty=1);
-                //product tax check
-                $tax = $this->product_tax_calculate($result->tax_id, $qty=1, $price);
-
-                $where = array('product_id' => $result->product_id);
-                $res_attr = $this->order_model->check_by($where, 'tbl_attribute');
-                $has_attr = 'yes';
-                if(empty($res_attr))
-                {
-                    $has_attr = 'no';
-                }
-
-                $arr = array();
-                $arr_attr = array();
-                if($iden == 'purchase')
-                {
-                    $data = array(
-                        'id' => $result->product_code,
-                        'qty' => $qty,
-                        'price' => $result->buying_price,
-                        'name' => $result->product_name,
-                        'product_id' => $result->product_id,
-                        'tax' => $tax,
-                        'price_option' => 'general',
-                        'has_serial' => $result->serial,
-                        'has_attribute' => $has_attr,
-                        'attribute' => $arr_attr,
-                        'serial' => $arr
-                    );
-                    $this->cart->insert($data);
-                }
-                else
-                {
-                    $data = array(
-                        'id' => $result->product_code,
-                        'qty' => $qty,
-                        'price' => $price,
-                        'buying_price' => $result->buying_price,
-                        'name' => $result->product_name,
-                        'product_id' => $result->product_id,
-                        'tax' => $tax,
-                        'price_option' => 'general',
-                        'has_serial' => $result->serial,
-                        'has_attribute' => $has_attr,
-                        'attribute' => $arr_attr,
-                        'serial' => $arr
-                    );
-                    $this->cart->insert($data);
-                }
-
-                $this->session->set_flashdata('cart_msg', 'add');
-            }
+           // $qty = $this->input->post('qty');
+            $this->cart_system($product_code,$iden);
             if($iden == 'purchase')
             {
                 redirect('admin/purchase/new_purchase/'.$flag ='add');
@@ -295,61 +385,36 @@ class Order extends MY_Controller
     /*** Multiple Product add to cart ***/
     public function add_cart_items(){
         $product_code = $this->input->post('product_barcode', true);
-
+        $iden = $this->uri->segment(5);
         foreach($product_code as $v_barcode){
-            $result = $this->order_model->validate_add_cart_item($v_barcode);
+            $this->cart_system($v_barcode,$iden);
 
-            if($result){
-
-                //product price check
-                $price = $this->check_product_rate($result->product_id, $qty=1);
-
-                //product tax check
-                $tax = $this->product_tax_calculate($result->tax_id, $qty=1, $price);
-
-                $data = array(
-                    'id' => $result->product_code,
-                    'qty' => 1,
-                    'price' => $price,
-                    'buying_price' => $result->buying_price,
-                    'name' => $result->product_name,
-                    'tax' => $tax,
-                    'price_option' => 'general'
-                );
-                $this->cart->insert($data);
-                $this->session->set_flashdata('cart_msg', 'add');
-            }
         }
-        redirect('admin/order/new_order/'.$flag ='add');
+        if($iden == 'purchase')
+        {
+            redirect('admin/purchase/new_purchase/'.$flag ='add');
+        }
+        else
+        {
+            redirect('admin/order/new_order/'.$flag ='add');
+        }
     }
 
     /*** Product add to cart by barcode ***/
     public function add_cart_item_by_barcode(){
 
         $product_code = $this->input->post('barcode', true);
-        $result = $this->order_model->validate_add_cart_item($product_code);
+        $iden = $this->uri->segment(5);
+        $this->cart_system($product_code,$iden);
 
-        if($result){
-
-            //product price check
-            $price = $this->check_product_rate($result->product_id, $qty=1);
-
-            //product tax check
-            $tax = $this->product_tax_calculate($result->tax_id, $qty=1, $price);
-
-            $data = array(
-                'id' => $result->product_code,
-                'qty' => 1,
-                'price' => $price,
-                'buying_price' => $result->buying_price,
-                'name' => $result->product_name,
-                'tax' => $tax,
-                'price_option' => 'general'
-            );
-            $this->cart->insert($data);
-            $this->session->set_flashdata('cart_msg', 'add');
+        if($iden == 'purchase')
+        {
+            redirect('admin/purchase/new_purchase/'.$flag ='add');
         }
-        redirect('admin/order/new_order/'.$flag ='add');
+        else
+        {
+            redirect('admin/order/new_order/'.$flag ='add');
+        }
     }
 
     /*** Check product general, offer, tire rate ***/
@@ -480,13 +545,27 @@ class Order extends MY_Controller
         if($this->input->post('ajax') != '1'){
             redirect('admin/order/new_order'); // If javascript is not enabled, reload the page with new data
         }else{
-            echo 'true'; // If javascript is enabled, return true, so the cart gets updated
+            $ca = $this->cart->contents();
+            $subtota = 0;
+            foreach ($ca as $item)
+            {
+                if($item['rowid'] == $rowid)
+                {
+                    $subtota= $item['subtotal'];
+                }
+            }
+            $arr = array(
+                'subtotal' => number_format($subtota),
+                'row' => $data['rowid'],
+                'success' => true
+            );
+            echo json_encode($arr);
         }
     }
     /*** Show cart ***/
     function show_cart(){
         $data['cart_iden'] = 'order';
-        $this->load->view('admin/order/cart/cart');
+        $this->load->view('admin/order/cart/cart',$data);
     }
     /*** cart Summery ***/
     function show_cart_summary(){
@@ -508,7 +587,7 @@ class Order extends MY_Controller
     }
 
     /*** Delete Cart Item ***/
-    public function delete_cart_item($id)
+    public function delete_cart_item($id,$iden)
     {
         $data = array(
             'rowid' => $id,
@@ -516,7 +595,15 @@ class Order extends MY_Controller
         );
         $this->cart->update($data);
         $this->session->set_flashdata('cart_msg', 'delete');
-        redirect('admin/order/new_order/'.$flag ='delete');
+        if($iden == 'purchase')
+        {
+            redirect('admin/purchase/new_purchase/'.$flag ='delete');
+        }
+        else
+        {
+            redirect('admin/order/new_order/'.$flag ='delete');
+        }
+
     }
 
     public function error_inventory(){
@@ -526,10 +613,10 @@ class Order extends MY_Controller
     /*** Save Order ***/
     public function save_order()
     {
-        $data_order = $this->global_model->array_from_post(array('grand_total', 'total_tax', 'discount','note', 'payment_ref', 'discount_amount','discount_type'));
+        $data_order = $this->global_model->array_from_post(array('note', 'payment_ref', 'payment_method', 'due_date','outlet_id','order_no'));
         $order_code = $this->input->post('order_no', true);
 
-        $data_order['sub_total']  = $this->cart->total();
+        $data_order['subtotal']  = $this->cart->total();
         $data_order['sales_person'] = $this->session->userdata('name');
 
         //checking order pending or confirm
@@ -539,8 +626,13 @@ class Order extends MY_Controller
             $data_order['order_status'] = 2;
 
         }
-        $data_order['jatuh_tempo'] = $this->input->post('due_date', true);
-        $data_order['outlet_id'] = $this->input->post('outlet', true);
+        $dp =0;
+        if($data_order['payment_method'] == 'kredit')
+        {
+            $dp = $this->input->post('down_payment');
+        }
+        $data_order['down_payment'] = $dp;
+       // $data_order['outlet_id'] = $this->input->post('outlet', true);
 
         //customer
         $customer_code =$this->input->post('customer_id', true);
@@ -550,7 +642,7 @@ class Order extends MY_Controller
         }else
         {
             $this->tbl_customer('customer_id');
-            $customer_info = $this->global_model->get_by(array('customer_code'=> $customer_code), true);
+            $customer_info = $this->global_model->get_by(array('customer_id'=> $customer_code), true);
             $data_order['customer_id']= $customer_info->customer_id;
             $data_order['customer_name']= $customer_info->customer_name;
             $data_order['customer_email']= $customer_info->email;
@@ -559,32 +651,136 @@ class Order extends MY_Controller
             $data_order['shipping_address']= $this->input->post('shipping_address', true);
         }
 
+        $data_order['tax'] = remove_commas($this->input->post('total_tax'));
+        $diskon = 0;
+        if($this->input->post('discount') != '')
+        {
+            $diskon = $this->input->post('discount');
+        }
+        $data_order['discount_amount'] = remove_commas($this->input->post('discount_amount'));
+        $data_order['discount'] = $diskon;
+        $data_order['discount_type'] = $this->input->post('discount_type');
+        $data_order['grand_total'] = remove_commas($this->input->post('grand_total'));
+        $id = null;
+        if(!empty($this->session->userdata('id_order'))) {
+            $id = $this->session->userdata('id_order');
+
+        }
         //save order
         $this->tbl_order('order_id');
-        $order_id = $this->global_model->save($data_order);
+        $order_id = $this->global_model->save($data_order,$id);
 
-        $order_number['order_no'] = $order_code.$order_id;
-        $this->global_model->save($order_number,$order_id );
+       // $order_number['order_no'] = $order_code.$order_id;
+        //$this->global_model->save($order_number,$order_id );
+
+        $cart = $this->cart->contents();
+
+        if(!empty($this->session->userdata('id_order'))) {
+            $this->tbl_order_details('order_details_id');
+            $beli_product = $this->global_model->get_by(array('order_id' => $id),false);
+            if(count($beli_product) > 0) {
+                foreach($beli_product as $jual) {
+                    $status_found = false;
+                    foreach ($cart as $item) {
+                        if($jual->product_code == $item['id'])
+                        {
+                            $status_found =  true;
+                            $id_purchase_product = $jual->purchase_product_id;
+                            $get_row_data = db_get_row_data('tbl_purchase_product',array('purchase_product_id' => $id_purchase_product));
+                            $sisa = $get_row_data->sisa_qty + $jual->product_quantity;
+                            $data_up = array(
+                                'sisa_qty' => $sisa
+                            );
+                            $this->tbl_purchase_product('purchase_product_id');
+                            $this->global_model->save($data_up,$id_purchase_product );
+                        }
+                    }
+                    if($status_found == false)
+                    {
+                        $id_purchase_product = $jual->purchase_product_id;
+                        $get_row_data = db_get_row_data('tbl_purchase_product',array('purchase_product_id' => $id_purchase_product));
+                        $sisa = $get_row_data->sisa_qty + $jual->product_quantity;
+                        $data_up = array(
+                            'sisa_qty' => $sisa
+                        );
+                        $this->tbl_purchase_product('purchase_product_id');
+                        $this->global_model->save($data_up,$id_purchase_product );
+                    }
+                    $this->global_model->_table_name = 'tbl_order_attribute';
+                    $this->global_model->delete_all(array('order_detail_id' => $jual->order_details_id));
+                    $this->global_model->_table_name = 'tbl_order_serial';
+                    $this->global_model->delete_all(array('order_detail_id' => $jual->order_details_id));
+                }
+            }
+            $this->tbl_order_details('order_details_id');
+            $this->global_model->delete_all(array('order_id' => $id));
+        }
 
         //save order details
-        $cart = $this->cart->contents();
         foreach($cart as $item)
         {
             $this->tbl_order_details('order_details_id');
+            $fifo = $this->purchase_model->fifo($item['qty'],$item['id']);
+            $buying_price = $item['buying_price'];
+            $purchase_product_id = '0';
+            if($fifo != '')
+            {
+                $buying_price = $fifo['unit_price'];
+                $purchase_product_id = $fifo['purchase_product_id'];
+            }
             $data_order_details['order_id'] = $order_id;
             $data_order_details['product_code'] = $item['id'];
             $data_order_details['product_name'] = $item['name'];
             $data_order_details['product_quantity'] = $item['qty'];
             $data_order_details['selling_price'] = $item['price'];
-            $data_order_details['buying_price'] = $item['buying_price'];
+            $data_order_details['buying_price'] = $buying_price;
             $data_order_details['product_tax'] = $item['tax'];
             $data_order_details['sub_total'] = $item['subtotal'];
             $data_order_details['price_option'] = $item['price_option'];
+            $data_order_details['purchase_product_id'] = $purchase_product_id;
 
-            $this->global_model->save($data_order_details);
+            $order_details = $this->global_model->save($data_order_details);
+
+            if($item['has_attribute'] == 'yes')
+            {
+
+                if(count($item['attribute']) > 0)
+                {
+                    foreach ($item['attribute'] as $attr)
+                    {
+                        $this->global_model->_table_name = 'tbl_order_attribute';
+                        $this->global_model->_order_by = 'id';
+                        $this->global_model->_primary_key = 'id';
+                        $data_attr['order_detail_id'] = $order_details;
+                        $data_attr['attribute_id'] = $attr;
+                        /* $data_attr = array(
+                             'purchase_product_id' => '4',
+                             'attribute_id' => $attr
+                         );*/
+                        $this->global_model->save($data_attr);
+                    }
+                }
+            }
+
+            if($item['has_serial'] == '1')
+            {
+                if(count($item['serial']) > 0)
+                {
+                    foreach ($item['serial'] as $serial)
+                    {
+                        $this->global_model->_table_name = 'tbl_order_serial';
+                        $this->global_model->_order_by = 'id';
+                        $this->global_model->_primary_key = 'id';
+                        $data_serial['order_detail_id'] = $order_details;
+                        $data_serial['serial_no'] = $serial;
+
+                        $this->global_model->save($data_serial);
+                    }
+                }
+            }
 
             // update product Quantity
-            $this->tbl_product('product_id');
+           /* $this->tbl_product('product_id');
             $product = $this->global_model->get_by(array('product_code'=>$item['id'] ), true);
             $product_id = $product->product_id;
 
@@ -592,7 +788,7 @@ class Order extends MY_Controller
             $inventory = $this->global_model->get_by(array('product_id'=>$product_id ), true);
             $inventory_id = $inventory->inventory_id;
             $inventory_qty['product_quantity'] = $inventory->product_quantity - $item['qty'];
-            $this->global_model->save($inventory_qty, $inventory_id);
+            $this->global_model->save($inventory_qty, $inventory_id);*/
         }
 
         //save invoice

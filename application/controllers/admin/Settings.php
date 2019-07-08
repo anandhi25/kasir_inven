@@ -132,11 +132,11 @@ class Settings extends MY_Controller
 
     public function outlet($id = null)
     {
-        $this->tbl_outlet('id');
+        $this->tbl_outlet('outlet_id');
         $data['outlet_info'] = $this->global_model->get();
 
         if (!empty($id)) { //condition check
-            $where = array('id' => $id);
+            $where = array('outlet_id' => $id);
             $data['outlet'] = $this->settings_model->check_by($where, 'tbl_outlets');
 
             if (empty($data['outlet'])) {

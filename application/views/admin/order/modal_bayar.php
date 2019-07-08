@@ -36,6 +36,10 @@
     }
 
     $("#modal_submit").on('shown.bs.modal', function () {
+        if($('#form_order #down_payment').val() != '')
+        {
+            $('#uang_muka').val(numberWithCommas($('#form_order #down_payment').val()));
+        }
         $('#total_bayar').val($('#form_order #grand_total_txt').html());
         $('#sisa_bayar').val($('#form_order #grand_total_txt').html());
         $('#uang_muka').on('input change',function () {

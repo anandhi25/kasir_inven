@@ -95,7 +95,7 @@
             <td class="vertical-td" id="<?php echo 'subtot' . $item['rowid'] ?>"><?php echo number_format($item['subtotal'], 0, '.', ',')  ?></td>
 
             <td class="vertical-td">
-                <?php echo btn_delete('admin/order/delete_cart_item/' . $item['rowid']); ?>
+                <?php echo btn_delete('admin/order/delete_cart_item/' . $item['rowid']."/$cart_iden"); ?>
             </td>
 
         </tr>

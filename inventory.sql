@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 07, 2019 at 08:34 AM
+-- Generation Time: Jul 08, 2019 at 08:09 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -55,6 +55,19 @@ CREATE TABLE `installer` (
 
 INSERT INTO `installer` (`id`, `installer_flag`) VALUES
 (1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_account`
+--
+
+CREATE TABLE `tbl_account` (
+  `account_id` int(11) NOT NULL,
+  `account_name` varchar(254) NOT NULL,
+  `account_code` varchar(254) NOT NULL,
+  `opening_balance` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -255,8 +268,8 @@ CREATE TABLE `tbl_inventory` (
 --
 
 INSERT INTO `tbl_inventory` (`inventory_id`, `product_id`, `product_quantity`, `notify_quantity`) VALUES
-(1, 6, 10, 2),
-(2, 7, 10, 1);
+(1, 6, 11, 2),
+(2, 7, 20, 1);
 
 -- --------------------------------------------------------
 
@@ -270,6 +283,13 @@ CREATE TABLE `tbl_invoice` (
   `order_id` int(11) NOT NULL,
   `invoice_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_invoice`
+--
+
+INSERT INTO `tbl_invoice` (`invoice_id`, `invoice_no`, `order_id`, `invoice_date`) VALUES
+(1, 86353061, 1, '2019-07-08 06:16:25');
 
 -- --------------------------------------------------------
 
@@ -329,7 +349,9 @@ INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VA
 (40, 'Camaign Result', 'admin/campaign/campaign_result', 'glyphicon glyphicon-bullhorn', 37, 3),
 (41, 'Outlet', 'admin/settings/outlet', 'fa fa-home', 2, 3),
 (42, 'Brand', 'admin/product/brand', 'fa fa-globe', 7, 4),
-(43, 'Variasi', 'admin/product/variasi', 'fa fa-list-alt', 7, 4);
+(43, 'Variasi', 'admin/product/variasi', 'fa fa-list-alt', 7, 4),
+(44, 'Stock Report', 'admin/report/stock_report', 'fa fa-bar-chart', 34, 3),
+(45, 'Profit Loss Report', 'admin/report/profit_loss_report', 'fa fa-bar-chart', 34, 4);
 
 -- --------------------------------------------------------
 
@@ -347,22 +369,29 @@ CREATE TABLE `tbl_order` (
   `customer_phone` varchar(100) NOT NULL,
   `customer_address` text NOT NULL,
   `shipping_address` text NOT NULL,
-  `sub_total` double NOT NULL,
+  `subtotal` double NOT NULL,
   `discount` double NOT NULL,
   `discount_amount` double NOT NULL,
-  `total_tax` double NOT NULL,
+  `tax` double NOT NULL,
   `grand_total` double NOT NULL,
   `payment_method` varchar(100) NOT NULL,
-  `payment_ref` varchar(120) NOT NULL,
+  `payment_ref` varchar(120) DEFAULT NULL,
   `order_status` int(2) NOT NULL DEFAULT '0' COMMENT '0= pending; 1= cancel; 2=confirm',
   `note` text NOT NULL,
   `sales_person` varchar(100) NOT NULL,
   `outlet_id` int(11) NOT NULL,
-  `uang_muka` double NOT NULL,
-  `jatuh_tempo` varchar(65) DEFAULT NULL,
+  `down_payment` double NOT NULL,
+  `due_date` varchar(65) DEFAULT NULL,
   `discount_type` varchar(65) DEFAULT NULL,
   `persen_pajak` decimal(10,0) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_order`
+--
+
+INSERT INTO `tbl_order` (`order_id`, `order_no`, `order_date`, `customer_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_address`, `shipping_address`, `subtotal`, `discount`, `discount_amount`, `tax`, `grand_total`, `payment_method`, `payment_ref`, `order_status`, `note`, `sales_person`, `outlet_id`, `down_payment`, `due_date`, `discount_type`, `persen_pajak`) VALUES
+(1, 82679231, '2019-07-08 06:16:25', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', 'Jl Makasar', 80000, 0, 0, 8000, 88000, 'kredit', NULL, 2, 'cpt kirim', 'Administrator', 1, 50000, '2019-07-28', '', 0);
 
 -- --------------------------------------------------------
 
@@ -375,6 +404,13 @@ CREATE TABLE `tbl_order_attribute` (
   `attribute_id` int(11) NOT NULL,
   `order_detail_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_order_attribute`
+--
+
+INSERT INTO `tbl_order_attribute` (`id`, `attribute_id`, `order_detail_id`) VALUES
+(1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -390,11 +426,18 @@ CREATE TABLE `tbl_order_details` (
   `product_quantity` int(5) NOT NULL,
   `buying_price` double NOT NULL,
   `selling_price` double NOT NULL,
-  `product_tax` double NOT NULL,
+  `product_tax` double DEFAULT '0',
   `sub_total` double NOT NULL,
   `price_option` varchar(100) NOT NULL,
   `purchase_product_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_order_details`
+--
+
+INSERT INTO `tbl_order_details` (`order_details_id`, `order_id`, `product_code`, `product_name`, `product_quantity`, `buying_price`, `selling_price`, `product_tax`, `sub_total`, `price_option`, `purchase_product_id`) VALUES
+(1, 1, 58186047, 'Beras Rojo Lele', 2, 35000, 40000, NULL, 80000, 'custom_price', 3);
 
 -- --------------------------------------------------------
 
@@ -415,7 +458,7 @@ CREATE TABLE `tbl_order_serial` (
 --
 
 CREATE TABLE `tbl_outlets` (
-  `id` int(11) NOT NULL,
+  `outlet_id` int(11) NOT NULL,
   `name` varchar(499) COLLATE utf8_unicode_ci NOT NULL,
   `address` longtext COLLATE utf8_unicode_ci NOT NULL,
   `contact_number` varchar(499) COLLATE utf8_unicode_ci NOT NULL,
@@ -432,7 +475,7 @@ CREATE TABLE `tbl_outlets` (
 -- Dumping data for table `tbl_outlets`
 --
 
-INSERT INTO `tbl_outlets` (`id`, `name`, `address`, `contact_number`, `receipt_header`, `receipt_footer`, `created_user_id`, `created_datetime`, `updated_user_id`, `updated_datetime`, `status`) VALUES
+INSERT INTO `tbl_outlets` (`outlet_id`, `name`, `address`, `contact_number`, `receipt_header`, `receipt_footer`, `created_user_id`, `created_datetime`, `updated_user_id`, `updated_datetime`, `status`) VALUES
 (1, 'Uniqlo - NEX Outlet', '#02-11, B2, Nex Shopping Mall, Serangoon Central', '88837492', '', '<p>Thank you for coming!</p>', 1, '2016-09-11 19:24:33', 0, '0000-00-00 00:00:00', 1),
 (2, 'Uniqlo - Changi Outlet', '#02, B2, Changi Airport', '92828394', '', '<p>Thank you for coming!</p>', 1, '2016-09-11 19:25:13', 0, '0000-00-00 00:00:00', 1),
 (4, 'GKB', 'GKB Gresik', '0911919', '', '', 0, '2019-06-24 03:42:58', 0, '2019-06-25 05:09:58', 2);
@@ -557,6 +600,13 @@ CREATE TABLE `tbl_purchase` (
   `discount_amount` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tbl_purchase`
+--
+
+INSERT INTO `tbl_purchase` (`purchase_id`, `order_no`, `supplier_id`, `supplier_name`, `grand_total`, `note`, `payment_method`, `payment_ref`, `purchase_by`, `datetime`, `outlet_id`, `tax`, `discount`, `discount_type`, `due_date`, `down_payment`, `subtotal`, `discount_amount`) VALUES
+(1, 3280762, 1, 'PT Jaya Baru', 363000, 'Barang sampai besok                                                                                                                        ', 'kredit', '', 'Administrator', '2019-07-08 04:04:30', 1, 33000, 0, '', '2019-07-31', 200000, 330000, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -568,6 +618,14 @@ CREATE TABLE `tbl_purchase_attribute` (
   `purchase_product_id` int(11) NOT NULL,
   `attribute_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_purchase_attribute`
+--
+
+INSERT INTO `tbl_purchase_attribute` (`id`, `purchase_product_id`, `attribute_id`) VALUES
+(3, 3, 3),
+(4, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -585,6 +643,14 @@ CREATE TABLE `tbl_purchase_product` (
   `sub_total` int(5) NOT NULL,
   `sisa_qty` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_purchase_product`
+--
+
+INSERT INTO `tbl_purchase_product` (`purchase_product_id`, `purchase_id`, `product_code`, `product_name`, `qty`, `unit_price`, `sub_total`, `sisa_qty`) VALUES
+(3, 1, '58186047', 'Beras Rojo Lele', 8, 35000, 280000, 8),
+(4, 1, '44433356', 'Beras Sumo Super Premium 20kg', 1, 50000, 50000, 1);
 
 -- --------------------------------------------------------
 
@@ -711,6 +777,40 @@ CREATE TABLE `tbl_tier_price` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_transaction`
+--
+
+CREATE TABLE `tbl_transaction` (
+  `trans_id` int(11) NOT NULL,
+  `trans_name` varchar(254) NOT NULL,
+  `trans_date` varchar(65) NOT NULL,
+  `nominal` double NOT NULL,
+  `account_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `note` text NOT NULL,
+  `trans_created_by` int(11) NOT NULL,
+  `attach_image` varchar(254) NOT NULL,
+  `trans_type` varchar(250) NOT NULL,
+  `trans_edit_by` int(11) NOT NULL,
+  `trans_edit_at` varchar(65) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_trans_category`
+--
+
+CREATE TABLE `tbl_trans_category` (
+  `category_id` int(11) NOT NULL,
+  `trans_name` varchar(254) NOT NULL,
+  `description` varchar(254) NOT NULL,
+  `trans_type` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_user`
 --
 
@@ -755,6 +855,12 @@ CREATE TABLE `tbl_user_role` (
 ALTER TABLE `ci_sessions`
   ADD PRIMARY KEY (`session_id`),
   ADD KEY `last_activity_idx` (`last_activity`);
+
+--
+-- Indexes for table `tbl_account`
+--
+ALTER TABLE `tbl_account`
+  ADD PRIMARY KEY (`account_id`);
 
 --
 -- Indexes for table `tbl_attribute`
@@ -856,7 +962,7 @@ ALTER TABLE `tbl_order_serial`
 -- Indexes for table `tbl_outlets`
 --
 ALTER TABLE `tbl_outlets`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`outlet_id`);
 
 --
 -- Indexes for table `tbl_product`
@@ -943,6 +1049,18 @@ ALTER TABLE `tbl_tier_price`
   ADD PRIMARY KEY (`tier_price_id`);
 
 --
+-- Indexes for table `tbl_transaction`
+--
+ALTER TABLE `tbl_transaction`
+  ADD PRIMARY KEY (`trans_id`);
+
+--
+-- Indexes for table `tbl_trans_category`
+--
+ALTER TABLE `tbl_trans_category`
+  ADD PRIMARY KEY (`category_id`);
+
+--
 -- Indexes for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
@@ -957,6 +1075,12 @@ ALTER TABLE `tbl_user_role`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `tbl_account`
+--
+ALTER TABLE `tbl_account`
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_attribute`
@@ -1022,31 +1146,31 @@ ALTER TABLE `tbl_inventory`
 -- AUTO_INCREMENT for table `tbl_invoice`
 --
 ALTER TABLE `tbl_invoice`
-  MODIFY `invoice_id` int(5) NOT NULL AUTO_INCREMENT;
+  MODIFY `invoice_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_menu`
 --
 ALTER TABLE `tbl_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `tbl_order`
 --
 ALTER TABLE `tbl_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_attribute`
 --
 ALTER TABLE `tbl_order_attribute`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_details`
 --
 ALTER TABLE `tbl_order_details`
-  MODIFY `order_details_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_details_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_serial`
@@ -1058,7 +1182,7 @@ ALTER TABLE `tbl_order_serial`
 -- AUTO_INCREMENT for table `tbl_outlets`
 --
 ALTER TABLE `tbl_outlets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `outlet_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_product`
@@ -1088,19 +1212,19 @@ ALTER TABLE `tbl_product_tag`
 -- AUTO_INCREMENT for table `tbl_purchase`
 --
 ALTER TABLE `tbl_purchase`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_attribute`
 --
 ALTER TABLE `tbl_purchase_attribute`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_product`
 --
 ALTER TABLE `tbl_purchase_product`
-  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_serial`
@@ -1143,6 +1267,18 @@ ALTER TABLE `tbl_tax`
 --
 ALTER TABLE `tbl_tier_price`
   MODIFY `tier_price_id` int(5) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_transaction`
+--
+ALTER TABLE `tbl_transaction`
+  MODIFY `trans_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_trans_category`
+--
+ALTER TABLE `tbl_trans_category`
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`

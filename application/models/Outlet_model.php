@@ -25,7 +25,7 @@ class Outlet_model extends MY_Model
         $this->db->from('tbl_outlets');
         if (!empty($id)) {
             //specific customer information needed
-            $this->db->where('id', $id);
+            $this->db->where('outlet_id', $id);
             $query_result = $this->db->get();
             $result = $query_result->row();
         } else {

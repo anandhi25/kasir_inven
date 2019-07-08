@@ -39,17 +39,25 @@ if(!empty($info->currency))
 
                     <div class="col-sm-8">
                         <?php
-                       // print_r($outlets);
+                      //  print_r($outlets);
                         ?>
                             <select name="outlet_id" id="outlet_id" class="form-control">
                                 <?php
 
                                 if(!empty($outlets))
                                 {
-                                    foreach ($outlets as $outlet)
+                                    foreach ($outlets as $outl)
                                     {
+                                        $sel = '';
+                                        if(!empty($order_purchase))
+                                        {
+                                            if($outl->outlet_id == $order_purchase->outlet_id)
+                                            {
+                                                $sel = 'selected';
+                                            }
+                                        }
                                 ?>
-                                         <option value="<?php echo $outlet->id?>"><?php echo $outlet->name;?></option>
+                                         <option value="<?php echo $outl->outlet_id;?>" <?php echo $sel; ?>><?php echo $outl->name;?></option>
                                     <?php
                                     }
                                 }
@@ -205,21 +213,43 @@ if(!empty($info->currency))
                             <label class="col-sm-5 control-label">Payment Method</label>
 
                             <div class="col-sm-7">
+                                <?php
+                                $display = 'none';
+                                ?>
                                 <select name="payment_method" class="form-control" id="order_payment_type">
-                                    <option value="cash">Tunai</option>
-                                    <option value="kredit">Kredit</option>
+                                    <option value="cash" <?php if(!empty($order_purchase)){
+                                        if($order_purchase->payment_method == 'cash')
+                                        {
+                                            echo "selected";
+                                        }
+                                    } ?>>Tunai</option>
+                                    <option value="kredit" <?php if(!empty($order_purchase)){
+                                        if($order_purchase->payment_method == 'kredit')
+                                        {
+                                            echo "selected";
+                                            $display = 'block';
+                                        }
+                                    } ?>>Kredit</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-12" style="display: none" id="payment">
+                    <div class="col-md-12" style="display: <?php echo $display;?>" id="payment">
 
                         <div class="form-group">
                             <label class="col-sm-5 control-label">Tanggal Jatuh Tempo</label>
 
                             <div class="col-sm-7 input-group">
-                                <input type="text" class="form-control datepicker" name="due_date" data-format="yyyy-mm-dd" value="<?php echo date("Y-m-d");?>">
+                                <input type="text" class="form-control datepicker" name="due_date" data-format="yyyy-mm-dd" value="<?php
+                                if(empty($order_purchase)){
+                                    echo date("Y-m-d");
+                                }
+                                else
+                                {
+                                    echo $order_purchase->due_date;
+                                }
+                                ?>">
 
                                 <div class="input-group-addon">
                                     <a href="#"><i class="entypo-calendar"></i></a>
@@ -248,7 +278,13 @@ if(!empty($info->currency))
                                 <div class="tab-pane active" id="note">
                                     <div class="form-group">
                                         <label>Order Note</label>
-                                        <textarea class="form-control" name="note" rows="3" placeholder="Enter ..." id="ck_editor"></textarea>
+                                        <textarea class="form-control" name="note" rows="3" placeholder="Enter ..." id="ck_editor"><?php
+                                            if(!empty($order_purchase))
+                                            {
+                                                echo $order_purchase->note;
+                                            }
+                                            ?>
+                                        </textarea>
                                     </div>
                                 </div>
 
@@ -266,14 +302,24 @@ if(!empty($info->currency))
             </div>
         </div>
 
-            <input type="hidden" value="0" name="down_payment" id="down_payment">
+            <input type="hidden" value="<?php
+            if(empty($order_purchase))
+            {
+                echo '0';
+            }
+            else
+            {
+                echo $order_purchase->down_payment;
+            }
+            ?>" name="down_payment" id="down_payment">
 
 
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <?php
-                    echo btn_submit_modal(base_url('admin/order/modal_payment'),'modal_submit');
+                     <?php
+
+                   echo btn_submit_modal(base_url('admin/order/modal_payment'),'modal_submit','Submit',' btn_simpan_data');
                     ?>
                 </div>
             </div>
@@ -284,6 +330,45 @@ if(!empty($info->currency))
 
 </form>
 <script>
+    $( document ).ready(function() {
+        $('.btn_simpan_data').on('click', function(e){
+            <?php
+            if($cart_iden == 'purchase')
+            {
+            ?>
+                if($('#supplier_id').val() == '0')
+                {
+                    e.stopPropagation();
+                    show_notification('  Supplier Masih Belum Dipilih!',"danger");
+                    return false;
+                }
+            <?php
+            }
+            else
+            {
+                ?>
+                if($('#customer_id').val() == '0')
+                {
+                    e.stopPropagation();
+                    show_notification('  Customer Masih Belum Dipilih!',"danger");
+                    return false;
+                }
+            <?php
+            }
+            ?>
+
+            if($('#subtotal_txt').val() == '0')
+            {
+                e.stopPropagation();
+                show_notification('  Anda belum memilih produk!',"danger");
+                return false;
+            }
+            $('#modal_payment').modal('toggle').find('.modal-body').load($(this).attr('href'));
+          //  e.preventDefault();
+
+        });
+       // $('#supplier_id').val()
+    });
     function tax_ck(comp) {
         if(comp.checked == true)
         {

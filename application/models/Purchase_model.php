@@ -76,5 +76,44 @@ class Purchase_Model extends MY_Model
         return $result;
     }
 
+    public function fifo($qty,$product_code)
+    {
+        $sql = "SELECT t.* FROM tbl_purchase p, tbl_purchase_product t WHERE t.product_code = '$product_code' AND p.purchase_id = t.purchase_id AND t.sisa_qty <> '0' ORDER BY p.datetime ASC ";
+        $res = $this->get_by_sql($sql);
+        $arr_ret = '';
+        if(count($res) > 0)
+        {
+            foreach ($res as $r)
+            {
+                if($r->sisa_qty >= $qty)
+                {
+                    $sisa = $r->sisa_qty - $qty;
+                    $this->_table_name = 'tbl_purchase_product';
+                    $this->_primary_key = 'purchase_product_id';
+                    $data = array(
+                        'sisa_qty' => $sisa
+                    );
+                    $this->save($data,$res->purchase_product_id);
+                    $arr_ret = array(
+                        'unit_price' => $r->unit_price,
+                        'purchase_product_id' => $r->purchase_product_id
+                    );
+                    break;
+                }
+                else
+                {
+                    $qty = $qty - $r->sisa_qty;
+                    $this->_table_name = 'tbl_purchase_product';
+                    $this->_primary_key = 'purchase_product_id';
+                    $data = array(
+                        'sisa_qty' => '0'
+                    );
+                    $this->save($data,$res->purchase_product_id);
+                }
+            }
+        }
+        return $arr_ret;
+    }
+
 
 }

@@ -40,8 +40,8 @@ function btn_variasi_modal($uri,$modal_name='myModal') {
     return anchor($uri, '<span class="glyphicon glyphicon-plus"></span> Variasi', array('class' => "btn bg-primary btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Input Serial', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
 }
 
-function btn_submit_modal($uri,$modal_name='myModal',$title='Submit') {
-    return anchor($uri, $title, array('class' => "btn bg-navy btn-block",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>$title, 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
+function btn_submit_modal($uri,$modal_name='myModal',$title='Submit',$class='') {
+    return anchor($uri, $title, array('class' => "btn bg-navy btn-block".$class,'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>$title, 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
 }
 
 function btn_delete($uri) {
@@ -104,6 +104,56 @@ if(!function_exists('remove_commas')) {
     {
         $ret = str_replace(',','',$str);
         return $ret;
+    }
+}
+
+if(!function_exists('db_get_all_data')) {
+    function db_get_all_data($table_name = null, $where = false) {
+        $ci =& get_instance();
+        if ($where) {
+            $ci->db->where($where);
+        }
+        $query = $ci->db->get($table_name);
+
+        return $query->result();
+    }
+}
+
+if(!function_exists('db_get_all_data_by_query'))
+{
+    function db_get_all_data_by_query($sql)
+    {
+        $ci =& get_instance();
+        $query = $ci->db->query($sql);
+
+        return $query->result();
+    }
+}
+
+if(!function_exists('db_get_row_data')) {
+    function db_get_row_data($table_name = null, $where = false) {
+        $ci =& get_instance();
+        if ($where) {
+            $ci->db->where($where);
+        }
+        $query = $ci->db->get($table_name);
+
+        return $query->row();
+    }
+}
+
+if(!function_exists('get_stock')) {
+    function get_stock($product_code,$outlet_id)
+    {
+        $sql = "SELECT t.sisa_qty AS sisa FROM tbl_purchase p,tbl_purchase_product t WHERE p.purchase_id =  t.purchase_id AND t.product_code = '$product_code' AND p.outlet_id = '$outlet_id';";
+        $res = db_get_all_data_by_query($sql);
+        $total_qty = 0;
+        if(count($res) > 0) {
+            foreach ($res as $r) {
+                $total_qty = $total_qty + $r->sisa;
+            }
+        }
+        return $total_qty;
     }
 }
 

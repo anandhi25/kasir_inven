@@ -20,6 +20,7 @@ class Report extends MY_Controller
         parent::__construct();
         $this->load->model('report_model');
         $this->load->model('global_model');
+        $this->load->model('outlet_model');
     }
 
 
@@ -157,6 +158,76 @@ class Report extends MY_Controller
         $pdf->WriteHTML($html);
         $pdf->Output($filename, 'D');
 
+    }
+
+    public function stock_report()
+    {
+        $data['title'] = 'Stock Report';
+        $data['outlets'] = $this->outlet_model->get_outlet_info();
+        $data['subview'] = $this->load->view('admin/report/stock_report', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+
+    public function stock_table()
+    {
+        $getData = array();
+        $where = '';
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'product_name',
+            1 => 'product_code'
+        );
+        if(isset($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE product_code LIKE '%".$_GET["search"]["value"]."%' OR product_name LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND product_code LIKE '%".$_GET["search"]["value"]."%' OR product_name LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY product_name ASC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_product ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_product ".$where);
+        $total = count($listAll);
+        foreach ($list as $post) {
+            $subdata = array();
+            $subdata[] = $post->product_name;
+            $subdata[] = $post->product_code;
+            $outlets = $this->outlet_model->get_outlet_info();
+            if(count($outlets) > 0)
+            {
+                foreach ($outlets as $out)
+                {
+                    $stock = get_stock($post->product_code,$out->outlet_id);
+                    $subdata[] = $stock;
+                }
+            }
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
     }
 
 

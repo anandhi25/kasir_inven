@@ -71,7 +71,8 @@ if(!empty($info->currency))
                                     <td class="vertical-td"><?php echo $v_order->sales_person ?></td>
 
                                     <td class="vertical-td">
-                                        <?php echo btn_edit('admin/order/view_order/' . $v_order->order_no); ?>
+                                        <?php echo btn_view('admin/order/view_order/' . $v_order->order_no); ?>
+                                        <?php echo btn_edit('admin/order/edit_order/' . $v_order->order_id); ?>
 
                                     </td>
 
