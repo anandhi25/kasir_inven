@@ -222,5 +222,122 @@ class Settings extends MY_Controller
         $this->message->delete_success('admin/settings/outlet');
     }
 
+    public function account()
+    {
+        $data['title'] = 'Account List';
+        $data['subview'] = $this->load->view('admin/settings/account_list', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+
+    public function account_table()
+    {
+        $getData = array();
+        $where = '';
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'account_name',
+            1 => 'account_code'
+        );
+        if(isset($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE account_code LIKE '%".$_GET["search"]["value"]."%' OR account_name LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND account_code LIKE '%".$_GET["search"]["value"]."%' OR account_name LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY account_name ASC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_account ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_account ".$where);
+        $total = count($listAll);
+        foreach ($list as $post) {
+            $subdata = array();
+            $subdata[] = $post->account_name;
+            $subdata[] = $post->account_code;
+            $subdata[] = btn_edit_modal(base_url('admin/settings/add_account/'.$post->account_id)).' '.btn_delete(base_url('admin/settings/delete_account/'.$post->account_id));
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
+    }
+
+    public function add_account($id='')
+    {
+        $judul = 'Tambah Account';
+        $url_action = base_url('admin/settings/save_account');
+        if(!empty($id))
+        {
+            $judul = 'Edit Account';
+            //$url_action = base_url('admin/settings/edit_account');
+            $where = array('account_id' => $id);
+            $data['account'] = $this->settings_model->check_by($where, 'tbl_account');
+        }
+        $data['title'] = $judul;
+        $data['url_action'] = $url_action;
+        $data['modal_subview'] = $this->load->view('admin/settings/modal_account', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
+    public function save_account()
+    {
+        $data_simpan = array(
+            'account_name' => $this->input->post('account_name'),
+            'account_code' => $this->input->post('account_code'),
+            'opening_balance' => '0'
+        );
+        $id = null;
+        if(!empty($this->input->post('account_id')))
+        {
+            $id = $this->input->post('account_id');
+        }
+        $this->settings_model->init_table('tbl_account','account_id');
+        $this->settings_model->_primary_key = 'account_id';
+        $res = $this->settings_model->save($data_simpan,$id);
+        if($res)
+        {
+            $arr = array(
+                'success' => true
+            );
+
+        }
+        else
+        {
+            $arr = array(
+                'success' => false
+            );
+        }
+        echo json_encode($arr);
+    }
+
+    public function delete_account($id=null)
+    {
+        $this->settings_model->init_table('tbl_account','account_id');
+        $this->settings_model->_primary_key = 'account_id';
+        $this->settings_model->delete($id);
+        $this->message->delete_success('admin/settings/account');
+    }
+
 
 }

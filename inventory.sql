@@ -2,14 +2,12 @@
 -- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jul 08, 2019 at 08:09 PM
--- Server version: 5.6.34-log
--- PHP Version: 5.6.31
+-- Host: localhost:3306
+-- Generation Time: Jul 09, 2019 at 12:35 AM
+-- Server version: 5.7.23
+-- PHP Version: 5.6.37
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 --
@@ -68,6 +66,13 @@ CREATE TABLE `tbl_account` (
   `account_code` varchar(254) NOT NULL,
   `opening_balance` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_account`
+--
+
+INSERT INTO `tbl_account` (`account_id`, `account_name`, `account_code`, `opening_balance`) VALUES
+(1, 'Kas', '100', 0);
 
 -- --------------------------------------------------------
 
@@ -351,7 +356,12 @@ INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VA
 (42, 'Brand', 'admin/product/brand', 'fa fa-globe', 7, 4),
 (43, 'Variasi', 'admin/product/variasi', 'fa fa-list-alt', 7, 4),
 (44, 'Stock Report', 'admin/report/stock_report', 'fa fa-bar-chart', 34, 3),
-(45, 'Profit Loss Report', 'admin/report/profit_loss_report', 'fa fa-bar-chart', 34, 4);
+(45, 'Profit Loss Report', 'admin/report/profit_loss_report', 'fa fa-bar-chart', 34, 4),
+(46, 'Account', 'admin/settings/account', 'fa fa-code', 2, 4),
+(47, 'Transactions', '#', 'fa fa-exchange', 0, 5),
+(48, 'Pendapatan', 'admin/transaction/income', 'fa fa-money', 47, 1),
+(49, 'Pengeluaran', 'admin/transaction/outcome', 'fa fa-credit-card', 47, 2),
+(50, 'Category', 'admin/transaction/category', 'fa fa-list-alt', 47, 3);
 
 -- --------------------------------------------------------
 
@@ -391,7 +401,7 @@ CREATE TABLE `tbl_order` (
 --
 
 INSERT INTO `tbl_order` (`order_id`, `order_no`, `order_date`, `customer_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_address`, `shipping_address`, `subtotal`, `discount`, `discount_amount`, `tax`, `grand_total`, `payment_method`, `payment_ref`, `order_status`, `note`, `sales_person`, `outlet_id`, `down_payment`, `due_date`, `discount_type`, `persen_pajak`) VALUES
-(1, 82679231, '2019-07-08 06:16:25', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', 'Jl Makasar', 80000, 0, 0, 8000, 88000, 'kredit', NULL, 2, 'cpt kirim', 'Administrator', 1, 50000, '2019-07-28', '', 0);
+(1, 82679231, '2019-07-08 06:16:25', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', 'Jl Makasar', 80000, 0, 0, 8000, 88000, 'kredit', NULL, 2, 'cpt kirim', 'Administrator', 1, 50000, '2019-07-28', '', '0');
 
 -- --------------------------------------------------------
 
@@ -1080,7 +1090,7 @@ ALTER TABLE `tbl_user_role`
 -- AUTO_INCREMENT for table `tbl_account`
 --
 ALTER TABLE `tbl_account`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_attribute`
@@ -1152,7 +1162,7 @@ ALTER TABLE `tbl_invoice`
 -- AUTO_INCREMENT for table `tbl_menu`
 --
 ALTER TABLE `tbl_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `tbl_order`
@@ -1291,4 +1301,3 @@ ALTER TABLE `tbl_user`
 --
 ALTER TABLE `tbl_user_role`
   MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;

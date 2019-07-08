@@ -28,8 +28,8 @@ function btn_view_modal($uri) {
     return anchor($uri, '<span class="glyphicon glyphicon-search"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'View', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
 }
 
-function btn_add_modal($uri,$modal_name='myModal') {
-    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Tambah', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
+function btn_add_modal($uri,$modal_name='myModal',$title='') {
+    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span>'.$title, array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Tambah', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
 }
 
 function btn_serial_modal($uri,$modal_name='myModal') {
