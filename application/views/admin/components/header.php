@@ -36,5 +36,6 @@
 
         <script src="<?php echo base_url(); ?>asset/js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>asset/js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
-
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.js"></script>
     </head>

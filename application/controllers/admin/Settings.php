@@ -331,12 +331,107 @@ class Settings extends MY_Controller
         echo json_encode($arr);
     }
 
+    public function add_slider($id='')
+    {
+        $judul = 'Tambah Slider';
+        $url_action = base_url('admin/settings/save_slider');
+        if(!empty($id))
+        {
+            $judul = 'Edit Slider';
+            //$url_action = base_url('admin/settings/edit_account');
+            $where = array('id' => $id);
+            $data['slide'] = $this->settings_model->check_by($where, 'tbl_slider');
+        }
+        $data['title'] = $judul;
+        $data['url_action'] = $url_action;
+        $data['modal_subview'] = $this->load->view('admin/settings/add_modal_slider', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
+    public function slider()
+    {
+        $data['title'] = 'Daftar Slider';
+        $data['slider'] = db_get_all_data('tbl_slider');
+        $data['subview'] = $this->load->view('admin/settings/slider_list', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+    public function save_slider()
+    {
+        $id = null;
+        if(!empty($this->input->post('slider_id')))
+        {
+            $id = $this->input->post('slider_id');
+        }
+        $image_upload = '';
+        if (!empty($_FILES['slider_image']['name'])) {
+            $old_path = $this->input->post('old_path');
+            if ($old_path) { // if old path is no empty
+                unlink($old_path);
+            } // upload file
+            $val = $this->settings_model->uploadImage('slider_image');
+            // $val == true || redirect('admin/product/category');
+
+            $image_upload = $val['path'];
+        }
+        else
+        {
+            $old_path = $this->input->post('old_path');
+            $image_upload = $old_path;
+        }
+
+        $data_simpan = array(
+            'slider_title' => $this->input->post('slider_title'),
+            'slider_url' => $this->input->post('slider_url'),
+            'slider_image' => $image_upload,
+            'sub_cat' => '0',
+            'slider_status' => '1'
+        );
+
+        $this->settings_model->init_table('tbl_slider','id');
+        $this->settings_model->_primary_key = 'id';
+        $res = $this->settings_model->save($data_simpan,$id);
+        if($res)
+        {
+            $this->message->save_success('admin/settings/slider');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/settings/slider','Data Gagal disimpan');
+        }
+    }
+
     public function delete_account($id=null)
     {
         $this->settings_model->init_table('tbl_account','account_id');
         $this->settings_model->_primary_key = 'account_id';
         $this->settings_model->delete($id);
         $this->message->delete_success('admin/settings/account');
+    }
+
+    public function delete_slider($id=null)
+    {
+        $this->settings_model->init_table('tbl_slider','id');
+        $this->settings_model->_primary_key = 'id';
+        $this->settings_model->delete($id);
+        $this->message->delete_success('admin/settings/slider');
+    }
+
+    public function search_account()
+    {
+        if(!isset($_POST['searchTerm'])){
+            $sql = "SELECT * FROM tbl_account ORDER BY account_name LIMIT 10";
+            $row = db_get_all_data_by_query($sql);
+        }else{
+            $search = $_POST['searchTerm'];
+            $sql = "SELECT * FROM tbl_account WHERE account_name LIKE '%".$search."%' OR account_code LIKE '%".$search."%' LIMIT 10";
+            $row = db_get_all_data_by_query($sql);
+        }
+        $data = array();
+        foreach ($row as $post)
+        {
+            $data[] = array("id"=>$post->account_id, "text"=>$post->account_name);
+        }
+        echo json_encode($data);
     }
 
 

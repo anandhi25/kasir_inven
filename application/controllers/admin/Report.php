@@ -112,7 +112,7 @@ class Report extends MY_Controller
         if (!empty($invoice)) {
             $this->tbl_purchase_product('purchase_product_id');
             foreach ($invoice as $v_invoice) {
-                $data['purchase_details'][$v_invoice->purchase_order_number] = $this->global_model->get_by(array('purchase_id' => $v_invoice->purchase_id),
+                $data['purchase_details'][$v_invoice->order_no] = $this->global_model->get_by(array('purchase_id' => $v_invoice->purchase_id),
                     false);
                 $data['purchase'][] = $v_invoice;
             }
@@ -230,6 +230,76 @@ class Report extends MY_Controller
         echo json_encode($data);
     }
 
+    public function profit_loss_report()
+    {
+        $data['title'] = 'Laporan Laba Rugi';
+        if($this->input->post('start_date', true))
+        {
+            $start_date = $this->input->post('start_date', true);
+            $end_date = $this->input->post('end_date', true);
+
+            // report date
+            $data['start_date'] = date('Y-m-d', strtotime($start_date));
+            $data['end_date'] = date('Y-m-d', strtotime($end_date));
+            $data['jual_bersih'] = $this->get_penjualan_bersih($data['start_date'],$data['end_date']);
+            $data['hpp'] = $this->get_harga_pokok_penjualan($data['start_date'],$data['end_date']);
+            $data['profit_loss'] = 'OK';
+            $data['category_income'] = db_get_all_data('tbl_trans_category',array('trans_type' => 'pendapatan'));
+            $data['category_expense'] = db_get_all_data('tbl_trans_category',array('trans_type' => 'pengeluaran'));
+            $data['pendapatan'] = $this->get_total_category($data['start_date'],$data['end_date'],$data['category_income']);
+            $data['beban'] = $this->get_total_category($data['start_date'],$data['end_date'],$data['category_expense']);
+        }
+
+
+        $data['subview'] = $this->load->view('admin/report/profit_loss_report', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+
+    private function get_penjualan_bersih($start,$end,$outlet_id='0')
+    {
+        $sql = "SELECT SUM(subtotal) as jual_bersih FROM tbl_order WHERE order_date BETWEEN '$start' AND '$end'";
+        $res = db_get_all_data_by_query($sql);
+        $total = 0;
+        if(count($res) > 0)
+        {
+            $total = $res[0]->jual_bersih;
+        }
+        return $total;
+    }
+
+    private function get_total_category($start,$end,$cat,$outlet_id='0')
+    {
+        $ret_blk = array();
+        if(count($cat) > 0)
+        {
+            foreach ($cat as $r)
+            {
+                $sql = "SELECT SUM(nominal) as total_category FROM tbl_transaction WHERE category_id = '".$r->category_id."' AND trans_date BETWEEN '$start' AND '$end'";
+                $res = db_get_all_data_by_query($sql);
+                $total = 0;
+                if(count($res) > 0)
+                {
+                    $total = $res[0]->total_category;
+                }
+                $sub_data['trans_name'] = $r->trans_name;
+                $sub_data['total'] = $total;
+                $ret_blk[] = $sub_data;
+            }
+        }
+        return $ret_blk;
+    }
+
+    private function get_harga_pokok_penjualan($start,$end,$outlet_id='0')
+    {
+        $sql = "SELECT SUM(d.buying_price * d.product_quantity) as harga_beli FROM tbl_order o,tbl_order_details d WHERE o.order_id = d.order_id AND o.order_date BETWEEN '$start' AND '$end'";
+        $res = db_get_all_data_by_query($sql);
+        $total = 0;
+        if(count($res) > 0)
+        {
+            $total = $res[0]->harga_beli;
+        }
+        return $total;
+    }
 
 
 }

@@ -2,12 +2,14 @@
 -- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Jul 09, 2019 at 12:35 AM
--- Server version: 5.7.23
--- PHP Version: 5.6.37
+-- Host: localhost
+-- Generation Time: Jul 10, 2019 at 03:51 PM
+-- Server version: 5.6.34-log
+-- PHP Version: 5.6.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 --
@@ -216,6 +218,28 @@ INSERT INTO `tbl_category` (`category_id`, `category_name`, `created_datetime`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_city`
+--
+
+CREATE TABLE `tbl_city` (
+  `city_id` int(11) NOT NULL,
+  `city_name` varchar(254) NOT NULL,
+  `state_id` int(11) NOT NULL,
+  `city_status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_city`
+--
+
+INSERT INTO `tbl_city` (`city_id`, `city_name`, `state_id`, `city_status`) VALUES
+(1, 'Surabaya', 1, 1),
+(2, 'Sidoarjo', 1, 1),
+(3, 'Bandung', 2, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_customer`
 --
 
@@ -253,6 +277,20 @@ CREATE TABLE `tbl_damage_product` (
   `note` text NOT NULL,
   `decrease` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0= no; 1= yes',
   `date` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_district`
+--
+
+CREATE TABLE `tbl_district` (
+  `district_id` int(11) NOT NULL,
+  `district_name` varchar(254) NOT NULL,
+  `city_id` int(11) NOT NULL,
+  `fee` double NOT NULL,
+  `district_status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -361,7 +399,11 @@ INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VA
 (47, 'Transactions', '#', 'fa fa-exchange', 0, 5),
 (48, 'Pendapatan', 'admin/transaction/income', 'fa fa-money', 47, 1),
 (49, 'Pengeluaran', 'admin/transaction/outcome', 'fa fa-credit-card', 47, 2),
-(50, 'Category', 'admin/transaction/category', 'fa fa-list-alt', 47, 3);
+(50, 'Category', 'admin/transaction/category', 'fa fa-list-alt', 47, 3),
+(51, 'Slider', 'admin/settings/slider', 'fa fa-sliders', 2, 5),
+(52, 'Propinsi', 'admin/customer/province', 'fa fa-map-marker', 25, 3),
+(53, 'Kota', 'admin/customer/city', 'fa fa-building-o', 25, 4),
+(54, 'Kecamatan', 'admin/customer/district', 'fa fa-area-chart', 25, 5);
 
 -- --------------------------------------------------------
 
@@ -401,7 +443,7 @@ CREATE TABLE `tbl_order` (
 --
 
 INSERT INTO `tbl_order` (`order_id`, `order_no`, `order_date`, `customer_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_address`, `shipping_address`, `subtotal`, `discount`, `discount_amount`, `tax`, `grand_total`, `payment_method`, `payment_ref`, `order_status`, `note`, `sales_person`, `outlet_id`, `down_payment`, `due_date`, `discount_type`, `persen_pajak`) VALUES
-(1, 82679231, '2019-07-08 06:16:25', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', 'Jl Makasar', 80000, 0, 0, 8000, 88000, 'kredit', NULL, 2, 'cpt kirim', 'Administrator', 1, 50000, '2019-07-28', '', '0');
+(1, 82679231, '2019-07-08 06:16:25', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', 'Jl Makasar', 80000, 0, 0, 8000, 88000, 'kredit', NULL, 2, 'cpt kirim', 'Administrator', 1, 50000, '2019-07-28', '', 0);
 
 -- --------------------------------------------------------
 
@@ -677,6 +719,28 @@ CREATE TABLE `tbl_purchase_serial` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_slider`
+--
+
+CREATE TABLE `tbl_slider` (
+  `id` int(11) NOT NULL,
+  `slider_title` varchar(254) NOT NULL,
+  `slider_url` varchar(254) NOT NULL,
+  `slider_image` varchar(254) NOT NULL,
+  `sub_cat` int(11) NOT NULL,
+  `slider_status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_slider`
+--
+
+INSERT INTO `tbl_slider` (`id`, `slider_title`, `slider_url`, `slider_image`, `sub_cat`, `slider_status`) VALUES
+(1, 'Slider 1', 'http://www.google.com', 'img/uploads/Desert.jpg', 0, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_special_offer`
 --
 
@@ -687,6 +751,27 @@ CREATE TABLE `tbl_special_offer` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_state`
+--
+
+CREATE TABLE `tbl_state` (
+  `state_id` int(11) NOT NULL,
+  `state_name` varchar(254) NOT NULL,
+  `description` varchar(254) NOT NULL,
+  `state_status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_state`
+--
+
+INSERT INTO `tbl_state` (`state_id`, `state_name`, `description`, `state_status`) VALUES
+(1, 'Jawa Timur', 'provinsi buat jawa timur', 1),
+(2, 'Jawa Barat', 'Propinsi jawa barat', 1);
 
 -- --------------------------------------------------------
 
@@ -805,6 +890,14 @@ CREATE TABLE `tbl_transaction` (
   `trans_edit_at` varchar(65) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tbl_transaction`
+--
+
+INSERT INTO `tbl_transaction` (`trans_id`, `trans_name`, `trans_date`, `nominal`, `account_id`, `category_id`, `note`, `trans_created_by`, `attach_image`, `trans_type`, `trans_edit_by`, `trans_edit_at`) VALUES
+(2, '4221576', '2019-07-09', 250000, 1, 1, 'Bayar Listrik bulan agusutu', 0, 'img/uploads/ads-februari-2019.PNG', 'pengeluaran', 0, '2019-07-09 16:03:46'),
+(3, '1050181', '2019-07-09', 560000, 1, 3, 'Tambah Bunga', 0, '', 'pendapatan', 0, '2019-07-09 16:05:33');
+
 -- --------------------------------------------------------
 
 --
@@ -817,6 +910,14 @@ CREATE TABLE `tbl_trans_category` (
   `description` varchar(254) NOT NULL,
   `trans_type` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_trans_category`
+--
+
+INSERT INTO `tbl_trans_category` (`category_id`, `trans_name`, `description`, `trans_type`) VALUES
+(1, 'Bayar Listrik', 'Bayar tagihan listrik', 'pengeluaran'),
+(3, 'Bunga', 'Kategori buat pendapatan bunga', 'pendapatan');
 
 -- --------------------------------------------------------
 
@@ -915,6 +1016,12 @@ ALTER TABLE `tbl_category`
   ADD PRIMARY KEY (`category_id`);
 
 --
+-- Indexes for table `tbl_city`
+--
+ALTER TABLE `tbl_city`
+  ADD PRIMARY KEY (`city_id`);
+
+--
 -- Indexes for table `tbl_customer`
 --
 ALTER TABLE `tbl_customer`
@@ -925,6 +1032,12 @@ ALTER TABLE `tbl_customer`
 --
 ALTER TABLE `tbl_damage_product`
   ADD PRIMARY KEY (`damage_product_id`);
+
+--
+-- Indexes for table `tbl_district`
+--
+ALTER TABLE `tbl_district`
+  ADD PRIMARY KEY (`district_id`);
 
 --
 -- Indexes for table `tbl_inventory`
@@ -1023,10 +1136,22 @@ ALTER TABLE `tbl_purchase_serial`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_slider`
+--
+ALTER TABLE `tbl_slider`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_special_offer`
 --
 ALTER TABLE `tbl_special_offer`
   ADD PRIMARY KEY (`special_offer_id`);
+
+--
+-- Indexes for table `tbl_state`
+--
+ALTER TABLE `tbl_state`
+  ADD PRIMARY KEY (`state_id`);
 
 --
 -- Indexes for table `tbl_subcategory`
@@ -1135,6 +1260,12 @@ ALTER TABLE `tbl_category`
   MODIFY `category_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `tbl_city`
+--
+ALTER TABLE `tbl_city`
+  MODIFY `city_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `tbl_customer`
 --
 ALTER TABLE `tbl_customer`
@@ -1145,6 +1276,12 @@ ALTER TABLE `tbl_customer`
 --
 ALTER TABLE `tbl_damage_product`
   MODIFY `damage_product_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_district`
+--
+ALTER TABLE `tbl_district`
+  MODIFY `district_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_inventory`
@@ -1162,7 +1299,7 @@ ALTER TABLE `tbl_invoice`
 -- AUTO_INCREMENT for table `tbl_menu`
 --
 ALTER TABLE `tbl_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `tbl_order`
@@ -1243,10 +1380,22 @@ ALTER TABLE `tbl_purchase_serial`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tbl_slider`
+--
+ALTER TABLE `tbl_slider`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tbl_special_offer`
 --
 ALTER TABLE `tbl_special_offer`
   MODIFY `special_offer_id` int(5) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tbl_state`
+--
+ALTER TABLE `tbl_state`
+  MODIFY `state_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_subcategory`
@@ -1282,13 +1431,13 @@ ALTER TABLE `tbl_tier_price`
 -- AUTO_INCREMENT for table `tbl_transaction`
 --
 ALTER TABLE `tbl_transaction`
-  MODIFY `trans_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `trans_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_trans_category`
 --
 ALTER TABLE `tbl_trans_category`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_user`
@@ -1301,3 +1450,4 @@ ALTER TABLE `tbl_user`
 --
 ALTER TABLE `tbl_user_role`
   MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
