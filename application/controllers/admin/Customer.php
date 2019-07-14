@@ -330,6 +330,34 @@ class Customer extends MY_Controller
         }
     }
 
+    public function save_district()
+    {
+        $id = null;
+        if(!empty($this->input->post('district_id')))
+        {
+            $id = $this->input->post('district_id');
+        }
+
+        $data_simpan = array(
+            'district_name' => $this->input->post('district_name'),
+            'city_id' => $this->input->post('city_id'),
+            'fee' => remove_commas($this->input->post('fee')),
+            'district_status' => '1'
+        );
+
+        $this->customer_model->init_table('tbl_district','district_id');
+        $this->customer_model->_primary_key = 'district_id';
+        $res = $this->customer_model->save($data_simpan,$id);
+        if($res)
+        {
+            $this->message->save_success('admin/customer/district');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/customer/district','Data Gagal disimpan');
+        }
+    }
+
     public function delete_province($id=null)
     {
         $this->customer_model->init_table('tbl_state','state_id');
@@ -346,6 +374,14 @@ class Customer extends MY_Controller
         $this->message->delete_success('admin/customer/city');
     }
 
+    public function delete_district($id=null)
+    {
+        $this->customer_model->init_table('tbl_district','district_id');
+        $this->customer_model->_primary_key = 'district_id';
+        $this->customer_model->delete($id);
+        $this->message->delete_success('admin/customer/district');
+    }
+
     public function city()
     {
         $data['title'] = 'Daftar Kota';
@@ -358,6 +394,31 @@ class Customer extends MY_Controller
         $data['title'] = 'Daftar Kecamatan';
         $data['subview'] = $this->load->view('admin/customer/district_list', $data, true);
         $this->load->view('admin/_layout_main', $data);
+    }
+
+    public function add_district($id='')
+    {
+        $judul = 'Tambah Kecamatan';
+        $url_action = base_url('admin/customer/save_district');
+        if(!empty($id))
+        {
+            $judul = 'Edit Kecamatan';
+            //$url_action = base_url('admin/settings/edit_account');
+            $where = array('district_id' => $id);
+            $data['kecamatan'] = $this->customer_model->check_by($where, 'tbl_district');
+            $kota = db_get_all_data('tbl_city',array('city_id' => $data['kecamatan']->city_id));
+            $opt_kota = '<option value="0">Pilih Kota</option>';
+            if(count($kota) > 0)
+            {
+                $opt_kota = '<option value="'.$kota[0]->city_id.'">'.$kota[0]->city_name.'</option>';
+            }
+            $data['city'] = $opt_kota;
+        }
+        $data['title'] = $judul;
+        $data['url_action'] = $url_action;
+       // $data['city'] = db_get_all_data('tbl_city');
+        $data['modal_subview'] = $this->load->view('admin/customer/add_modal_district', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
     }
 
     public function district_tables()
@@ -479,6 +540,24 @@ class Customer extends MY_Controller
             "recordsFiltered" => $total,
             "data"            => $getData
         );
+        echo json_encode($data);
+    }
+
+    public function search_city()
+    {
+        if(!isset($_POST['searchTerm'])){
+            $sql = "SELECT c.city_id as city_id,c.city_name as city_name,c.city_status as city_status,s.state_id as state_id,s.state_name as state_name FROM tbl_state s,tbl_city c WHERE s.state_id = c.state_id  ORDER BY c.city_name LIMIT 10";
+            $row = db_get_all_data_by_query($sql);
+        }else{
+            $search = $_POST['searchTerm'];
+            $sql = "SELECT c.city_id as city_id,c.city_name as city_name,c.city_status as city_status,s.state_id as state_id,s.state_name as state_name FROM tbl_state s,tbl_city c WHERE s.state_id = c.state_id AND c.city_name LIKE '%".$search."%' LIMIT 10";
+            $row = db_get_all_data_by_query($sql);
+        }
+        $data = array();
+        foreach ($row as $post)
+        {
+            $data[] = array("id"=>$post->city_id, "text"=>$post->city_name.' ( '.$post->state_name.' )');
+        }
         echo json_encode($data);
     }
 }

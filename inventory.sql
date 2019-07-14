@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 10, 2019 at 03:51 PM
+-- Generation Time: Jul 14, 2019 at 09:56 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -293,6 +293,13 @@ CREATE TABLE `tbl_district` (
   `district_status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tbl_district`
+--
+
+INSERT INTO `tbl_district` (`district_id`, `district_name`, `city_id`, `fee`, `district_status`) VALUES
+(2, 'Balongbendo', 2, 10000, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -403,7 +410,58 @@ INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VA
 (51, 'Slider', 'admin/settings/slider', 'fa fa-sliders', 2, 5),
 (52, 'Propinsi', 'admin/customer/province', 'fa fa-map-marker', 25, 3),
 (53, 'Kota', 'admin/customer/city', 'fa fa-building-o', 25, 4),
-(54, 'Kecamatan', 'admin/customer/district', 'fa fa-area-chart', 25, 5);
+(54, 'Kecamatan', 'admin/customer/district', 'fa fa-area-chart', 25, 5),
+(55, 'Pages', '#', 'fa fa-newspaper-o', 0, 12),
+(56, 'All Pages', 'admin/page/all_page', 'fa fa-circle', 55, 1),
+(57, 'Add Page', 'admin/page/add_page', 'fa fa-plus', 55, 2),
+(58, 'Menu', 'admin/menu_front', 'fa fa-bars', 2, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_menu_front`
+--
+
+CREATE TABLE `tbl_menu_front` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `label` varchar(200) DEFAULT NULL,
+  `type` varchar(200) DEFAULT NULL,
+  `icon_color` varchar(200) DEFAULT NULL,
+  `link` varchar(200) DEFAULT NULL,
+  `sort` int(11) NOT NULL,
+  `parent` int(11) NOT NULL,
+  `icon` varchar(50) DEFAULT NULL,
+  `menu_type_id` int(11) NOT NULL,
+  `active` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_menu_front`
+--
+
+INSERT INTO `tbl_menu_front` (`id`, `label`, `type`, `icon_color`, `link`, `sort`, `parent`, `icon`, `menu_type_id`, `active`) VALUES
+(1, 'Home', 'menu', 'default', 'www.google.com', 1, 0, '', 1, 1),
+(2, 'Laptop', 'menu', 'default', 'www.google.com', 2, 1, '', 1, 1),
+(3, 'Asus', 'menu', 'default', 'www.google.com', 3, 0, '', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_menu_type`
+--
+
+CREATE TABLE `tbl_menu_type` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `definition` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_menu_type`
+--
+
+INSERT INTO `tbl_menu_type` (`id`, `name`, `definition`) VALUES
+(1, 'main menu', NULL);
 
 -- --------------------------------------------------------
 
@@ -531,6 +589,28 @@ INSERT INTO `tbl_outlets` (`outlet_id`, `name`, `address`, `contact_number`, `re
 (1, 'Uniqlo - NEX Outlet', '#02-11, B2, Nex Shopping Mall, Serangoon Central', '88837492', '', '<p>Thank you for coming!</p>', 1, '2016-09-11 19:24:33', 0, '0000-00-00 00:00:00', 1),
 (2, 'Uniqlo - Changi Outlet', '#02, B2, Changi Airport', '92828394', '', '<p>Thank you for coming!</p>', 1, '2016-09-11 19:25:13', 0, '0000-00-00 00:00:00', 1),
 (4, 'GKB', 'GKB Gresik', '0911919', '', '', 0, '2019-06-24 03:42:58', 0, '2019-06-25 05:09:58', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_page`
+--
+
+CREATE TABLE `tbl_page` (
+  `page_id` int(11) NOT NULL,
+  `title` varchar(254) NOT NULL,
+  `slug` varchar(254) NOT NULL,
+  `content` text NOT NULL,
+  `description` varchar(254) NOT NULL,
+  `page_template` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_page`
+--
+
+INSERT INTO `tbl_page` (`page_id`, `title`, `slug`, `content`, `description`, `page_template`) VALUES
+(1, 'How To Buy', 'how-to-buy1', '<p><strong>Untuk pembelian</strong> secara langsung, bagi Anda yang berdomisili di Jakarta / Semarang / Surabaya dan sekitarnya, dapat langsung mendatangi Toko kami yang berlokasi di :</p>', 'Privacy Policy buat web', 'default');
 
 -- --------------------------------------------------------
 
@@ -1058,6 +1138,18 @@ ALTER TABLE `tbl_menu`
   ADD PRIMARY KEY (`menu_id`);
 
 --
+-- Indexes for table `tbl_menu_front`
+--
+ALTER TABLE `tbl_menu_front`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_menu_type`
+--
+ALTER TABLE `tbl_menu_type`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_order`
 --
 ALTER TABLE `tbl_order`
@@ -1086,6 +1178,12 @@ ALTER TABLE `tbl_order_serial`
 --
 ALTER TABLE `tbl_outlets`
   ADD PRIMARY KEY (`outlet_id`);
+
+--
+-- Indexes for table `tbl_page`
+--
+ALTER TABLE `tbl_page`
+  ADD PRIMARY KEY (`page_id`);
 
 --
 -- Indexes for table `tbl_product`
@@ -1215,7 +1313,7 @@ ALTER TABLE `tbl_user_role`
 -- AUTO_INCREMENT for table `tbl_account`
 --
 ALTER TABLE `tbl_account`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_attribute`
@@ -1281,7 +1379,7 @@ ALTER TABLE `tbl_damage_product`
 -- AUTO_INCREMENT for table `tbl_district`
 --
 ALTER TABLE `tbl_district`
-  MODIFY `district_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `district_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_inventory`
@@ -1299,7 +1397,19 @@ ALTER TABLE `tbl_invoice`
 -- AUTO_INCREMENT for table `tbl_menu`
 --
 ALTER TABLE `tbl_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+
+--
+-- AUTO_INCREMENT for table `tbl_menu_front`
+--
+ALTER TABLE `tbl_menu_front`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `tbl_menu_type`
+--
+ALTER TABLE `tbl_menu_type`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_order`
@@ -1330,6 +1440,12 @@ ALTER TABLE `tbl_order_serial`
 --
 ALTER TABLE `tbl_outlets`
   MODIFY `outlet_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tbl_page`
+--
+ALTER TABLE `tbl_page`
+  MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_product`
@@ -1371,7 +1487,7 @@ ALTER TABLE `tbl_purchase_attribute`
 -- AUTO_INCREMENT for table `tbl_purchase_product`
 --
 ALTER TABLE `tbl_purchase_product`
-  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_serial`

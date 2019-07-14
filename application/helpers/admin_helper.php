@@ -83,8 +83,8 @@ function btn_save($uri) {
     return anchor($uri, '<span <i class="fa fa-plus-circle"></i></span>', array('class' => "btn btn-success btn-xs", 'title'=>'Save', 'data-toggle'=>'tooltip', 'data-placement'=>'top'));
 }
 
-function btn_add($uri) {
-    return anchor($uri, '<span <i class="fa fa-plus-square"></i></span>', array('class' => "btn btn-success btn-xs", 'title'=>'Add Routine', 'data-toggle'=>'tooltip', 'data-placement'=>'top'));
+function btn_add($uri,$title='') {
+    return anchor($uri, '<span <i class="fa fa-plus-square"></i></span>'.$title, array('class' => "btn btn-success btn-xs", 'title'=>$title, 'data-toggle'=>'tooltip', 'data-placement'=>'top'));
 }
 
 function btn_publish($uri) {
@@ -154,6 +154,164 @@ if(!function_exists('get_stock')) {
             }
         }
         return $total_qty;
+    }
+}
+
+if(!function_exists('seo_title')) {
+    function seo_title($str)
+    {
+        $text = trim($str);
+        if (empty($text)) return '';
+        $text = preg_replace("/[^a-zA-Z0-9\-\s]+/", "", $text);
+        $text = strtolower(trim($text));
+        $text = str_replace(' ', '-', $text);
+        $text = $text_ori = preg_replace('/\-{2,}/', '-', $text);
+        return $text;
+    }
+}
+
+if(!function_exists('_ent')) {
+    function _ent($string = null) {
+        return htmlentities($string);
+    }
+}
+
+if (!function_exists('create_childern')) {
+
+    function create_childern($childern, $parent, $tree) {
+        foreach($childern as $child):
+            ?>
+            <option <?= $child->id == $parent? 'selected="selected"' : ''; ?> value="<?= $child->id; ?>"><?= str_repeat('----', $tree) ?>   <?= ucwords($child->label); ?></option>
+            <?php if (isset($child->children) and count($child->children)):
+            $tree++;
+            ?>
+            <?php create_childern($child->children, $parent, $tree); ?>
+        <?php endif ?>
+        <?php endforeach;
+    }
+}
+
+if(!function_exists('get_menu')) {
+    function get_menu($menu_type = null) {
+        $ci =& get_instance();
+        $ci->load->database();
+        $ci->load->model('menu_model');
+
+        if(is_numeric($menu_type)) {
+            $menu_type_id = $menu_type;
+        }
+        else {
+            $menu_type_id = $ci->menu_model->get_id_menu_type_by_flag($menu_type);
+        }
+
+
+        $menus = $ci->db
+            ->where(['menu_type_id' =>  $menu_type_id])
+            ->order_by('sort', 'ASC')
+            ->get('tbl_menu_front')
+            ->result();
+
+        $menu_parents = $ci->db
+            ->where( ['menu_type_id' => $menu_type_id, 'parent' => 0])
+            ->order_by('sort', 'ASC')
+            ->get('tbl_menu_front')
+            ->result();
+
+
+        $new = array();
+        foreach ($menus as $a){
+            $new[$a->parent][] = $a;
+        }
+
+        $news = array();
+        $menus_tree = array();
+        foreach ($menus as $a){
+            $news[$a->parent][] = $a;
+        }
+
+        foreach ($menu_parents as $new) {
+            $menus_tree = array_merge($menus_tree, create_tree($news, array($new)));
+        }
+        return $menus_tree;
+    }
+}
+
+if(!function_exists('create_tree')) {
+    function create_tree(&$list, $parent) {
+
+        $tree = array();
+        foreach ($parent as $k=>$l){
+            if(isset($list[$l->id])){
+
+                $l->children = create_tree($list, $list[$l->id]);
+            }
+            $tree[] = $l;
+        }
+        return $tree;
+    }
+}
+
+if(!function_exists('display_menu_module')) {
+    function display_menu_module($parent, $level, $menu_type, $ignore_active = false) {
+        $ci =& get_instance();
+        $ci->load->database();
+        $ci->load->model('menu_model');
+        $menu_type_id = $ci->menu_model->get_id_menu_type_by_flag($menu_type);
+        $result = $ci->db->query("SELECT a.id, a.label, a.type, a.active, a.link, Deriv1.Count FROM `tbl_menu_front` a  LEFT OUTER JOIN (SELECT parent, COUNT(*) AS Count FROM `tbl_menu_front` GROUP BY parent) Deriv1 ON a.id = Deriv1.parent WHERE a.menu_type_id = ".$menu_type_id." AND a.parent=" . $parent." ".($ignore_active ? '' : 'and active = 1')." order by `sort` ASC")->result();
+
+        $ret = '';
+        if ($result) {
+            $ret .= '<ol class="dd-list">';
+            foreach ($result as $row) {
+                if ($row->Count > 0) {
+                    $ret .= '<li class="dd-item dd3-item '.($row->active ? '' : 'menu-toggle-activate_inactive').' menu-toggle-activate" data-id="'.$row->id.'" data-status="'.$row->active.'">';
+
+                    if ($row->type != 'label') {
+                        $ret .= '<div class="dd-handle dd3-handle dd-handles"></div>';
+                        $ret .= '<div class="dd3-content">'._ent($row->label);
+                    } else{
+                        $ret .= '<div class="dd3-content  dd-label dd-handles"><b>'._ent($row->label).'</b>';
+                    }
+
+
+                        $ret .= '<span class="pull-right"><a class="remove-data" href="javascript:void()" data-href="'.site_url('administrator/menu/delete/'.$row->id).'"><i class="fa fa-trash btn-action"></i></a>
+				                </span';
+
+
+                        $ret .= '<span class="pull-right"><a href="'.site_url('administrator/menu/edit/'.$row->id).'"><i class="fa fa-pencil btn-action"></i></a>
+		                        </span>';
+
+
+                    $ret .= '</div>';
+                    $ret .= display_menu_module($row->id, $level + 1, $menu_type, $ignore_active);
+                    $ret .= "</li>";
+                } elseif ($row->Count==0) {
+                    $ret .= '<li class="dd-item dd3-item '.($row->active ? '' : 'menu-toggle-activate_inactive').' menu-toggle-activate" data-id="'.$row->id.'" data-status="'.$row->active.'">';
+
+                    if ($row->type != 'label') {
+                        $ret .= '<div class="dd-handle dd3-handle dd-handles"></div>';
+                        $ret .= '<div class="dd3-content">'._ent($row->label);
+                    } else{
+                        $ret .= '<div class="dd3-content  dd-label dd-handles"><b>'._ent($row->label).'</b>';
+                    }
+
+
+                        $ret .= '<span class="pull-right"><a class="remove-data" href="javascript:void()" data-href="'.site_url('administrator/menu/delete/'.$row->id).'"><i class="fa fa-trash btn-action"></i></a>
+				                </span';
+
+
+
+                        $ret .= '<span class="pull-right"><a href="'.site_url('administrator/menu/edit/'.$row->id).'"><i class="fa fa-pencil btn-action"></i></a>
+		                        </span>';
+
+
+                    $ret .= '</div></li>';
+                }
+            }
+            $ret .= "</ol>";
+        }
+
+        return $ret;
     }
 }
 
