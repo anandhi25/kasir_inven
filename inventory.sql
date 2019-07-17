@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 14, 2019 at 09:56 PM
+-- Generation Time: Jul 17, 2019 at 06:35 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -414,7 +414,9 @@ INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VA
 (55, 'Pages', '#', 'fa fa-newspaper-o', 0, 12),
 (56, 'All Pages', 'admin/page/all_page', 'fa fa-circle', 55, 1),
 (57, 'Add Page', 'admin/page/add_page', 'fa fa-plus', 55, 2),
-(58, 'Menu', 'admin/menu_front', 'fa fa-bars', 2, 6);
+(58, 'Menu', 'admin/menu_front', 'fa fa-bars', 2, 6),
+(59, 'Payment Method', 'admin/settings/payment', 'fa fa-money', 2, 7),
+(60, 'Popup', 'admin/settings/popup', 'fa fa-bell', 2, 8);
 
 -- --------------------------------------------------------
 
@@ -441,8 +443,9 @@ CREATE TABLE `tbl_menu_front` (
 
 INSERT INTO `tbl_menu_front` (`id`, `label`, `type`, `icon_color`, `link`, `sort`, `parent`, `icon`, `menu_type_id`, `active`) VALUES
 (1, 'Home', 'menu', 'default', 'www.google.com', 1, 0, '', 1, 1),
-(2, 'Laptop', 'menu', 'default', 'www.google.com', 2, 1, '', 1, 1),
-(3, 'Asus', 'menu', 'default', 'www.google.com', 3, 0, '', 1, 1);
+(2, 'Laptop', 'menu', 'default', 'www.google.com', 2, 0, '', 1, 1),
+(3, 'Asus', 'menu', 'default', 'www.asuslaptop.com', 1, 2, '', 1, 1),
+(4, 'Lenovo', 'menu', 'default', 'www.lenovo.com', 1, 2, '', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -611,6 +614,34 @@ CREATE TABLE `tbl_page` (
 
 INSERT INTO `tbl_page` (`page_id`, `title`, `slug`, `content`, `description`, `page_template`) VALUES
 (1, 'How To Buy', 'how-to-buy1', '<p><strong>Untuk pembelian</strong> secara langsung, bagi Anda yang berdomisili di Jakarta / Semarang / Surabaya dan sekitarnya, dapat langsung mendatangi Toko kami yang berlokasi di :</p>', 'Privacy Policy buat web', 'default');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_payment_method`
+--
+
+CREATE TABLE `tbl_payment_method` (
+  `payment_id` int(11) NOT NULL DEFAULT '0',
+  `payment_name` varchar(254) NOT NULL,
+  `description` text NOT NULL,
+  `payment_logo` varchar(250) NOT NULL,
+  `status_payment` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_popup`
+--
+
+CREATE TABLE `tbl_popup` (
+  `popup_id` int(11) NOT NULL,
+  `page_id` int(11) NOT NULL,
+  `popup_url` varchar(254) NOT NULL,
+  `show_once` int(11) NOT NULL,
+  `popup_image` varchar(254) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1186,6 +1217,18 @@ ALTER TABLE `tbl_page`
   ADD PRIMARY KEY (`page_id`);
 
 --
+-- Indexes for table `tbl_payment_method`
+--
+ALTER TABLE `tbl_payment_method`
+  ADD PRIMARY KEY (`payment_id`);
+
+--
+-- Indexes for table `tbl_popup`
+--
+ALTER TABLE `tbl_popup`
+  ADD PRIMARY KEY (`popup_id`);
+
+--
 -- Indexes for table `tbl_product`
 --
 ALTER TABLE `tbl_product`
@@ -1397,19 +1440,19 @@ ALTER TABLE `tbl_invoice`
 -- AUTO_INCREMENT for table `tbl_menu`
 --
 ALTER TABLE `tbl_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `tbl_menu_front`
 --
 ALTER TABLE `tbl_menu_front`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_menu_type`
 --
 ALTER TABLE `tbl_menu_type`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_order`
@@ -1446,6 +1489,12 @@ ALTER TABLE `tbl_outlets`
 --
 ALTER TABLE `tbl_page`
   MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_popup`
+--
+ALTER TABLE `tbl_popup`
+  MODIFY `popup_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_product`

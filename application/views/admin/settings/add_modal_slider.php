@@ -27,8 +27,8 @@
                 </div>
                 <div class="form-group">
                     <input type="hidden" name="old_path"  value="<?php
-                    if (!empty($transaction->attach_image)) {
-                        echo $transaction->attach_image;
+                    if (!empty($slide->slider_image)) {
+                        echo $slide->slider_image;
                     }
                     ?>">
                     <div class="fileinput fileinput-new"  data-provides="fileinput">

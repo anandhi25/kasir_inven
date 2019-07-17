@@ -40,6 +40,7 @@
                             }
                         ?>">
                             <a href="#price" data-toggle="tab">Price</a></li>
+                        <li><a href="#deskripsi" data-toggle="tab">Deskripsi</a></li>
                         <li><a href="#inventory" data-toggle="tab">Inventory</a></li>
                         <li class="<?php
                         if(!empty($tab)){
@@ -90,17 +91,6 @@
                                                    }
                                                    ?>"
                                                    class="form-control">
-                                        </div>
-
-                                        <!-- /.Product Note -->
-                                        <div class="form-group">
-                                            <label>Product Note</label>
-                                            <textarea name="product_note" class="form-control autogrow" id="field-ta"
-                                                      placeholder="Product Note"><?php
-                                                if (!empty($product_info)) {
-                                                    echo $product_info->product_note;
-                                                }
-                                                ?></textarea>
                                         </div>
 
                                         <div class="form-group">
@@ -448,6 +438,30 @@
                                     <!-- /.Tier Price End -->
                                 </div><!-- /.Price Tab End -->
 
+                                <div class="tab-pane" id="deskripsi">
+
+                                    <!-- /.Product Inventory Start -->
+                                    <h4>Deskripsi Produk</h4>
+                                    <div class="box">
+                                        <div class="box-body">
+
+                                            <!-- /.Buying Price -->
+                                            <div class="form-group">
+                                                <label>Deskripsi </label>
+                                                <textarea name="product_note" class="form-control autogrow" id="field-ta"
+                                                          placeholder="Product Note"><?php
+                                                    if (!empty($product_info)) {
+                                                        echo $product_info->product_note;
+                                                    }
+                                                    ?></textarea>
+                                            </div>
+
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                    <!-- /.Product Inventory End -->
+
+                                </div>
+
                                 <!-- ************* Product Tier Price End *********** -->
 
                                 <!-- ************* Product Inventory Start ********** -->
@@ -677,9 +691,43 @@
     </div><!-- /.row -->
 </section><!-- /.section -->
 
+<script type="text/javascript" src="<?php echo base_url(); ?>asset/js/tinymce/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector: "#field-ta",
+        theme: "modern",
+        height: 300,
+        relative_urls: false,
+        remove_script_host: false,
+
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+            "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+            "save table contextmenu directionality emoticons template paste textcolor responsivefilemanager"
+        ],
+
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | l      ink image | responsivefilemanager | print preview media fullpage | forecolor backcolor emoticons",
+        style_formats: [
+            {title: 'Bold text', inline: 'b'},
+            {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
+            {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+            {title: 'Example 1', inline: 'span', classes: 'example1'},
+            {title: 'Example 2', inline: 'span', classes: 'example2'},
+            {title: 'Table styles'},
+            {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+        ],
+
+        external_filemanager_path:"<?php echo base_url() ?>filemanager/",
+        filemanager_title:"File Manager " ,
+        external_plugins: { "filemanager" : "<?php echo base_url() ?>filemanager/plugin.min.js"}
+
+
+
+    });
+</script>
+
 
 <script lang="javascript">
-
 
     $(document).ready(function() {
         //***************** Tier Price Option Start *****************//

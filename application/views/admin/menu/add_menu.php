@@ -23,6 +23,12 @@
                             'method'  => 'POST'
                         ]); ?>
                         <input type="hidden" value="<?= $menu_type_id; ?>" name="menu_type_id">
+                        <input type="hidden" value="<?php
+                        if(!empty($menu))
+                        {
+                            echo $menu->id;
+                        }
+                        ?>" name="id_menu">
 
 
                         <div class="form-group menu-only">
@@ -40,9 +46,27 @@
                                 <a class="btn btn-default btn-select-icon btn-flat"><?= 'Pilih Icon' ?></a>
 
                                 <select class="chosen  chosen-select-deselect" name="icon_color" id="icon_color" tabi-ndex="5" data-placeholder="Select Color">
-                                    <option value="default">Default</option>
+                                    <option value="default" <?php
+                                    if(!empty($menu))
+                                    {
+                                        if($menu->icon_color == 'default')
+                                        {
+                                            echo 'selected';
+                                        }
+                                    }
+                                    ?>>Default</option>
                                     <?php foreach ($color_icon as $color): ?>
-                                        <option value="<?= $color; ?>"><?= ucwords($color); ?></option>
+                                        <option value="<?= $color; ?>"
+                                            <?php
+                                            if(!empty($menu))
+                                            {
+                                                if($menu->icon_color == $color)
+                                                {
+                                                    echo 'selected';
+                                                }
+                                            }
+                                            ?>
+                                        ><?= ucwords($color); ?></option>
                                     <?php endforeach; ?>
                                 </select>
 
@@ -56,10 +80,23 @@
                             <div class="col-sm-8">
                                 <select  class="form-control chosen  chosen-select-deselect" name="parent" id="parent" tabi-ndex="5" data-placeholder="Select Parent">
                                     <option value="0"></option>
-                                    <?php foreach (get_menu($this->menu_model->get_id_menu_type_by_flag($this->uri->segment(4))) as $row): ?>
-                                        <option value="<?= $row->id; ?>"  ><?= ucwords($row->label); ?></option>
+                                    <?php
+                                    $men = get_menu($this->menu_model->get_id_menu_type_by_flag($this->uri->segment(4)));
+                                    $menu_parent = 0;
+                                    if(!empty($menu))
+                                    {
+                                        $men = get_menu($menu->menu_type_id);
+                                        $menu_parent = $menu->parent;
+                                    }
+                                    foreach ($men as $row): ?>
+                                        <option <?php
+                                        if(!empty($menu))
+                                        {
+                                            echo $row->id == $menu->parent? 'selected="selected"' : '';
+                                        }
+                                         ?> value="<?= $row->id; ?>"  ><?= ucwords($row->label); ?></option>
                                         <?php if (isset($row->children) and count($row->children)): ?>
-                                            <?php create_childern($row->children, 0, 1); ?>
+                                            <?php create_childern($row->children,$menu_parent, 1); ?>
                                         <?php endif ?>
                                     <?php endforeach; ?>
 
@@ -75,7 +112,7 @@
                         <div class="form-group ">
                             <label for="label" class="col-sm-2 control-label"><?= "Label"; ?> <i class="required">*</i></label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="label" id="label" placeholder="Label" value="<?= set_value('label'); ?>">
+                                <input type="text" class="form-control" name="label" id="label" placeholder="Label" value="<?= set_value('label',!empty($menu->label)?$menu->label:''); ?>">
                                 <small class="info help-block">The label of menu.</small>
                             </div>
                         </div>
@@ -84,7 +121,7 @@
                         <div class="form-group ">
                             <label for="link" class="col-sm-2 control-label"><?= "Link"; ?> <i class="required">*</i></label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="<?= set_value('link'); ?>">
+                                <input type="text" class="form-control" name="link" id="link" placeholder="Link" value="<?= set_value('link',!empty($menu->link)?$menu->link:''); ?>">
                                 <small class="info help-block">The link of menu <i>Example : administrator/blog</i>.</small>
                             </div>
                         </div>

@@ -434,5 +434,109 @@ class Settings extends MY_Controller
         echo json_encode($data);
     }
 
+    public function payment()
+    {
+        $data['title'] = 'Daftar Metode Pembayaran';
+        $data['payment'] = db_get_all_data('tbl_payment_method');
+        $data['subview'] = $this->load->view('admin/settings/payment_list', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+
+    public function add_payment($id='')
+    {
+        $judul = 'Tambah Pembayaran';
+        $url_action = base_url('admin/settings/save_payment');
+        if(!empty($id))
+        {
+            $judul = 'Edit Pembayaran';
+            //$url_action = base_url('admin/settings/edit_account');
+            $where = array('payment_id' => $id);
+            $data['bayar'] = $this->settings_model->check_by($where, 'tbl_payment_method');
+        }
+        $data['title'] = $judul;
+        $data['url_action'] = $url_action;
+        $data['modal_subview'] = $this->load->view('admin/settings/add_modal_payment', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
+    public function save_payment()
+    {
+        $id = null;
+        if(!empty($this->input->post('payment_id')))
+        {
+            $id = $this->input->post('payment_id');
+        }
+        $image_upload = '';
+        if (!empty($_FILES['slider_image']['name'])) {
+            $old_path = $this->input->post('old_path');
+            if ($old_path) { // if old path is no empty
+                unlink($old_path);
+            } // upload file
+            $val = $this->settings_model->uploadImage('slider_image');
+            // $val == true || redirect('admin/product/category');
+
+            $image_upload = $val['path'];
+        }
+        else
+        {
+            $old_path = $this->input->post('old_path');
+            $image_upload = $old_path;
+        }
+
+        $data_simpan = array(
+            'payment_name' => $this->input->post('payment_name'),
+            'description' => $this->input->post('description'),
+            'payment_logo' => $image_upload,
+            'slider_status' => '1'
+        );
+
+        $this->settings_model->init_table('tbl_payment_method','payment_id');
+        $this->settings_model->_primary_key = 'payment_id';
+        $res = $this->settings_model->save($data_simpan,$id);
+        if($res)
+        {
+            $this->message->save_success('admin/settings/payment');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/settings/payment','Data Gagal disimpan');
+        }
+    }
+
+    public function delete_payment($id=null)
+    {
+        $this->settings_model->init_table('tbl_payment_method','payment_id');
+        $this->settings_model->_primary_key = 'payment_id';
+        $this->settings_model->delete($id);
+        $this->message->delete_success('admin/settings/payment');
+    }
+
+    public function popup()
+    {
+        $data['title'] = 'Daftar Popup';
+        $sql = "SELECT b.*,p.title as title FROM tbl_page p,tbl_popup b WHERE b.page_id=p.page_id";
+        $data['popup'] = db_get_all_data_by_query($sql);
+        $data['subview'] = $this->load->view('admin/settings/popup_list', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+
+    public function add_popup($id='')
+    {
+        $judul = 'Tambah Popup';
+        $url_action = base_url('admin/settings/save_popup');
+        if(!empty($id))
+        {
+            $judul = 'Edit Popup';
+            //$url_action = base_url('admin/settings/edit_account');
+            $where = array('popup_id' => $id);
+            $data['popup'] = $this->settings_model->check_by($where, 'tbl_payment_method');
+        }
+        $data['page'] = db_get_all_data('tbl_page');
+        $data['title'] = $judul;
+        $data['url_action'] = $url_action;
+        $data['modal_subview'] = $this->load->view('admin/settings/add_modal_popup', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
 
 }

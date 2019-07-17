@@ -28,8 +28,8 @@ function btn_view_modal($uri) {
     return anchor($uri, '<span class="glyphicon glyphicon-search"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'View', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
 }
 
-function btn_add_modal($uri,$modal_name='myModal',$title='') {
-    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span>'.$title, array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Tambah', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
+function btn_add_modal($uri,$modal_name='myModal',$title='',$class = "btn bg-olive btn-xs") {
+    return anchor($uri, '<span class="glyphicon glyphicon-plus"></span>'.$title, array('class' => $class,'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'Tambah', 'data-toggle'=>'modal', 'data-target'=>'#'.$modal_name));
 }
 
 function btn_serial_modal($uri,$modal_name='myModal') {
@@ -96,6 +96,12 @@ return anchor($uri, '<i class="fa fa-check"></i>', array(
 function btn_unpublish($uri) {
     return anchor($uri, '<i class="fa fa-times"></i>', array(
         'class' => "btn btn-danger btn-xs", 'title'=>'Click to PUblish', 'data-toggle'=>'tooltip', 'data-placement'=>'top', 'onclick' => "return confirm('You are about to publish an exam. Are you sure?');"
+    ));
+}
+
+function btn_delete_attr($uri,$i_class = "fa fa-trash-o",$a_class='btn btn-danger btn-xs') {
+    return anchor($uri, '<i class="'.$i_class.'"></i>', array(
+        'class' => $a_class, 'title'=>'Delete', 'data-toggle'=>'tooltip', 'data-placement'=>'top', 'onclick' => "return confirm('Are you sure want to delete this record ?');"
     ));
 }
 
@@ -274,11 +280,11 @@ if(!function_exists('display_menu_module')) {
                     }
 
 
-                        $ret .= '<span class="pull-right"><a class="remove-data" href="javascript:void()" data-href="'.site_url('administrator/menu/delete/'.$row->id).'"><i class="fa fa-trash btn-action"></i></a>
+                        $ret .= '<span class="pull-right"><a class="remove-data" href="javascript:void()" data-href="'.site_url('admin/menu_front/delete_menu/'.$row->id).'"><i class="fa fa-trash btn-action"></i></a>
 				                </span';
 
 
-                        $ret .= '<span class="pull-right"><a href="'.site_url('administrator/menu/edit/'.$row->id).'"><i class="fa fa-pencil btn-action"></i></a>
+                        $ret .= '<span class="pull-right"><a href="'.site_url('admin/menu_front/edit/'.$row->id).'"><i class="fa fa-pencil btn-action"></i></a>
 		                        </span>';
 
 
@@ -296,12 +302,12 @@ if(!function_exists('display_menu_module')) {
                     }
 
 
-                        $ret .= '<span class="pull-right"><a class="remove-data" href="javascript:void()" data-href="'.site_url('administrator/menu/delete/'.$row->id).'"><i class="fa fa-trash btn-action"></i></a>
+                        $ret .= '<span class="pull-right"><a class="remove-data" href="javascript:void()" data-href="'.site_url('admin/menu_front/delete_menu/'.$row->id).'"><i class="fa fa-trash btn-action"></i></a>
 				                </span';
 
 
 
-                        $ret .= '<span class="pull-right"><a href="'.site_url('administrator/menu/edit/'.$row->id).'"><i class="fa fa-pencil btn-action"></i></a>
+                        $ret .= '<span class="pull-right"><a href="'.site_url('admin/menu_front/edit/'.$row->id).'"><i class="fa fa-pencil btn-action"></i></a>
 		                        </span>';
 
 

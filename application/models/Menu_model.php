@@ -48,4 +48,5 @@ class Menu_model extends MY_Model
         return $color_icon;
     }
 
+
 }

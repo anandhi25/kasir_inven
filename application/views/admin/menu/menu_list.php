@@ -118,13 +118,17 @@
                                                     <?= _ent(ucwords($row->name)); ?>
 
                                                  </span>
-                                                <a class="menu-type-action remove-data" data-href="<?= base_url('administrator/menu_type/delete/'.$row->id); ?>" href="javascript:void()">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
+                                                <?php
+                                                echo btn_delete_attr('admin/menu_front/delete_type/'.$row->id,'fa fa-trash','menu-type-action');
+                                                ?>
+
                                             </div>
                                         <?php endforeach; ?>
                                         <br>
-                                        <a href="<?= site_url('administrator/menu_type/add'); ?>" class="btn btn-primary" title="add menu type (Ctrl+r)"><i class="fa fa-plus-square-o"></i> <?= "Tambah Tipe Menu"; ?></a>
+                                        <?php
+                                        echo btn_add_modal('admin/menu_front/add_menu_type','myModal','Tambah Tipe Menu','btn btn-primary');
+                                        ?>
+
                                     </div>
                                     <!--/box body -->
                                 </div>
