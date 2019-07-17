@@ -538,5 +538,56 @@ class Settings extends MY_Controller
         $this->load->view('admin/_layout_modal', $data);
     }
 
+    public function save_popup()
+    {
+        $id = null;
+        if(!empty($this->input->post('popup_id')))
+        {
+            $id = $this->input->post('popup_id');
+        }
+        $image_upload = '';
+        if (!empty($_FILES['slider_image']['name'])) {
+            $old_path = $this->input->post('old_path');
+            if ($old_path) { // if old path is no empty
+                unlink($old_path);
+            } // upload file
+            $val = $this->settings_model->uploadImage('slider_image');
+            // $val == true || redirect('admin/product/category');
+
+            $image_upload = $val['path'];
+        }
+        else
+        {
+            $old_path = $this->input->post('old_path');
+            $image_upload = $old_path;
+        }
+
+        $data_simpan = array(
+            'page_id' => $this->input->post('page_id'),
+            'popup_url' => $this->input->post('popup_url'),
+            'popup_image' => $image_upload,
+            'show_once' => $this->input->post('show_once')
+        );
+
+        $this->settings_model->init_table('tbl_popup','popup_id');
+        $this->settings_model->_primary_key = 'popup_id';
+        $res = $this->settings_model->save($data_simpan,$id);
+        if($res)
+        {
+            $this->message->save_success('admin/settings/popup');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/settings/popup','Data Gagal disimpan');
+        }
+    }
+
+    public function delete_popup($id=null)
+    {
+        $this->settings_model->init_table('tbl_popup','popup_id');
+        $this->settings_model->_primary_key = 'popup_id';
+        $this->settings_model->delete($id);
+        $this->message->delete_success('admin/settings/popup');
+    }
 
 }

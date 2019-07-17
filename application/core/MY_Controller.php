@@ -283,3 +283,21 @@ class MY_Controller extends CI_Controller
         $this->global_model->_primary_key = 'campaign_result_id';
     }
 }
+
+class FrontController extends CI_Controller
+{
+    public $active_theme;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->active_theme = 'sembako';
+        require_once FCPATH.'content/themes/'.$this->active_theme.'/function.php';
+    }
+
+    public function render($data)
+    {
+        $this->load->front_view('content/themes/'.$this->active_theme,'views/layout_main', $data);
+    }
+
+}
