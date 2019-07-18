@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 17, 2019 at 06:35 PM
+-- Generation Time: Jul 19, 2019 at 05:51 AM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -717,6 +717,18 @@ INSERT INTO `tbl_product_price` (`product_price_id`, `product_id`, `buying_price
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_product_subcategory`
+--
+
+CREATE TABLE `tbl_product_subcategory` (
+  `sub_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `subcategory_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_product_tag`
 --
 
@@ -735,6 +747,19 @@ INSERT INTO `tbl_product_tag` (`product_tag_id`, `product_id`, `tag`) VALUES
 (2, 6, 'beras'),
 (3, 7, 'beras'),
 (4, 7, 'rojolele');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_product_viewed`
+--
+
+CREATE TABLE `tbl_product_viewed` (
+  `viewed_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `viewed_date` varchar(65) NOT NULL,
+  `viewed_count` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1247,10 +1272,22 @@ ALTER TABLE `tbl_product_price`
   ADD PRIMARY KEY (`product_price_id`);
 
 --
+-- Indexes for table `tbl_product_subcategory`
+--
+ALTER TABLE `tbl_product_subcategory`
+  ADD PRIMARY KEY (`sub_id`);
+
+--
 -- Indexes for table `tbl_product_tag`
 --
 ALTER TABLE `tbl_product_tag`
   ADD PRIMARY KEY (`product_tag_id`);
+
+--
+-- Indexes for table `tbl_product_viewed`
+--
+ALTER TABLE `tbl_product_viewed`
+  ADD PRIMARY KEY (`viewed_id`);
 
 --
 -- Indexes for table `tbl_purchase`
@@ -1452,7 +1489,7 @@ ALTER TABLE `tbl_menu_front`
 -- AUTO_INCREMENT for table `tbl_menu_type`
 --
 ALTER TABLE `tbl_menu_type`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_order`
@@ -1515,10 +1552,22 @@ ALTER TABLE `tbl_product_price`
   MODIFY `product_price_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `tbl_product_subcategory`
+--
+ALTER TABLE `tbl_product_subcategory`
+  MODIFY `sub_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tbl_product_tag`
 --
 ALTER TABLE `tbl_product_tag`
   MODIFY `product_tag_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tbl_product_viewed`
+--
+ALTER TABLE `tbl_product_viewed`
+  MODIFY `viewed_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase`
