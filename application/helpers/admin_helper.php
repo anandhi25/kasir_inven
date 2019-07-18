@@ -387,6 +387,66 @@ if(!function_exists('get_footer_menu')) {
     }
 }
 
+if(!function_exists('get_slider')) {
+    function get_slider()
+    {
+        $q_slider = db_get_all_data('tbl_slider',array('slider_status' => '1'));
+        return $q_slider;
+    }
+}
+
+if(!function_exists('get_frontend_store')) {
+    function get_frontend_store()
+    {
+        $q_toko = db_get_all_data('tbl_outlets',array('status' => '2'));
+        $id_toko = 0;
+        if(count($q_toko) > 0)
+        {
+            $id_toko = $q_toko[0]->outlet_id;
+        }
+        return $id_toko;
+    }
+}
+
+if(!function_exists('get_discount_offer')) {
+    function get_discount_offer($product_id)
+    {
+        $offer_price = db_get_all_data('tbl_special_offer',array('product_id' => $product_id));
+        $price = 0;
+        if(count($offer_price) > 0)
+        {
+            $today = strtotime(date('Y-m-d'));
+            $start_date = strtotime($offer_price[0]->start_date);
+            $end_date = strtotime($offer_price[0]->end_date);
+            if (($today >= $start_date) && ($today <= $end_date)) {
+                $price = $offer_price->offer_price;
+            }
+        }
+        return $price;
+    }
+}
+
+if(!function_exists('get_product_price')) {
+    function get_product_price($product_id)
+    {
+        $offer_price = db_get_all_data('tbl_product_price',array('product_id' => $product_id));
+        $price = 0;
+        if(count($offer_price) > 0)
+        {
+            $price = $offer_price[0]->selling_price;
+        }
+        return $price;
+    }
+}
+
+if(!function_exists('get_product_image')) {
+    function get_product_image($product_id)
+    {
+        $image = db_get_all_data('tbl_product_image',array('product_id' => $product_id));
+        return $image;
+    }
+}
+
 
 
 

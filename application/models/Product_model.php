@@ -45,6 +45,23 @@ class Product_Model extends MY_Model
         return $result;
     }
 
+    public function get_all_product($lim)
+    {
+        $this->db->select('*');
+        $this->db->from('tbl_product');
+        //$this->db->order_by('id','desc');
+        if($lim == 'yes')
+        {
+            $this->db->limit('15');
+        }
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        }
+        return false;
+    }
+
     // * me
     public function get_all_product_info()
     {
@@ -69,7 +86,7 @@ class Product_Model extends MY_Model
         $this->db->select('tbl_product.*', false);
         $this->db->select('tbl_product_image.filename', false);
         $this->db->select('tbl_subcategory.subcategory_name', false);
-        $this->db->select('tbl_category.category_name', false);
+        $this->db->select('tbl_category.category_name,tbl_category.category_id', false);
         $this->db->select('tbl_product_price.buying_price, tbl_product_price.selling_price ', false);
         $this->db->select('tbl_special_offer.offer_price, tbl_special_offer.start_date, tbl_special_offer.end_date  ', false);
         $this->db->select('tbl_inventory.product_quantity, tbl_inventory.notify_quantity ', false);

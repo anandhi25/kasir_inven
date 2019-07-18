@@ -237,3 +237,19 @@
         </form>
     </div>
 </nav>
+<nav class="navbar navbar-expand-lg navbar-light osahan-menu-2 pad-none-mobile">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0 margin-auto">
+                <?php
+                 foreach (get_menu('main menu') as $menu):
+                ?>
+                <li class="nav-item">
+                    <a href="<?= site_url($menu->link); ?>" class="nav-link"><?= strtoupper($menu->label); ?></a>
+                </li>
+                 <?php endforeach; ?>
+
+            </ul>
+        </div>
+    </div>
+</nav>
