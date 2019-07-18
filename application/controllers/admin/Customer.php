@@ -560,4 +560,14 @@ class Customer extends MY_Controller
         }
         echo json_encode($data);
     }
+
+    public function do_login()
+    {
+
+    }
+
+    public function do_register()
+    {
+
+    }
 }

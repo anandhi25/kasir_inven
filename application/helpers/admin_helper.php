@@ -321,6 +321,71 @@ if(!function_exists('display_menu_module')) {
     }
 }
 
+if(!function_exists('theme_url')) {
+    function theme_url($url_additional = null) {
+        $ci =& get_instance();
+      //  $active_theme = get_option('active_theme', 'cicool');
+        $active_theme = 'sembako';
+
+        return base_url() . 'content/themes/' . $active_theme . '/' . $url_additional;
+    }
+}
+
+if(!function_exists('theme_asset')) {
+    function theme_asset() {
+        return theme_url('asset/');
+    }
+}
+
+if(!function_exists('get_profile')) {
+    function get_profile() {
+        $profile = db_get_row_data('tbl_business_profile',array('business_profile_id' => '1'));
+        return $profile;
+    }
+}
+
+if(!function_exists('get_customer_login_url')) {
+    function get_customer_login_url() {
+        $ret_url = base_url('admin/customer/do_login');
+        return $ret_url;
+    }
+}
+
+if(!function_exists('get_customer_signup_url')) {
+    function get_customer_signup_url() {
+        $ret_url = base_url('admin/customer/do_register');
+        return $ret_url;
+    }
+}
+
+if(!function_exists('is_login')) {
+    function is_login()
+    {
+        $ci =& get_instance();
+        if(!empty($ci->session->userdata('customer_login')))
+        {
+            return (bool)$ci->session->userdata('customer_login');
+        }
+        return false;
+
+    }
+}
+
+if(!function_exists('get_product_category')) {
+    function get_product_category() {
+        $ret_categories = db_get_all_data('tbl_category');
+        return $ret_categories;
+    }
+}
+
+if(!function_exists('get_footer_menu')) {
+    function get_footer_menu($menu_type)
+    {
+        $sql = "SELECT f.* FROM tbl_menu_front f,tbl_menu_type t WHERE f.menu_type_id = t.id AND t.name = '$menu_type' AND parent='0' ORDER BY f.sort ASC";
+        $ret_data = db_get_all_data_by_query($sql);
+        return $ret_data;
+    }
+}
 
 
 
