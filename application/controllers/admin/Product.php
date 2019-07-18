@@ -456,7 +456,7 @@ class Product extends MY_Controller
                 $this->tbl_subcategory('subcategory_id');
                 $data['subcategory'] = $this->global_model->get();
                 $data['product_category'] = $this->global_model->get_by(array('subcategory_id' => $data['product_info']->subcategory_id), true);
-
+                $data['product_sub'] = db_get_all_data('tbl_product_subcategory',array('product_id' => $id));
 
 
             } else {
@@ -537,7 +537,13 @@ class Product extends MY_Controller
         }
 
         $product_info['serial'] = $serial;
-
+        $sub_cat = '0';
+        $post_sub = $this->input->post('subcategory_id');
+        if(count($post_sub) > 0)
+        {
+            $sub_cat = $post_sub[0];
+        }
+        $product_info['subcategory_id'] = $sub_cat;
         $this->tbl_product('product_id');
         $product_id = $this->global_model->save($product_info, $id);
 
@@ -671,6 +677,22 @@ class Product extends MY_Controller
 
 
 
+        }
+
+        if(count($post_sub) > 0)
+        {
+            $this->db->where('product_id', $product_id);
+            $this->db->delete('tbl_product_subcategory');
+            foreach ($post_sub as $sub)
+            {
+                $product_sub = array(
+                    'product_id' => $product_id,
+                    'subcategory_id' => $sub
+                );
+                $this->product_model->_table_name = 'tbl_product_subcategory';
+                $this->product_model->_primary_key = 'sub_id';
+                $this->global_model->save($product_sub);
+            }
         }
 
         //************************ Product  Attribute End ********************//

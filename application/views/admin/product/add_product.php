@@ -122,7 +122,18 @@
                                                         <option value="<?php echo $v_category->category_id; ?>"
                                                             <?php
                                                             if (!empty($product_info)) {
-                                                                echo $v_category->category_id == $product_category->category_id ? 'selected' : '';
+                                                                if(count($product_sub) > 0)
+                                                                {
+                                                                    foreach ($product_sub as $sub)
+                                                                    {
+                                                                        echo $v_category->category_id == $sub ? 'selected' : '';
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    echo $v_category->category_id == $product_category->category_id ? 'selected' : '';
+                                                                }
+
                                                             }
                                                             ?> >
                                                             <?php echo $v_category->category_name; ?>
@@ -135,7 +146,7 @@
                                         <!-- /.Sub Category -->
                                         <div class="form-group">
                                             <label>Subcategory</label>
-                                            <select name="subcategory_id" class="form-control col-sm-5" id="subcategory">
+                                            <select multiple name="subcategory_id[]" class="form-control col-sm-5" id="subcategory">
                                                 <option value="0">Tidak Ada Subcategory</option>
                                                 <?php if (!empty($subcategory)): ?>
                                                     <?php foreach ($subcategory as $v_subcategogy) : ?>

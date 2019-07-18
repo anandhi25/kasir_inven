@@ -27,6 +27,7 @@ class Web extends FrontController
 
     public function p($product_id,$seo_title='')
     {
+        $this->product_model->update_viewed($product_id);
         $product = $this->product_model->get_product_information_by_id($product_id);
         $data['title'] = $product->product_name;
         $data['product_gallery_img'] = db_get_all_data('tbl_product_image',array('product_id' => $product_id));

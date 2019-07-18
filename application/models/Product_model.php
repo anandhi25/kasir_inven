@@ -120,7 +120,35 @@ class Product_Model extends MY_Model
         return $result;
     }
 
+    public function update_viewed($product_id)
+    {
+        $this->db->select('*');
+        $this->db->where(array(
+            'product_id' => $product_id,
+            'viewed_date' => date('Y-m-d')));
+        $query = $this->db->get('tbl_product_viewed');
+        $num = $query->num_rows();
+        if($num > 0)
+        {
+            $result = $query->row();
+            $count = $result->viewed_count + 1;
+            $data_save = array(
+                'viewed_count' => $count
+            );
+            $this->db->where('viewed_id', $result->viewed_id);
+            $this->db->update('tbl_product_viewed', $data_save);
+        }
+        else
+        {
+            $data_save = array(
+                'product_id' => $product_id,
+                'viewed_date' => date('Y-m-d'),
+                'viewed_count' => '1'
+            );
+            $this->db->insert('tbl_product_viewed', $data_save);
+        }
 
+    }
 
 
 
