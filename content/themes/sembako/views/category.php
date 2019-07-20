@@ -34,9 +34,9 @@
                             Sort by Products &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="<?php echo $url_sort."/low_to_high";?>">Price (Low to High)</a>
-                            <a class="dropdown-item" href="<?php echo $url_sort."/high_to_low";?>">Price (High to Low)</a>
-                            <a class="dropdown-item" href="<?php echo $url_sort."/a_to_z";?>">Name (A to Z)</a>
+                            <a class="dropdown-item" href="<?php echo "/low_to_high";?>">Price (Low to High)</a>
+                            <a class="dropdown-item" href="<?php echo "/high_to_low";?>">Price (High to Low)</a>
+                            <a class="dropdown-item" href="<?php echo "/a_to_z";?>">Name (A to Z)</a>
                         </div>
                     </div>
                     <h5 class="mb-3"><?php echo $category->category_name?></h5>
@@ -50,11 +50,11 @@
                 <div class="row no-gutters">
                     <?php
                     $index = 1;
-                    foreach ($products as $product) {
+                    foreach ($product as $prod) {
                         ?>
                         <div class="col-md-4">
                             <?php
-                            show_single_product($product);
+                            show_single_product($prod);
                             ?>
                         </div>
                         <?php
@@ -82,7 +82,7 @@
                         echo '<div class="row no-gutters">
                             <div class="col-md-12 text-center">
                                 <img src="'.base_url().'assets/website/img/oops.png" alt="oops image">
-                                <h2 class="page_title">'.display('category_product_not_found').'</h2>
+                                <h2 class="page_title">Produk dari kategori ini kosong</h2>
                             </div>
                         </div>';
                     }

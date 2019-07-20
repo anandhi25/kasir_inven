@@ -150,6 +150,16 @@ class Product_Model extends MY_Model
 
     }
 
+    public function get_with_limit($where,$number,$offset)
+    {
+        $query = $this->db->get_where('tbl_product',$where,$number,$offset)->result();
+        return $query;
+    }
+
+    public function get_all_count($where)
+    {
+        return $this->db->get_where('tbl_product',$where)->num_rows();
+    }
 
 
 }

@@ -42,6 +42,7 @@ $route['default_controller'] = "web";
 $route['404_override'] = '';
 $route['p/(:any)/(:any)'] = 'web/p/$1/$2';
 $route['c/(:any)/(:any)'] = 'web/c/$1/$2';
+$route['c/(:any)/(:any)/(:any)'] = 'web/c/$1/$2/$3';
 
 
 /* End of file routes.php */

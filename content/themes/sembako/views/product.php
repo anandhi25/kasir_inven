@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <a href="<?php echo base_url();?>"><strong><span class="mdi mdi-home"></span> Home</strong></a> <span class="mdi mdi-chevron-right"></span> <a href="<?php echo base_url('c/'.$product->category_id)?>"><?php echo $product->category_name?></a> <span class="mdi mdi-chevron-right"></span> <a href="#"><?php echo $product->product_name?></a>
+                <a href="<?php echo base_url();?>"><strong><span class="mdi mdi-home"></span> Home</strong></a> <span class="mdi mdi-chevron-right"></span> <a href="<?php echo base_url('c/'.$product->category_id.'/'.seo_title($product->category_name));?>"><?php echo $product->category_name?></a> <span class="mdi mdi-chevron-right"></span> <a href="#"><?php echo $product->product_name?></a>
             </div>
         </div>
     </div>
