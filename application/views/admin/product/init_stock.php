@@ -7,34 +7,34 @@
 <section class="content">
     <div class="row">
         <form action="<?php echo base_url() ?>admin/product/product_action" method="post">
-        <div class="col-md-12">
+            <div class="col-md-12">
 
-            <div class="box box-primary">
-                <div class="box-header box-header-background with-border">
+                <div class="box box-primary">
+                    <div class="box-header box-header-background with-border">
 
                         <h3 class="box-title ">Manage Product</h3>
 
 
 
-                    <div class="box-tools">
-                        <div class="input-group ">
-                            <select class="form-control pull-right" name="action" style="width: 150px;" required>
-                                <option value="">Select..</option>
-                                <option value="1">Active</option>
-                                <option value="2">Deactivate</option>
-                                <option value="3">Delete</option>
-                            </select>
-                                    <span class="input-group-btn">
+                        <div class="box-tools">
+                            <div class="input-group ">
+                                <select class="form-control pull-right" name="action" style="width: 150px;" required>
+                                    <option value="">Select..</option>
+                                    <option value="1">Active</option>
+                                    <option value="2">Deactivate</option>
+                                    <option value="3">Delete</option>
+                                </select>
+                                <span class="input-group-btn">
                                       <button type="submit" class="btn btn-default" type="button">Action</button>
                                     </span>
+                            </div>
                         </div>
+
+
                     </div>
 
 
-                </div>
-
-
-                <div class="box-body">
+                    <div class="box-body">
 
 
                         <!-- Table -->
@@ -45,8 +45,7 @@
                                 <th class="active">Image</th>
                                 <th class="active">Kode Produk</th>
                                 <th class="active">Nama Produk</th>
-                                <th class="active">Product Category</th>
-                                <th class="active">Status</th>
+                                <th class="active">Stok Quantity</th>
                                 <th class="active">Action</th>
 
                             </tr>
@@ -65,37 +64,37 @@
                                     </td>
                                     <td class="vertical-td"><?php echo $v_product->product_code ?></td>
                                     <td class="vertical-td"><?php echo $v_product->product_name ?></td>
-                                    <td class="vertical-td"><?php echo $v_product->category_name .' > '. $v_product->subcategory_name?></td>
                                     <td class="vertical-td">
                                         <?php
-                                        if($v_product->status == 0)
-                                        { ?>
-                                            <span class="label label-warning"><?php echo 'Inactive' ?></span>
-                                        <?php } else { ?>
-                                            <span class="label label-primary"><?php echo 'Active' ?></span>
-                                        <?php } ?>
+                                        $stok = get_stock($v_product->product_code,$outlet_id);
+                                        echo $stok;
+                                        ?>
 
                                     </td>
+
                                     <td class="vertical-td">
-                                        <?php echo btn_view_modal('admin/product/view_product/' . $v_product->product_id); ?>
-                                        <?php echo btn_edit('admin/product/add_product/' . $v_product->product_id); ?>
-                                        <?php echo btn_delete('admin/product/delete_product/' . $v_product->product_id); ?>
+                                        <?php
+                                        if($stok == '0')
+                                        {
+                                            echo btn_add_modal('admin/product/add_stock/' . $v_product->product_id.'/'.$outlet_id);
+                                        }
+                                        ?>
                                     </td>
 
                                 </tr>
                             <?php
 
                             endforeach;
-                            ?><!--get all sub category if not this empty-->
+                                ?><!--get all sub category if not this empty-->
                             <?php endif; ?>
                             </tbody><!-- / Table body -->
                         </table> <!-- / Table -->
 
-                </div><!-- /.box-body -->
+                    </div><!-- /.box-body -->
+                </div>
+                <!-- /.box -->
             </div>
-            <!-- /.box -->
-        </div>
-        <!--/.col end -->
+            <!--/.col end -->
         </form>
     </div>
     <!-- /.row -->

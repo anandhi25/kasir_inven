@@ -35,6 +35,17 @@ class Web extends FrontController
         $data['product'] = $product;
         $this->render($data);
     }
+
+    public function c($category_id,$seo_category='')
+    {
+        $find_category = db_get_row_data('tbl_category',array('category_id' => $category_id));
+        $data['title'] = $find_category->category_name;
+        $product = db_get_all_data('tbl_product',array('category_id' => $category_id));
+        $data['category'] = $find_category;
+        $data['product'] = $product;
+        $data['content'] = 'category';
+        $this->render($data);
+    }
 }
 
 ?>

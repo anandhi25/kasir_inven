@@ -35,7 +35,7 @@
                     ?>
                     <div class="item">
                         <div class="category-item">
-                            <a href="<?php echo base_url("website/category/category_product/".$cat_list->category_id) ?>">
+                            <a href="<?php echo base_url("c/".$cat_list->category_id.'/'.seo_title($cat_list->category_name)) ?>">
                                 <img class="img-fluid" src="<?php echo $img_url;?>" alt="">
                                 <h6><?php echo $cat_list->category_name; ?></h6>
                                 <p><?php echo $jumlah_items;?> Items</p>

@@ -18,6 +18,7 @@ class Product extends MY_Controller
     {
         parent::__construct();
         $this->load->model('product_model');
+        $this->load->model('purchase_model');
         $this->load->model('global_model');
         $this->load->library('pagination');
         $this->load->helper('ckeditor');
@@ -406,6 +407,7 @@ class Product extends MY_Controller
     public function add_product($id=null)
     {
         //tab selection
+        $title = 'Tambah Produk Baru';
         $tab = $this->uri->segment(5);
         if(!empty($tab)){
             if($tab == 'price')
@@ -423,7 +425,7 @@ class Product extends MY_Controller
             $data['product_info'] = $this->global_model->get_by(array('product_id' => $id), true);
 
             if (!empty($data['product_info'])) {
-
+                $title = 'Edit Produk';
                 //product image
                 $this->tbl_product_image('product_image_id');
                 $data['product_image'] = $this->global_model->get_by(array('product_id' => $id), true);
@@ -486,7 +488,7 @@ class Product extends MY_Controller
         $data['attribute_set'] = $this->global_model->get();
 
         // view page
-        $data['title'] = 'Add Product';
+        $data['title'] = $title;
 
         $data['editor'] = $this->data; //get ck editor
         $data['subview'] = $this->load->view('admin/product/add_product', $data, true);
@@ -770,6 +772,16 @@ class Product extends MY_Controller
 
         $data['title'] = 'Manage Product';
         $data['subview'] = $this->load->view('admin/product/manage_product', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+
+    public function init_stock($outlet_id = '')
+    {
+
+        $data['product'] = $this->product_model->get_all_product_info();
+        $data['outlet_id'] = $outlet_id;
+        $data['title'] = 'Tambah Stok Awal Produk';
+        $data['subview'] = $this->load->view('admin/product/init_stock', $data, true);
         $this->load->view('admin/_layout_main', $data);
     }
 
@@ -1194,6 +1206,78 @@ class Product extends MY_Controller
             "data"            => $getData
         );
         echo json_encode($data);
+    }
+
+    public function add_stock($product_id,$outlet_id)
+    {
+        $judul = 'Tambah Stok Awal';
+        $url_action = base_url('admin/product/save_init_stock');
+        $find_product = db_get_row_data('tbl_product',array('product_id' => $product_id));
+        $data['product'] = $find_product;
+        $data['outlet'] =  $outlet_id;
+        if(!empty($id))
+        {
+            $judul = 'Edit Stok Awal';
+            //$url_action = base_url('admin/settings/edit_account');
+            $where = array('category_id' => $id);
+            $data['category'] = $this->transaction_model->check_by($where, 'tbl_trans_category');
+        }
+        $data['title'] = $judul;
+        $data['url_action'] = $url_action;
+        $data['modal_subview'] = $this->load->view('admin/product/add_init_stock_modal', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
+    public function save_init_stock()
+    {
+        $id = null;
+        if(!empty($this->session->userdata('id_purchase'))) {
+            $id = $this->session->userdata('id_purchase');
+
+        }
+        $product_id = $this->input->post('product_id');
+        $find_product = db_get_row_data('tbl_product',array('product_id' => $product_id));
+        $outlet_id = $this->input->post('outlet_id');
+        $order_no = rand(100, 99999);
+        $data = array(
+            'order_no' => $order_no,
+            'supplier_id' => '0',
+            'supplier_name' => '',
+            'grand_total' => '0',
+            'note' => 'Stok awal',
+            'payment_method' => '',
+            'payment_ref' => 'stok awal',
+            'purchase_by' => $this->session->userdata('name'),
+            'outlet_id' => $outlet_id,
+            'tax' => '0',
+            'discount' => '0',
+            'discount_type' => '',
+            'due_date' => '',
+            'down_payment' => '0',
+            'subtotal' => '0',
+            'discount_amount' => '0',
+        );
+        //save to purchase table
+        $this->tbl_purchase('purchase_id');
+        $purchase_id = $this->global_model->save($data,$id);
+        $buy_price = '0';
+        $find_price = db_get_row_data('tbl_product_price',array('product_id' => $product_id));
+        if($find_price)
+        {
+            $buy_price = $find_price->buying_price;
+        }
+        $data = array();
+        $this->tbl_purchase_product('purchase_product_id');
+        $data['purchase_id'] = $purchase_id;
+        $data['product_code'] = $find_product->product_code;
+        $data['product_name'] = $find_product->product_name;
+        $data['qty'] = $this->input->post('quantity');
+        $data['unit_price'] = $buy_price;
+        $data['sub_total'] = ($buy_price * $this->input->post('quantity'));
+        $data['sisa_qty'] = $this->input->post('quantity');
+        $pur_detail_id = $this->global_model->save($data);
+        echo json_encode(array('success' => true,'outlet' => $outlet_id));
+
     }
 
 }

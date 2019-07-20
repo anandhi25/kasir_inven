@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 19, 2019 at 05:51 AM
+-- Generation Time: Jul 20, 2019 at 09:27 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -726,6 +726,14 @@ CREATE TABLE `tbl_product_subcategory` (
   `subcategory_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tbl_product_subcategory`
+--
+
+INSERT INTO `tbl_product_subcategory` (`sub_id`, `product_id`, `subcategory_id`) VALUES
+(1, 6, 1),
+(2, 7, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -761,6 +769,14 @@ CREATE TABLE `tbl_product_viewed` (
   `viewed_count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tbl_product_viewed`
+--
+
+INSERT INTO `tbl_product_viewed` (`viewed_id`, `product_id`, `viewed_date`, `viewed_count`) VALUES
+(1, 7, '2019-07-20', 7),
+(2, 6, '2019-07-20', 9);
+
 -- --------------------------------------------------------
 
 --
@@ -793,7 +809,9 @@ CREATE TABLE `tbl_purchase` (
 --
 
 INSERT INTO `tbl_purchase` (`purchase_id`, `order_no`, `supplier_id`, `supplier_name`, `grand_total`, `note`, `payment_method`, `payment_ref`, `purchase_by`, `datetime`, `outlet_id`, `tax`, `discount`, `discount_type`, `due_date`, `down_payment`, `subtotal`, `discount_amount`) VALUES
-(1, 3280762, 1, 'PT Jaya Baru', 363000, 'Barang sampai besok                                                                                                                        ', 'kredit', '', 'Administrator', '2019-07-08 04:04:30', 1, 33000, 0, '', '2019-07-31', 200000, 330000, 0);
+(1, 3280762, 1, 'PT Jaya Baru', 363000, 'Barang sampai besok                                                                                                                        ', 'kredit', '', 'Administrator', '2019-07-08 04:04:30', 1, 33000, 0, '', '2019-07-31', 200000, 330000, 0),
+(8, 12989, 0, '', 0, 'Stok awal', '', 'stok awal', 'Administrator', '2019-07-20 08:18:52', 4, 0, 0, '', '', 0, 0, 0),
+(9, 78381, 0, '', 0, 'Stok awal', '', 'stok awal', 'Administrator', '2019-07-20 08:19:54', 4, 0, 0, '', '', 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -838,7 +856,9 @@ CREATE TABLE `tbl_purchase_product` (
 
 INSERT INTO `tbl_purchase_product` (`purchase_product_id`, `purchase_id`, `product_code`, `product_name`, `qty`, `unit_price`, `sub_total`, `sisa_qty`) VALUES
 (3, 1, '58186047', 'Beras Rojo Lele', 8, 35000, 280000, 8),
-(4, 1, '44433356', 'Beras Sumo Super Premium 20kg', 1, 50000, 50000, 1);
+(4, 1, '44433356', 'Beras Sumo Super Premium 20kg', 1, 50000, 50000, 1),
+(7, 8, '44433356', 'Beras Sumo Super Premium 20kg', 20, 250000, 5000000, 20),
+(8, 9, '58186047', 'Beras Rojo Lele', 10, 35000, 350000, 10);
 
 -- --------------------------------------------------------
 
@@ -1555,7 +1575,7 @@ ALTER TABLE `tbl_product_price`
 -- AUTO_INCREMENT for table `tbl_product_subcategory`
 --
 ALTER TABLE `tbl_product_subcategory`
-  MODIFY `sub_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sub_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_product_tag`
@@ -1567,13 +1587,13 @@ ALTER TABLE `tbl_product_tag`
 -- AUTO_INCREMENT for table `tbl_product_viewed`
 --
 ALTER TABLE `tbl_product_viewed`
-  MODIFY `viewed_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `viewed_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase`
 --
 ALTER TABLE `tbl_purchase`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_attribute`
@@ -1585,7 +1605,7 @@ ALTER TABLE `tbl_purchase_attribute`
 -- AUTO_INCREMENT for table `tbl_purchase_product`
 --
 ALTER TABLE `tbl_purchase_product`
-  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_serial`

@@ -71,6 +71,42 @@ if(!function_exists('show_single_product')) {
     }
 }
 
+if(!function_exists('get_product_variations')) {
+    function get_product_variations($product_id)
+    {
+        $get_attribute_set = db_get_all_data('tbl_attribute_set');
+        $html ='';
+        if(count($get_attribute_set) > 0)
+        {
+            foreach ($get_attribute_set as $attr_set)
+            {
+                $get_attribute = db_get_all_data('tbl_attribute',array('product_id' => $product_id,'attribute_set_id' => $attr_set->attribute_set_id));
+                if(count($get_attribute) > 0)
+                {
+                    $html .= '
+                    <tr>
+                        <td class="label"><label for="pa_color">Color</label></td>
+                        <td class="value">
+                            <select class="form-control" name="attribute[]" data-show_option_none="yes">';
+                                foreach ($get_attribute as $attrib)
+                                {
+                                    $html .= '<option value="'.$attrib->attribute_id.'">'.$attrib->attribute_value.'</option>';
+                                }
+
+                            $html .= '</select>
+                        </td>
+                    </tr>';
+
+                }
+            }
+        }
+        else
+        {
+            $html = '';
+        }
+        return $html;
+    }
+}
 
 
 ?>

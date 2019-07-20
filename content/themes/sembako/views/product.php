@@ -70,7 +70,7 @@
 
                     <h2><?php echo $product->product_name?></h2>
                     <?php
-                    if($price_discount != '1') {
+                    if($price_discount != '0') {
                         ?>
                         <p class="regular-price"><i class="mdi mdi-tag-outline"></i> <?php echo number_format($price);?></p>
                         <p class="offer-price mb-0">Harga Diskon : <span class="text-success"><?php echo number_format($price_discount);?></span></p>
@@ -80,7 +80,7 @@
                     {
 
                         ?>
-                        <p class="offer-price mb-0"><span class="text-success"><?php echo number_format($price);?></span></p>
+                        <p class="offer-price mb-0"><span class="text-success">Rp <?php echo number_format($price);?></span></p>
                         <?php
                     }
                     ?>
@@ -94,6 +94,21 @@
                         $text_stok = 'Kosong';
                         $badge_stok = 'badge-danger';
                         $btn_stok = 'disabled class="btn btn-default btn-lg"';
+                    }
+                    ?>
+                    <?php
+                    if(get_product_variations($product->product_id) != '')
+                    {
+                    ?>
+                    <p>&nbsp;</p>
+                    <table class="variations" cellspacing="0">
+                        <tbody>
+                        <?php
+                        echo get_product_variations($product->product_id);
+                        ?>
+                        </tbody>
+                    </table>
+                    <?php
                     }
                     ?>
                     <button type="button" onclick="add_to_cart_btn('<?php echo $product->product_id;?>')" <?php echo $btn_stok;?>><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
@@ -112,6 +127,10 @@
                         }
                         ?>
 
+                    </div>
+                    <div class="product_meta">
+                        <span class="sku_wrapper">SKU: <span class="sku" style="color: #9f2b1e;"><?php echo $product->product_code;?></span></span>
+                        <span class="posted_in">Kategori: <a style="color: #9f2b1e;" href="<?php echo base_url('c/'.$product->category_id)?>"><?php echo $product->category_name?></a></span>
                     </div>
                     <h6 class="mb-3 mt-4">Kenapa harus belanja disini?</h6>
                     <div class="row">

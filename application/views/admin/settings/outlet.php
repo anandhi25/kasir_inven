@@ -114,6 +114,7 @@
                                         }
                                         ?></td>
                                     <td>
+                                        <a href="<?php echo base_url('admin/product/init_stock/'. $info->outlet_id);?>" class="btn bg-navy btn-xs" title="Tambah Stok Awal Barang" data-toggle="tooltip" data-placement="top"><i class="glyphicon glyphicon-adjust"></i></a>
                                         <?php echo btn_edit('admin/settings/outlet/' . $info->outlet_id); ?>
                                         <?php echo btn_delete('admin/settings/delete_outlet/' . $info->outlet_id); ?>
                                     </td>

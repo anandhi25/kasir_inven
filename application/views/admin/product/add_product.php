@@ -18,7 +18,7 @@
             <div class="box box-primary">
                 <div class="box-header box-header-background with-border">
                     <div class="col-md-offset-3">
-                        <h3 class="box-title ">Add New Product</h3>
+                        <h3 class="box-title "><?php echo $title;?></h3>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -39,7 +39,7 @@
                                 echo $tab == 'price'?'active':'';
                             }
                         ?>">
-                            <a href="#price" data-toggle="tab">Price</a></li>
+                            <a href="#price" data-toggle="tab">Harga</a></li>
                         <li><a href="#deskripsi" data-toggle="tab">Deskripsi</a></li>
                         <li><a href="#inventory" data-toggle="tab">Inventory</a></li>
                         <li class="<?php
@@ -65,7 +65,7 @@
                                         <!-- /.Product Code -->
                                         <?php if (!empty($product_info->product_id)) {?>
                                         <div class="form-group">
-                                            <label>Product Code</label>
+                                            <label>Kode Produk</label>
                                             <input type="text"  placeholder="Product Code"
                                                    value="<?php echo $product_info->product_code ?>"
                                                    class="form-control" disabled>
@@ -73,7 +73,7 @@
                                         <?php }else { ?>
 
                                             <div class="form-group">
-                                                <label>Product Code</label>
+                                                <label>Kode Produk</label>
                                                 <input type="text"  placeholder="Product Code"
                                                        value="<?php echo $code ?>"
                                                        class="form-control" disabled>
@@ -83,7 +83,7 @@
 
                                         <!-- /.Product Name -->
                                         <div class="form-group">
-                                            <label>Product Name <span class="required">*</span></label>
+                                            <label>Nama Produk <span class="required">*</span></label>
                                             <input type="text" placeholder="Product Name" name="product_name"
                                                    value="<?php
                                                    if (!empty($product_info)) {
@@ -94,7 +94,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label>Brand</label>
+                                            <label>Brand / Merek</label>
                                             <select name="brand_id" class="form-control col-sm-5" id="brand_id">
                                                 <option value="0">Tidak Ada Brand</option>
                                                 <?php if (!empty($brand)): ?>
@@ -114,7 +114,7 @@
 
                                         <!-- /.Category -->
                                         <div class="form-group">
-                                            <label>Product Category<span class="required">*</span></label>
+                                            <label>Kategori Produk<span class="required">*</span></label>
                                             <select name="category_id" class="form-control col-sm-5" id="category" onchange="get_category(this.value)">
                                                 <option value="0">Select Product Category</option>
                                                 <?php if (!empty($category)): ?>
@@ -165,7 +165,7 @@
 
                                         <!-- /.Tax -->
                                         <div class="form-group">
-                                            <label>Tax <span class="required">*</span></label>
+                                            <label>Pajak <span class="required">*</span></label>
                                             <select name="tax_id" class="form-control col-sm-5">
                                                 <option value="0">Tidak Ada Pajak</option>
                                                 <?php foreach($tax as $v_tax) { ?>
@@ -233,37 +233,14 @@
                                 " id="price">
 
                                     <!-- /.General Price Start -->
-                                    <h4>Product General Price</h4>
+                                    <h4>Harga Produk</h4>
                                     <div class="box">
                                         <div class="box-body">
 
                                             <!-- /.Buying Price -->
-                                            <div class="form-group">
-                                                <label>Buying Price <span class="required">*</span></label>
-
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <?php  if(!empty($info->currency))
-                                                    {
-                                                        echo $info->currency ;
-                                                    }else
-                                                    {
-                                                        echo '$';
-                                                    } ?>
-                                                </span>
-                                                <input type="text" id="buying_price" name="buying_price" placeholder="Buying Price"
-                                                       value="<?php
-                                                       if (!empty($product_price)) {
-                                                           echo $product_price->buying_price;
-                                                       }
-                                                       ?>"
-                                                       class="form-control">
-                                            </div>
-                                            </div>
-
                                             <!-- /.Selling Price -->
                                             <div class="form-group form-group-bottom">
-                                                <label>Selling Price</label>
+                                                <label>Harga Jual</label>
 
                                             <div class="input-group">
                                                 <span class="input-group-addon">
@@ -285,6 +262,29 @@
                                             </div>
                                             </div>
 
+                                            <div class="form-group">
+                                                <label>Harga Beli Awal</label>
+
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        <?php  if(!empty($info->currency))
+                                                        {
+                                                            echo $info->currency ;
+                                                        }else
+                                                        {
+                                                            echo '$';
+                                                        } ?>
+                                                    </span>
+                                                    <input type="text" id="buying_price" name="buying_price" placeholder="Buying Price"
+                                                           value="<?php
+                                                           if (!empty($product_price)) {
+                                                               echo $product_price->buying_price;
+                                                           }
+                                                           ?>"
+                                                           class="form-control">
+                                                </div>
+                                            </div>
+
                                         </div><!-- /.box-body -->
                                     </div><!-- /.box -->
                                     <!-- /.General Price End -->
@@ -294,13 +294,13 @@
                                     <!-- ************* Special Offer Tab Start ************** -->
 
                                     <!-- /.Special Offer Start -->
-                                    <h4>Special Offer</h4>
+                                    <h4>Penawaran Diskon</h4>
                                     <div class="box">
                                         <div class="box-body">
 
                                             <!-- /.Start Date -->
                                             <div class="form-group form-group-bottom">
-                                                <label>Start Date</label>
+                                                <label>Tanggal Mulai</label>
                                             </div>
                                             <div class="input-group">
                                                 <input type="text" value="<?php
@@ -318,7 +318,7 @@
                                             <!-- /.End Date -->
                                             <div class="form-group form-group-bottom">
                                             <div class="form-group form-group-bottom">
-                                                <label >End Date</label>
+                                                <label >Tanggal Akhir</label>
                                             </div>
                                             <div class="input-group">
                                                 <input type="text" value="<?php
@@ -337,7 +337,7 @@
 
                                             <!-- /.Selling Price -->
                                             <div class="form-group form-group-bottom">
-                                                <label>Special Offer Price</label>
+                                                <label>Harga Diskon</label>
 
                                             <div class="input-group">
                                                 <span class="input-group-addon">
@@ -368,7 +368,7 @@
                                     <!-- ************* Product Tier Price Start *********** -->
 
                                     <!-- /.Tier Price Start -->
-                                    <h4>Tier Price</h4>
+                                    <h4>Harga Bertingkat</h4>
                                     <div class="box">
                                         <div class="box-body">
 
@@ -377,8 +377,8 @@
                                                     <thead>
 
                                                     <tr>
-                                                        <th class="col-sm-3">Quantity Above</th>
-                                                        <th class="">Selling Price</th>
+                                                        <th class="col-sm-3">Quantity dibawah</th>
+                                                        <th class="">Harga jual</th>
                                                         <th class="col-sm-2"> <a  href="javascript:void(0);" class="addTire btn btn-info "><i class="fa fa-plus"></i> Add More</a></th>
                                                     </tr>
                                                     </thead>
@@ -486,20 +486,22 @@
                                         <div class="box-body">
 
                                             <!-- /.Buying Price -->
-                                            <div class="form-group">
-                                                <label>Product Quantity </label>
-                                                <input type="text" id="product_quantity" name="product_quantity" placeholder="Quantity"
+
+                                                <input type="hidden" id="product_quantity" name="product_quantity" placeholder="Quantity"
                                                        value="<?php
                                                        if (!empty($inventory)) {
                                                            echo $inventory->product_quantity;
                                                        }
+                                                       else
+                                                       {
+                                                           echo '0';
+                                                       }
                                                        ?>"
                                                        class="form-control">
-                                            </div>
 
                                             <!-- /.Selling Price -->
                                             <div class="form-group">
-                                                <label>Notify Bellow Quantity </label>
+                                                <label>Notifikasi Minimum Quantity </label>
                                                 <input type="text" name="notify_quantity" placeholder="Notify Quantity"
                                                        value="<?php
                                                        if (!empty($inventory)) {
