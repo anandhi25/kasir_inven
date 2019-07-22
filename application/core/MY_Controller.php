@@ -297,6 +297,8 @@ class FrontController extends CI_Controller
 
     public function render($data)
     {
+        $data['currency'] = get_profile()->currency;
+        $data['position'] = '0';
         $this->load->front_view('content/themes/'.$this->active_theme,'views/layout_main', $data);
     }
 

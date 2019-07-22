@@ -150,9 +150,34 @@ class Product_Model extends MY_Model
 
     }
 
-    public function get_with_limit($where,$number,$offset)
+    public function get_with_limit($where,$number,$offset,$orderby='a-to-z')
     {
-        $query = $this->db->get_where('tbl_product',$where,$number,$offset)->result();
+        $query = '';
+        if($orderby == 'a-to-z')
+        {
+            $query = $this->db->order_by('product_name', 'ASC')->get_where('tbl_product',$where,$number,$offset)->result();
+        }
+        else if($orderby == 'high-to-low')
+        {
+            $this->db->select('tbl_product.*');
+            $this->db->from('tbl_product');
+            $this->db->join('tbl_product_price', 'tbl_product_price.product_id = tbl_product.product_id');
+            $this->db->where($where);
+            $this->db->order_by('tbl_product_price.selling_price', 'DESC');
+            $this->db->limit($number,$offset);
+            $query = $this->db->get()->result();
+        }
+        else if($orderby == 'low-to-high')
+        {
+            $this->db->select('tbl_product.*');
+            $this->db->from('tbl_product');
+            $this->db->join('tbl_product_price', 'tbl_product_price.product_id = tbl_product.product_id');
+            $this->db->where($where);
+            $this->db->order_by('tbl_product_price.selling_price', 'ASC');
+            $this->db->limit($number,$offset);
+            $query = $this->db->get()->result();
+        }
+
         return $query;
     }
 

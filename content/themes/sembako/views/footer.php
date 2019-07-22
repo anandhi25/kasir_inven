@@ -134,6 +134,66 @@
     </div>
 </section>
 
+<div class="cart-sidebar" id="cart-side">
+    <div class="cart-sidebar-header">
+        <h5>
+            My Cart <span class="text-success" id="cart-total-items">(<?php echo $this->cart->total_items();?> item)</span> <a data-toggle="offcanvas" class="float-right" href="#"><i class="mdi mdi-close"></i>
+            </a>
+        </h5>
+    </div>
+    <div class="cart-sidebar-body" id="cart-body">
+        <?php
+        $total_belanja = 0;
+        if ($this->cart->contents()) {
+            $row = 0;
+            foreach ($this->cart->contents() as $items): ?>
+                <div class="cart-list-product">
+                    <a class="float-right remove-cart delete_cart_item" href="#" onclick="hapus_cart('<?php echo $items['rowid'];?>')"><i class="mdi mdi-close"></i></a>
+                    <img class="img-fluid" src="<?php echo base_url().$items['image']?>" alt="">
+                    <?php
+                    if($items['discount'] != '0')
+                    {
+                        echo '<span class="badge badge-success">'.$items['discount'].'% OFF</span>';
+                    }
+                    ?>
+                    <h5><a href="#"><?php echo $items['name']; ?></a></h5>
+                    <h6><strong><span class="mdi mdi-approval"></span> Tersedia</strong></h6>
+                    <?php
+                    $subtotal = $items['qty'] * $items['price'];
+                    if($items['discount'] == '0')
+                    {
+                        $harga = (($position==0)?$currency.' '.$this->cart->format_number($items['price']):$this->cart->format_number($items['price']).' '.$currency);
+                        $total_belanja = $total_belanja + $subtotal;
+                        echo '<p class="offer-price mb-0">'.$harga.'</p>';
+                    }
+                    else
+                    {
+                        $diskon = ($items['discount'] / 100) * $subtotal;
+                        $hit_diskon = $subtotal - $diskon;
+                        $harga = (($position==0)?$currency.' '.number_format($items['price']):number_format($items['price']).' '.$currency);
+                        $harga_diskon = (($position==0)?$currency.' '.number_format($hit_diskon):number_format($hit_diskon).' '.$currency);
+                        $total_belanja = $total_belanja + $hit_diskon;
+                        echo '<p class="offer-price mb-0">'.$harga_diskon.' <i class="mdi mdi-tag-outline"></i> <span class="regular-price">'.$harga.'</span></p>';
+                    }
+                    ?>
+
+                </div>
+                <?php
+                $row = $row + 1;
+            endforeach; }?>
+    </div>
+    <div class="cart-sidebar-footer" id="cart-footer">
+        <div class="cart-store-details">
+            <?php
+            $total_belanja = (($position==0)?$currency.' '.number_format($total_belanja):number_format($total_belanja).' '.$currency);
+            ?>
+            <p>Total Belanja <strong class="float-right"><?php echo $total_belanja;?></strong></p>
+            <h6>Grand Total <strong class="float-right text-danger"><?php echo $total_belanja;?></strong></h6>
+        </div>
+        <a href="<?php echo base_url()."website/home/checkout"?>"><button class="btn btn-secondary btn-lg btn-block text-left" type="button"><span class="float-left"><i class="mdi mdi-cart-outline"></i> Proceed to Checkout </span><span class="float-right"><strong><?php echo $total_belanja;?></strong> <span class="mdi mdi-chevron-right"></span></span></button></a>
+    </div>
+</div>
+
 
 
 
@@ -178,6 +238,46 @@
     $(document).ready(function() {
         $('.datatabel').DataTable();
     } );
+
+    function add_to_cart_btn(product_id) {
+        $.ajax({
+            type: "post",
+            url: '<?php echo base_url('web/add_to_cart_web')?>',
+            data: {product_code:product_id},
+            success: function(data) {
+                $(".cart-value").html(data);
+                $("#cart-total-items").html("("+data+") item");
+                // $("#cart-side").load(location.href+" #cart-side>*","");
+                // loadAwal();
+                $("#cart-body").load(location.href+" #cart-body>*","");
+                $("#cart-footer").load(location.href+" #cart-footer>*","");
+
+            },
+            error: function() {
+                alert('Request Failed, Please check your code and try again!');
+            }
+        });
+    }
+
+    function hapus_cart(cartid) {
+        $.ajax({
+            type: "post",
+            url: '<?php echo base_url('web/remove_cart_web')?>',
+            data: {row_id:cartid},
+            success: function(data) {
+                $(".cart-value").html(data);
+                $("#cart-total-items").html("("+data+") item");
+                // $("#cart-side").load(location.href+" #cart-side>*","");
+                // loadAwal();
+                $("#cart-body").load(location.href+" #cart-body>*","");
+                $("#cart-footer").load(location.href+" #cart-footer>*","");
+
+            },
+            error: function() {
+                alert('Request Failed, Please check your code and try again!');
+            }
+        });
+    }
 </script>
 
 </body>

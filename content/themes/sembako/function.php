@@ -42,7 +42,7 @@ if(!function_exists('show_single_product')) {
                 </div>
             </a>
             <div class="product-footer">
-                <button type="button" onclick="add_to_cart_btn('<?php echo $product->product_id;?>')" <?php echo $cls_button;?>><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                <button type="button" onclick="add_to_cart_btn('<?php echo $product->product_code;?>')" <?php echo $cls_button;?>><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
                 <?php
                 $arrcur = get_profile()->currency;
                 $mataUang = 'Rp';

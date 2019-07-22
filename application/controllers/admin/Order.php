@@ -364,6 +364,8 @@ class Order extends MY_Controller
         }
     }
 
+
+
     /*** Product add to cart ***/
     public function add_cart_item(){
 
@@ -813,7 +815,7 @@ class Order extends MY_Controller
         }
 
         //display order pending invoice
-        redirect('admin/order/view_order/'.$order_number['order_no']);
+       // redirect('admin/order/view_order/'.$order_number['order_no']);
 
         //destroy cart
         $this->cart->destroy();

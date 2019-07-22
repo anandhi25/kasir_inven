@@ -37,10 +37,12 @@ class Order_Model extends MY_Model
 
         $this->db->select('tbl_product.*', false);
         $this->db->select('tbl_product_price.buying_price, tbl_product_price.selling_price ', false);
+        $this->db->select('tbl_product_image.filename ', false);
 
         $this->db->from('tbl_product');
         $this->db->where('tbl_product.product_code', $product_code);
         $this->db->join('tbl_product_price', 'tbl_product_price.product_id  =  tbl_product.product_id ', 'left');
+        $this->db->join('tbl_product_image', 'tbl_product_image.product_id  =  tbl_product.product_id ', 'left');
 
         $query_result = $this->db->get();
         $result = $query_result->row();

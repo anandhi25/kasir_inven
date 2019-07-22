@@ -43,6 +43,7 @@ $route['404_override'] = '';
 $route['p/(:any)/(:any)'] = 'web/p/$1/$2';
 $route['c/(:any)/(:any)'] = 'web/c/$1/$2';
 $route['c/(:any)/(:any)/(:any)'] = 'web/c/$1/$2/$3';
+$route['c/(:any)/(:any)/(:any)/(:any)'] = 'web/c/$1/$2/$3/$4';
 
 
 /* End of file routes.php */

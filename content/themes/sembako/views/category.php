@@ -34,9 +34,9 @@
                             Sort by Products &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="<?php echo "/low_to_high";?>">Price (Low to High)</a>
-                            <a class="dropdown-item" href="<?php echo "/high_to_low";?>">Price (High to Low)</a>
-                            <a class="dropdown-item" href="<?php echo "/a_to_z";?>">Name (A to Z)</a>
+                            <a class="dropdown-item" href="<?php echo $cat_url."low-to-high";?>">Price (Low to High)</a>
+                            <a class="dropdown-item" href="<?php echo $cat_url."high-to-low";?>">Price (High to Low)</a>
+                            <a class="dropdown-item" href="<?php echo $cat_url."a-to-z";?>">Name (A to Z)</a>
                         </div>
                     </div>
                     <h5 class="mb-3"><?php echo $category->category_name?></h5>
