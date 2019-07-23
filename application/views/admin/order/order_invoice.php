@@ -78,45 +78,49 @@ if(!empty($info->address)){
                     <div><?php echo $company_email?></div>
                 </div>
             </div>
-            <hr style="border-style: dashed solid;">
+            <hr style="border-top: dashed 1px black;">
+            <p>   </p>
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
-                    <table style="width: 80%;">
+                    <table style="width: 95%;">
                         <tbody>
                     <?php $counter = 1?>
                     <?php foreach($order_details as $v_order){
                         echo '<tr>';
                         echo '<td colspan="5">'.$v_order->product_name.'</td>
                         </tr><tr>';
-                        echo '<td style="width: 20%;text-align: right;">'.number_format($v_order->selling_price, 0).'</td>'.'<td style="width: 20%;text-align: center;"> x </td><td style="width: 20%;text-align: center;;">'.$v_order->product_quantity.'</td><td style="width: 20%;text-align: center;"> = </td>'.'<td style="width: 20%;text-align: right;">'.number_format($v_order->selling_price * $v_order->product_quantity, 0).'</td>';
+                        echo '<td style="width: 20%;text-align: right;">'.number_format($v_order->selling_price, 0)."</td>".'<td style="width: 20%;text-align: center;"> x </td><td style="width: 20%;text-align: center;;">'.$v_order->product_quantity.'</td><td style="width: 20%;text-align: center;"> = </td>'.'<td style="width: 20%;text-align: right;">'.number_format($v_order->selling_price * $v_order->product_quantity, 0).'</td>';
                         echo '</tr>';
                     } ?>
                         </tbody>
                         <tfoot>
+                        <tr style="border-top: dashed 1px black;">
+                            <td colspan="5"> </td>
+                        </tr>
                         <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">SUBTOTAL</td>
+                            <td colspan="3" style="text-align: right;">SUBTOTAL</td>
+                            <td style="text-align: right;">Rp</td>
                             <td style="text-align: right;"><?php echo number_format($order_info->subtotal,0) ?></td>
                         </tr>
 
                         <?php if($order_info->discount):?>
                             <tr>
-                                <td colspan="2"></td>
-                                <td colspan="2">Discount Amount</td>
-                                <td style="text-align: right;"><?php echo number_format($order_info->discount_amount,2) ?></td>
+                                <td colspan="3" style="text-align: right;">Diskon</td>
+                                <td style="text-align: right;">Rp</td>
+                                <td style="text-align: right;"><?php echo number_format($order_info->discount_amount,0) ?></td>
                             </tr>
                         <?php endif; ?>
 
                         <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">Tax</td>
-                            <td style="text-align: right;"><?php echo number_format($order_info->tax,2) ?></td>
+                            <td colspan="3" style="text-align: right;">Pajak</td>
+                            <td style="text-align: right;">Rp</td>
+                            <td style="text-align: right;"><?php echo number_format($order_info->tax,0) ?></td>
                         </tr>
 
                         <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">GRAND TOTAL</td>
-                            <td style="text-align: right;"><?php echo $currency.' '.number_format($order_info->grand_total,2) ?></td>
+                            <td colspan="3" style="text-align: right;">GRAND TOTAL</td>
+                            <td style="text-align: right;">Rp</td>
+                            <td style="text-align: right;"><?php echo number_format($order_info->grand_total,0) ?></td>
                         </tr>
                         </tfoot>
                     </table>
