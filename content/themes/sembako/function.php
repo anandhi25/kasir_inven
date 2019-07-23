@@ -85,7 +85,7 @@ if(!function_exists('get_product_variations')) {
                 {
                     $html .= '
                     <tr>
-                        <td class="label"><label for="pa_color">Color</label></td>
+                        <td class="label"><label for="pa_color">'.$attr_set->attribute_name.'</label></td>
                         <td class="value">
                             <select class="form-control" name="attribute[]" data-show_option_none="yes">';
                                 foreach ($get_attribute as $attrib)

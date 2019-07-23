@@ -58,7 +58,7 @@ if(!empty($info->address)){
             <!-- Here is a label for example -->
             <div class="box-tools">
                 <div class="btn-group" role="group" >
-                    <a onclick="print_invoice('printableArea')" class="btn btn-default ">Print</a>
+                    <a onclick="print_invoice('printableArea2')" class="btn btn-default ">Print</a>
                     <a href="<?php echo base_url() ?>admin/order/pdf_invoice/<?php echo $invoice_info->invoice_no ?>" class="btn btn-default ">PDF</a>
                     <a href="<?php echo base_url() ?>admin/order/email_invoice/<?php echo $invoice_info->invoice_no ?>" class="btn btn-default " <?php
                     echo $order_info->customer_email == '' ? 'disable':''
@@ -69,6 +69,61 @@ if(!empty($info->address)){
         </div><!-- /.box-tools -->
     </div><!-- /.box-header -->
     <div class="box-body">
+
+        <div id="printableArea2" style="display: none;">
+            <div class="row ">
+                <div class="col-md-8 col-md-offset-2">
+                    <h2 class="name"><?php echo $company_name ?></h2>
+                    <div><?php echo $company_phone?></div>
+                    <div><?php echo $company_email?></div>
+                </div>
+            </div>
+            <hr style="border-style: dashed solid;">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <table style="width: 80%;">
+                        <tbody>
+                    <?php $counter = 1?>
+                    <?php foreach($order_details as $v_order){
+                        echo '<tr>';
+                        echo '<td colspan="5">'.$v_order->product_name.'</td>
+                        </tr><tr>';
+                        echo '<td style="width: 20%;text-align: right;">'.number_format($v_order->selling_price, 0).'</td>'.'<td style="width: 20%;text-align: center;"> x </td><td style="width: 20%;text-align: center;;">'.$v_order->product_quantity.'</td><td style="width: 20%;text-align: center;"> = </td>'.'<td style="width: 20%;text-align: right;">'.number_format($v_order->selling_price * $v_order->product_quantity, 0).'</td>';
+                        echo '</tr>';
+                    } ?>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">SUBTOTAL</td>
+                            <td style="text-align: right;"><?php echo number_format($order_info->subtotal,0) ?></td>
+                        </tr>
+
+                        <?php if($order_info->discount):?>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">Discount Amount</td>
+                                <td style="text-align: right;"><?php echo number_format($order_info->discount_amount,2) ?></td>
+                            </tr>
+                        <?php endif; ?>
+
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">Tax</td>
+                            <td style="text-align: right;"><?php echo number_format($order_info->tax,2) ?></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">GRAND TOTAL</td>
+                            <td style="text-align: right;"><?php echo $currency.' '.number_format($order_info->grand_total,2) ?></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
 
 
         <div id="printableArea">

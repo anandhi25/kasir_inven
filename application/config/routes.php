@@ -44,6 +44,11 @@ $route['p/(:any)/(:any)'] = 'web/p/$1/$2';
 $route['c/(:any)/(:any)'] = 'web/c/$1/$2';
 $route['c/(:any)/(:any)/(:any)'] = 'web/c/$1/$2/$3';
 $route['c/(:any)/(:any)/(:any)/(:any)'] = 'web/c/$1/$2/$3/$4';
+$route['checkout'] = 'web/checkout';
+$route['cart'] = 'web/cart';
+$route['payment'] = 'web/payment';
+$route['delivery'] = 'web/delivery';
+$route['confirmation'] = 'web/confirmation';
 
 
 /* End of file routes.php */

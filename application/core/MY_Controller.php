@@ -291,7 +291,7 @@ class FrontController extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->active_theme = 'sembako';
+        $this->active_theme = get_profile()->themes;
         require_once FCPATH.'content/themes/'.$this->active_theme.'/function.php';
     }
 

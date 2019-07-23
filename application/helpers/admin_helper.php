@@ -325,7 +325,7 @@ if(!function_exists('theme_url')) {
     function theme_url($url_additional = null) {
         $ci =& get_instance();
       //  $active_theme = get_option('active_theme', 'cicool');
-        $active_theme = 'sembako';
+        $active_theme = get_profile()->themes;
 
         return base_url() . 'content/themes/' . $active_theme . '/' . $url_additional;
     }
@@ -355,6 +355,21 @@ if(!function_exists('get_customer_signup_url')) {
     function get_customer_signup_url() {
         $ret_url = base_url('admin/customer/do_register');
         return $ret_url;
+    }
+}
+
+if(!function_exists('get_tax')) {
+    function get_tax() {
+        $tax = get_profile()->tax_sale;
+        $q_tax = db_get_row_data('tbl_tax',array('tax_id' => $tax));
+        if($q_tax)
+        {
+            return $q_tax;
+        }
+        else
+        {
+            return '';
+        }
     }
 }
 

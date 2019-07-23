@@ -487,7 +487,7 @@ class Settings extends MY_Controller
             'payment_name' => $this->input->post('payment_name'),
             'description' => $this->input->post('description'),
             'payment_logo' => $image_upload,
-            'slider_status' => '1'
+            'status_payment' => '1'
         );
 
         $this->settings_model->init_table('tbl_payment_method','payment_id');

@@ -190,7 +190,7 @@
             <p>Total Belanja <strong class="float-right"><?php echo $total_belanja;?></strong></p>
             <h6>Grand Total <strong class="float-right text-danger"><?php echo $total_belanja;?></strong></h6>
         </div>
-        <a href="<?php echo base_url()."website/home/checkout"?>"><button class="btn btn-secondary btn-lg btn-block text-left" type="button"><span class="float-left"><i class="mdi mdi-cart-outline"></i> Proceed to Checkout </span><span class="float-right"><strong><?php echo $total_belanja;?></strong> <span class="mdi mdi-chevron-right"></span></span></button></a>
+        <a href="<?php echo base_url()."checkout"?>"><button class="btn btn-secondary btn-lg btn-block text-left" type="button"><span class="float-left"><i class="mdi mdi-cart-outline"></i> Proceed to Checkout </span><span class="float-right"><strong><?php echo $total_belanja;?></strong> <span class="mdi mdi-chevron-right"></span></span></button></a>
     </div>
 </div>
 

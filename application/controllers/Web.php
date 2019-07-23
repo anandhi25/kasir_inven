@@ -23,6 +23,7 @@ class Web extends FrontController
         $data['title'] = get_profile()->company_name;
         $data['content'] = 'home';
         $data['product'] = $this->product_model->get_all_product('yes');
+        $data['latest'] = $this->product_model->get_home_product('latest',8);
        // print_r($this->load->view('admin/customer/modal', $data, false));
         $this->render($data);
     }
@@ -36,6 +37,142 @@ class Web extends FrontController
         $data['content'] = 'product';
         $data['product'] = $product;
         $this->render($data);
+    }
+
+    public function checkout()
+    {
+        if(!is_login())
+        {
+            $this->session->set_userdata('from_url', base_url('checkout'));
+            redirect(base_url('account/signin'));
+        }
+        else
+        {
+            if(!empty($this->session->userdata('from_url')))
+            {
+                $this->session->unset_userdata('from_url');
+            }
+            if(count($this->cart->contents()) == 0)
+            {
+                redirect(base_url('cart'));
+            }
+            $data_customer = db_get_row_data('tbl_customer',array('customer_id' => $this->session->userdata('customer_id')));
+            $data['customer'] = $data_customer;
+            $data['title'] = 'Checkout';
+            $data['content'] = 'checkout';
+            $this->render($data);
+        }
+    }
+
+    public function update_cart_item()
+    {
+        $row_id = $this->input->post('row_id');
+        $qty = $this->input->post('qnty');
+        $get_data = $this->cart->get_item($row_id);
+        $subtotal = $qty * $get_data['price'];
+        $data = array(
+            'rowid' => $row_id,
+            'qty' => $qty,
+            'subtotal' => $subtotal,
+        );
+        $this->cart->update($data);
+        echo $this->cart->total_items();
+    }
+
+    public function delivery()
+    {
+        if(!is_login())
+        {
+            $this->session->set_userdata('from_url', base_url('delivery'));
+            redirect(base_url('account/signin'));
+        }
+        else
+        {
+            if(!empty($this->session->userdata('from_url')))
+            {
+                $this->session->unset_userdata('from_url');
+            }
+            if(count($this->cart->contents()) == 0)
+            {
+                redirect(base_url('cart'));
+            }
+            $data_customer = db_get_row_data('tbl_customer',array('customer_id' => $this->session->userdata('customer_id')));
+            $customer_meta = db_get_all_data('tbl_customer_meta',array('customer_id' => $this->session->userdata('customer_id')));
+            $data['customer'] = $data_customer;
+            $data['customer_meta'] = $customer_meta;
+            $data['state'] = db_get_all_data('tbl_state');
+            $data['title'] = 'Alamat Pengiriman';
+            $data['content'] = 'delivery';
+            $this->render($data);
+        }
+    }
+
+    public function payment()
+    {
+        if(!is_login())
+        {
+            $this->session->set_userdata('from_url', base_url('payment'));
+            redirect(base_url('account/signin'));
+        }
+        else
+        {
+            if(!empty($this->session->userdata('from_url')))
+            {
+                $this->session->unset_userdata('from_url');
+            }
+            if(count($this->cart->contents()) == 0)
+            {
+                redirect(base_url('cart'));
+            }
+            $data_payment = db_get_all_data('tbl_payment_method',array('status_payment' => '1'));
+            $data['payment_list'] = $data_payment;
+            $data['title'] = 'Metode Pembayaran';
+            $data['content'] = 'payment';
+            $this->render($data);
+        }
+    }
+
+    public function confirmation()
+    {
+        if(!is_login())
+        {
+            $this->session->set_userdata('from_url', base_url('confirmation'));
+            redirect(base_url('account/signin'));
+        }
+        else
+        {
+            if(!empty($this->session->userdata('from_url')))
+            {
+                $this->session->unset_userdata('from_url');
+            }
+            if(count($this->cart->contents()) == 0)
+            {
+                redirect(base_url('cart'));
+            }
+            $data_customer = db_get_row_data('tbl_customer',array('customer_id' => $this->session->userdata('customer_id')));
+            $customer_meta = db_get_all_data('tbl_customer_meta',array('customer_id' => $this->session->userdata('customer_id')));
+            $data['customer'] = $data_customer;
+            $data['customer_meta'] = $customer_meta;
+            $data['state'] = db_get_all_data('tbl_state');
+            $data['title'] = 'Konfirmasi Pembelian';
+            $data['content'] = 'confirmation';
+            $this->render($data);
+        }
+    }
+
+    public function cart()
+    {
+        if(!is_login())
+        {
+            $this->session->set_userdata('from_url', base_url('cart'));
+            redirect(base_url('account/signin'));
+        }
+        else
+        {
+            $data['title'] = 'Keranjang belanja';
+            $data['content'] = 'cart';
+            $this->render($data);
+        }
     }
 
     public function c($category_id,$seo_category='',$sort_by='a-to-z')
@@ -79,7 +216,7 @@ class Web extends FrontController
 
     public function add_to_cart_web()
     {
-        $product_code = '44433356';
+        $product_code = $this->input->post('product_code');
         $this->cart_system($product_code,'order');
         echo $this->cart->total_items();
     }
@@ -105,6 +242,7 @@ class Web extends FrontController
 
             $arr = array();
             $arr_attr = array();
+            $subtotal = $price * $qty;
             if($iden == 'purchase')
             {
                 $data = array(
@@ -132,6 +270,7 @@ class Web extends FrontController
                     'buying_price' => $result->buying_price,
                     'name' => $result->product_name,
                     'product_id' => $result->product_id,
+                    'subtotal' => $subtotal,
                     'image' => $result->filename,
                     'discount' => '0',
                     'tax' => $tax,
@@ -219,6 +358,11 @@ class Web extends FrontController
         if ($result) {
             echo $this->cart->total_items();
         }
+    }
+
+    public function save_order()
+    {
+
     }
 }
 

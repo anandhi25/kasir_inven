@@ -41,13 +41,12 @@
                                 ?>
                                 <tr>
                                     <td><?php echo $post->payment_name;?></td>
-                                    <td><?php echo $post->slider_url;?></td>
                                     <td>
                                         <div class="fileinput-new thumbnail g-logo-img" >
                                             <?php if (!empty($post->payment_logo)): // if product image is exist then show  ?>
-                                                <img width="60" height="60" src="<?php echo base_url() . $post->payment_logo; ?>" >
+                                                <img width="50" height="50" src="<?php echo base_url() . $post->payment_logo; ?>" >
                                             <?php else: // if product image is not exist then defualt a image ?>
-                                                <img src="<?php echo base_url() ?>img/category.png" alt="Product Image">
+                                                <img width="50" height="50" src="<?php echo base_url() ?>img/category.png" alt="Product Image">
                                             <?php endif; ?>
                                         </div>
                                     </td>
