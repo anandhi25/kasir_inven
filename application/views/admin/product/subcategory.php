@@ -32,7 +32,7 @@
                             <div class="box-body" >
                                 <!-- /.category -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Product Category <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Kategori Produk <span class="required">*</span></label>
                                     <select name="category_id" class="form-control col-sm-5" required>
                                         <option value="">Select Product Category</option>
                                         <?php if (!empty($all_category)): ?>
@@ -55,7 +55,7 @@
 
                                 <!-- /.subcategory -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Product Subcategory <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Sub kategori <span class="required">*</span></label>
                                     <input type="text" required name="subcategory_name" placeholder="Subcategory"
                                            value="<?php
                                            if (!empty($sub_category_info->subcategory_name)) {
@@ -119,9 +119,9 @@
                         <table class="table table-bordered table-striped" id="dataTables-example">
                             <thead ><!-- Table head -->
                             <tr>
-                                <th class="col-sm-1 active">SL</th>
-                                <th class="active">Category</th>
-                                <th class="active">Sub Category</th>
+                                <th class="col-sm-1 active">#</th>
+                                <th class="active">Kategori</th>
+                                <th class="active">Sub Kategori</th>
                                 <th class="col-sm-1 active">Action</th>
 
                             </tr>

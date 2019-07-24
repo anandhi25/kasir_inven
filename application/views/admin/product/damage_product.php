@@ -23,13 +23,13 @@
                         <table class="table table-bordered table-striped" id="dataTables-example">
                             <thead ><!-- Table head -->
                             <tr>
-                                <th class="active">Sl</th>
-                                <th class="active">Product Code</th>
-                                <th class="active">Product Name</th>
-                                <th class="active">Category</th>
-                                <th class="active">Damage Qty</th>
+                                <th class="active">#</th>
+                                <th class="active">Kode Produk</th>
+                                <th class="active">Nama Produk</th>
+                                <th class="active">Kategori</th>
+                                <th class="active">Qty Rusak</th>
                                 <th class="active">Note</th>
-                                <th class="active">Date</th>
+                                <th class="active">Tanggal</th>
 
                             </tr>
                             </thead><!-- / Table head -->

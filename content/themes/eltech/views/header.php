@@ -148,22 +148,24 @@
                 </div>
 
                 <!-- search -->
-                <div class="search-cate">
-                    <select class="selectpicker" name="product_category">
-                        <?php
-                        if(count($get_category) > 0)
-                        {
-                            echo '<option value="0">Semua</option>';
-                            foreach ($get_category as $cat)
+                <form name="search_form" id="search_form" method="get" action="<?php echo base_url('web/search')?>"
+                    <div class="search-cate">
+                        <select class="selectpicker" name="product_category">
+                            <?php
+                            if(count($get_category) > 0)
                             {
-                                echo '<option value="'.$cat->category_id.'">'.$cat->category_name.'</option>';
+                                echo '<option value="0">Semua</option>';
+                                foreach ($get_category as $cat)
+                                {
+                                    echo '<option value="'.$cat->category_id.'">'.$cat->category_name.'</option>';
+                                }
                             }
-                        }
-                        ?>
-                    </select>
-                    <input type="search" placeholder="cari produk yang anda inginkan">
-                    <button class="submit" type="submit"><i class="icon-magnifier"></i></button>
-                </div>
+                            ?>
+                        </select>
+                        <input type="search" name="search_product" placeholder="cari produk yang anda inginkan">
+                        <button class="submit" type="submit"><i class="icon-magnifier"></i></button>
+                    </div>
+                </form>
                 <!-- NAV RIGHT -->
                 <div class="nav-right"> <span class="call-mun"><i class="fa fa-phone"></i> <strong>Hotline:</strong> (+100) 123 456 7890</span> </div>
             </div>

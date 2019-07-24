@@ -30,7 +30,7 @@
                                 <!-- /.customer Code -->
                                 <?php if (!empty($customer->customer_code)) {?>
                                     <div class="form-group">
-                                        <label>Customer Id</label>
+                                        <label>ID Customer</label>
                                         <input type="text"
                                                value="<?php echo $customer->customer_code ?>"
                                                class="form-control" disabled>
@@ -38,7 +38,7 @@
                                 <?php }else { ?>
 
                                     <div class="form-group">
-                                        <label>Customer Id<span class="required">*</span></label>
+                                        <label>ID Customer<span class="required">*</span></label>
                                         <input type="text"
                                                value="<?php echo $code ?>"
                                                class="form-control" disabled>
@@ -48,7 +48,7 @@
 
                                 <!-- /.customer Name -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Customer Name <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Nama Customer <span class="required">*</span></label>
                                     <input type="text" name="customer_name" placeholder="Customer Name"
                                            value="<?php
                                            if (!empty($customer->customer_name)) {
@@ -73,7 +73,7 @@
 
                                 <!-- /.Phone -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Phone</label>
+                                    <label for="exampleInputEmail1">Telepon</label>
                                     <input type="text" placeholder="Phone" name="phone" onchange="check_phone(this.value)"
                                            value="<?php
                                            if (!empty($customer->phone)) {
@@ -86,7 +86,7 @@
 
                                 <!-- /.Discount -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Discount %</label>
+                                    <label for="exampleInputEmail1">Diskon %</label>
                                     <input type="text" placeholder="Discount" name="discount"
                                            value="<?php
                                            if (!empty($customer->discount)) {
@@ -98,7 +98,7 @@
 
                                 <!-- /.Address -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Address <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Alamat <span class="required">*</span></label>
                                     <textarea name="address" class="form-control autogrow" id="ck_editor"
                                               placeholder="Address"><?php
                                         if (!empty($customer->address)) {

@@ -31,7 +31,7 @@
                                 <div class="box-body" >
                                     <!-- /.category -->
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Brand Name <span class="required">*</span></label>
+                                        <label for="exampleInputEmail1">Nama Brand <span class="required">*</span></label>
                                         <input type="text" required name="name" placeholder="brand name"
                                                value="<?php
                                                if (!empty($brand_info->name)) {
@@ -46,7 +46,7 @@
 
                                     <!-- /.subcategory -->
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Description</label>
+                                        <label for="exampleInputEmail1">Deskripsi</label>
                                         <textarea class="form-control" name="description" rows="3"><?php
                                             if(!empty($brand_info->description))
                                             {

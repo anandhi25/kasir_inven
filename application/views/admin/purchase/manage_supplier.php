@@ -20,11 +20,11 @@
                         <table class="table table-bordered table-striped" id="dataTables-example">
                             <thead ><!-- Table head -->
                             <tr>
-                                <th class="active ">Sl</th>
-                                <th class="active">Company Name</th>
-                                <th class="active">Supplier Name</th>
+                                <th class="active ">#</th>
+                                <th class="active">Perusahaan</th>
+                                <th class="active">Nama Supplier</th>
                                 <th class="active">Email</th>
-                                <th class="active">Phone</th>
+                                <th class="active">Telepon</th>
 
                                 <th class="active">Action</th>
 

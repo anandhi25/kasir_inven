@@ -11,7 +11,7 @@
             <div class="box box-primary">
                 <div class="box-header box-header-background with-border">
                     <div class="col-md-offset-3">
-                        <h3 class="box-title ">Product Category</h3>
+                        <h3 class="box-title ">Kategori Produk</h3>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -33,7 +33,7 @@
 
                                 <!-- /.Company Name -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Product Category <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Kategori Produk <span class="required">*</span></label>
                                     <input type="text" required name="category_name" placeholder="Category Name"
                                            value="<?php
                                            if (!empty($category_info->category_name)) {
@@ -93,8 +93,8 @@
                 <table class="table table-bordered table-striped" id="dataTables-example">
                     <thead>
                     <tr>
-                        <th class="active">SL</th>
-                        <th class="active">Category Name</th>
+                        <th class="active">#</th>
+                        <th class="active">Nama Kategori</th>
                         <th class=" active col-sm-2">Action</th>
 
                     </tr>

@@ -20,7 +20,7 @@ if(!empty($info->currency))
 
             <div class="box box-primary">
                 <div class="box-header box-header-background with-border">
-                        <h3 class="box-title ">Purchase History</h3>
+                        <h3 class="box-title ">Daftar Pembelian</h3>
                 </div>
 
 
@@ -30,12 +30,12 @@ if(!empty($info->currency))
                     <table class="table table-bordered table-striped" id="dataTables-example">
                         <thead ><!-- Table head -->
                         <tr>
-                            <th class="active">Sl</th>
-                            <th class="active">Purchase No.</th>
-                            <th class="active">Supplier Name</th>
-                            <th class="active">Purchase Date</th>
+                            <th class="active">#</th>
+                            <th class="active">No Pembelian</th>
+                            <th class="active">Nama Supplier</th>
+                            <th class="active">Tanggal</th>
                             <th class="active">Grand Total</th>
-                            <th class="active">Purchase By</th>
+                            <th class="active">Oleh</th>
                             <th class="active">Action</th>
 
                         </tr>

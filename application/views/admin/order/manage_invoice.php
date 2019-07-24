@@ -37,13 +37,13 @@ if(!empty($info->currency))
                         <table class="table table-bordered table-striped" id="dataTables-example">
                             <thead ><!-- Table head -->
                             <tr>
-                                <th class="active">Sl</th>
-                                <th class="active">Invoice No.</th>
-                                <th class="active">Order No.</th>
-                                <th class="active">Invoice Date</th>
+                                <th class="active">#</th>
+                                <th class="active">No Invoice</th>
+                                <th class="active">No Order</th>
+                                <th class="active">Tanggal Invoice</th>
                                 <th class="active">Customer</th>
-                                <th class="active">Payment Method</th>
-                                <th class="active">Order Total</th>
+                                <th class="active">Pembayaran</th>
+                                <th class="active">Total</th>
                                 <th class="active">Action</th>
 
                             </tr>

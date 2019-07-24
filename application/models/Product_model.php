@@ -175,13 +175,29 @@ class Product_Model extends MY_Model
         $query = '';
         if($orderby == 'a-to-z')
         {
-            $query = $this->db->order_by('product_name', 'ASC')->get_where('tbl_product',$where,$number,$offset)->result();
+            $this->db->select('tbl_product.*', false);
+            $this->db->select('tbl_product_image.filename', false);
+            $this->db->select('tbl_subcategory.subcategory_name', false);
+            $this->db->select('tbl_category.category_name', false);
+            $this->db->from('tbl_product');
+            $this->db->join('tbl_product_image', 'tbl_product_image.product_id  =  tbl_product.product_id ', 'left');
+            $this->db->join('tbl_subcategory', 'tbl_subcategory.subcategory_id  =  tbl_product.subcategory_id ', 'left');
+            $this->db->join('tbl_category', 'tbl_category.category_id  =  tbl_subcategory.category_id ', 'left');
+            $this->db->where($where);
+            $this->db->limit($number,$offset);
+            $this->db->order_by('tbl_product.product_name', 'ASC');
+            $query = $this->db->get()->result();;
+            //$query = $this->db->order_by('product_name', 'ASC')->get_where('tbl_product',$where,$number,$offset)->result();
         }
         else if($orderby == 'high-to-low')
         {
             $this->db->select('tbl_product.*');
+            $this->db->select('tbl_subcategory.subcategory_name', false);
+            $this->db->select('tbl_category.category_name', false);
             $this->db->from('tbl_product');
             $this->db->join('tbl_product_price', 'tbl_product_price.product_id = tbl_product.product_id');
+            $this->db->join('tbl_subcategory', 'tbl_subcategory.subcategory_id  =  tbl_product.subcategory_id ', 'left');
+            $this->db->join('tbl_category', 'tbl_category.category_id  =  tbl_subcategory.category_id ', 'left');
             $this->db->where($where);
             $this->db->order_by('tbl_product_price.selling_price', 'DESC');
             $this->db->limit($number,$offset);
@@ -191,15 +207,35 @@ class Product_Model extends MY_Model
         {
             $this->db->select('tbl_product.*');
             $this->db->from('tbl_product');
+            $this->db->select('tbl_subcategory.subcategory_name', false);
+            $this->db->select('tbl_category.category_name', false);
             $this->db->join('tbl_product_price', 'tbl_product_price.product_id = tbl_product.product_id');
+            $this->db->join('tbl_subcategory', 'tbl_subcategory.subcategory_id  =  tbl_product.subcategory_id ', 'left');
+            $this->db->join('tbl_category', 'tbl_category.category_id  =  tbl_subcategory.category_id ', 'left');
             $this->db->where($where);
             $this->db->order_by('tbl_product_price.selling_price', 'ASC');
             $this->db->limit($number,$offset);
             $query = $this->db->get()->result();
         }
 
+        else if($orderby == 'search')
+        {
+            $this->db->select('tbl_product.*');
+            $this->db->from('tbl_product');
+            $this->db->select('tbl_subcategory.subcategory_name', false);
+            $this->db->select('tbl_category.category_name', false);
+            $this->db->join('tbl_product_price', 'tbl_product_price.product_id = tbl_product.product_id');
+            $this->db->join('tbl_subcategory', 'tbl_subcategory.subcategory_id  =  tbl_product.subcategory_id ', 'left');
+            $this->db->join('tbl_category', 'tbl_category.category_id  =  tbl_subcategory.category_id ', 'left');
+            $this->db->where($where);
+            $this->db->order_by('tbl_product.product_name', 'ASC');
+            $this->db->limit($number,$offset);
+            $query = $this->db->get()->result();
+        }
+
         return $query;
     }
+
 
     public function get_all_count($where)
     {

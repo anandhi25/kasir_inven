@@ -12,7 +12,7 @@
             <div class="box box-primary">
                 <div class="box-header box-header-background with-border">
                     <div class="col-md-offset-3">
-                        <h3 class="box-title ">Manage Outlets</h3>
+                        <h3 class="box-title ">Manage Toko</h3>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -32,7 +32,7 @@
 
                                     <!-- /.tax title -->
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Outlet Name <span class="required">*</span></label>
+                                        <label for="exampleInputEmail1">Nama Toko <span class="required">*</span></label>
                                         <input type="text" required name="outlet_name" placeholder="Outlet Name"
                                                value="<?php
                                                if (!empty($outlet->name)) {
@@ -44,7 +44,7 @@
 
                                     <!-- /.tax title -->
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Phone</label>
+                                        <label for="exampleInputEmail1">Telepon</label>
                                         <input type="text" name="phone" placeholder="phone number"
                                                value="<?php
                                                if (!empty($outlet->contact_number)) {
@@ -56,7 +56,7 @@
 
                                     <!-- /.Tax type -->
                                     <div class="form-group">
-                                        <label>Address </label>
+                                        <label>Alamat </label>
                                         <textarea name="address" class="form-control autogrow" id="ck_editor"
                                                   placeholder="Address"><?php
                                             if (!empty($outlet->address)) {
@@ -86,10 +86,10 @@
                         <table class="table table-bordered table-striped" id="dataTables-example">
                             <thead>
                             <tr>
-                                <th class="active">SL</th>
-                                <th class="active">Name</th>
-                                <th class="active">Phone</th>
-                                <th class="active">Address</th>
+                                <th class="active">#</th>
+                                <th class="active">Nama</th>
+                                <th class="active">Telepon</th>
+                                <th class="active">Alamat</th>
                                 <th class="active">Default</th>
                                 <th class="col-sm-2 active">Action</th>
 

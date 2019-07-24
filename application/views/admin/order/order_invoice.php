@@ -58,7 +58,7 @@ if(!empty($info->address)){
             <!-- Here is a label for example -->
             <div class="box-tools">
                 <div class="btn-group" role="group" >
-                    <a onclick="print_invoice('printableArea2')" class="btn btn-default ">Print</a>
+                    <a onclick="print_invoice('printableArea')" class="btn btn-default ">Print</a>
                     <a href="<?php echo base_url() ?>admin/order/pdf_invoice/<?php echo $invoice_info->invoice_no ?>" class="btn btn-default ">PDF</a>
                     <a href="<?php echo base_url() ?>admin/order/email_invoice/<?php echo $invoice_info->invoice_no ?>" class="btn btn-default " <?php
                     echo $order_info->customer_email == '' ? 'disable':''

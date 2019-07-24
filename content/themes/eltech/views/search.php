@@ -2,7 +2,16 @@
     <div class="container">
         <ol class="breadcrumb">
             <li><a href="<?php echo base_url();?>">Home</a></li>
-            <li class="active"><?php echo $category->category_name;?></li>
+            <li class="active"><?php
+                if(!empty($category))
+                {
+                    echo $category->category_name;
+                }
+                else
+                {
+                    echo 'Semua Kategori';
+                }
+                ?></li>
         </ol>
     </div>
 </div>
@@ -23,20 +32,20 @@ $get_category = get_product_category();
                         <!-- Categories -->
                         <h6>Kategori</h6>
                         <div class="checkbox checkbox-primary">
-                                <?php
-                                if(count($get_category) > 0) {
-                                    echo '<ul>';
-                                    foreach ($get_category as $cat) {
-                                        ?>
-                                        <li>
-                                            <input id="<?php echo $cat->category_id;?>" name="category[]" value="<?php echo $cat->category_id;?>" class="styled" type="checkbox">
-                                            <label for="cate1"><?php echo $cat->category_name;?> </label>
-                                        </li>
-                                        <?php
-                                    }
-                                    echo '</ul>';
+                            <?php
+                            if(count($get_category) > 0) {
+                                echo '<ul>';
+                                foreach ($get_category as $cat) {
+                                    ?>
+                                    <li>
+                                        <input id="<?php echo $cat->category_id;?>" name="category[]" value="<?php echo $cat->category_id;?>" class="styled" type="checkbox">
+                                        <label for="cate1"><?php echo $cat->category_name;?> </label>
+                                    </li>
+                                    <?php
                                 }
-                                ?>
+                                echo '</ul>';
+                            }
+                            ?>
 
 
                         </div>
@@ -49,7 +58,7 @@ $get_category = get_product_category();
 
                     <!-- Short List -->
                     <div class="short-lst">
-                        <h2><?php echo $category->category_name?></h2>
+                        <h2><?php echo $title;?></h2>
                         <ul>
                             <!-- Short List -->
                             <li>
@@ -65,11 +74,11 @@ $get_category = get_product_category();
                                     <li><a class="dropdown-item" href="<?php echo $cat_url."high-to-low";?>">Price (High to Low)</a></li>
                                     <li><a class="dropdown-item" href="<?php echo $cat_url."a-to-z";?>">Name (A to Z)</a></li>
                                 </ul>
-                            </ul>
+                        </ul>
 
 
 
-                            <!-- Grid Layer -->
+                        <!-- Grid Layer -->
                         </ul>
                     </div>
 
@@ -80,12 +89,15 @@ $get_category = get_product_category();
                             foreach ($product as $prod) {
                                 echo show_single_product($prod);
                             }
+                            ?>
+                            <!-- pagination -->
+                            <?php echo $links;
+                        }
+                        else
+                        {
+                            echo "<h3 style='text-align: center'>Produk yang anda cari tidak ditemukan</h3>";
                         }
                         ?>
-
-
-                        <!-- pagination -->
-                        <?php echo $links;?>
                     </div>
                 </div>
             </div>

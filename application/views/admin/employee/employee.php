@@ -9,7 +9,7 @@
 
             <div class="box box-primary ">
                 <div class="box-header box-header-background with-border">
-                    <h3 class="box-title ">Manage Employee</h3>
+                    <h3 class="box-title ">Manage User</h3>
                 </div>
 
 
@@ -19,10 +19,10 @@
                     <table class="table table-bordered table-striped" id="dataTables-example">
                         <thead ><!-- Table head -->
                         <tr>
-                            <th class="col-sm-1 active">SL</th>
-                            <th class="active">Name</th>
+                            <th class="col-sm-1 active">#</th>
+                            <th class="active">Nama User</th>
                             <th class="col-sm-1 active">Login</th>
-                            <th class="col-sm-1 active">User Type</th>
+                            <th class="col-sm-1 active">Tipe User</th>
                             <th class="col-sm-2 active">Action</th>
 
                         </tr>

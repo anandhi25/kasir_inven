@@ -12,7 +12,7 @@
             <div class="box box-primary">
                 <div class="box-header box-header-background with-border">
                     <div class="col-md-offset-3">
-                        <h3 class="box-title ">Manage Tax Rules</h3>
+                        <h3 class="box-title ">Daftar Pajak</h3>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -34,7 +34,7 @@
 
                                 <!-- /.tax title -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Title <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Nama Pajak <span class="required">*</span></label>
                                     <input type="text" required name="tax_title" placeholder="Title"
                                            value="<?php
                                            if (!empty($tax->tax_title)) {
@@ -46,7 +46,7 @@
 
                                 <!-- /.tax title -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Rate <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Besar Nominal <span class="required">*</span></label>
                                     <input type="text" required name="tax_rate" placeholder="Rate"
                                            value="<?php
                                            if (!empty($tax->tax_rate)) {
@@ -58,7 +58,7 @@
 
                                 <!-- /.Tax type -->
                                 <div class="form-group">
-                                    <label>Tax Type <span class="required">*</span></label>
+                                    <label>Tipe Pajak <span class="required">*</span></label>
                                     <select name="tax_type" class="form-control col-sm-5">
                                         <option value="">Select Tax Type</option>
                                         <option value="1" <?php
@@ -85,7 +85,7 @@
                                     </select>
                                 </div><br/><br/>
 
-                                <button type="submit" class="btn bg-navy" type="submit">Save Tax Rule
+                                <button type="submit" class="btn bg-navy" type="submit">Simpan
                                 </button>
                             </div>
                             <!-- /.box-body -->
@@ -104,10 +104,10 @@
                 <table class="table table-bordered table-striped" id="dataTables-example">
                     <thead>
                     <tr>
-                        <th class="active">SL</th>
-                        <th class="active">Tax Name</th>
-                        <th class="active">Tax Rate</th>
-                        <th class="active">Tax Type</th>
+                        <th class="active">#</th>
+                        <th class="active">Nama Pajak</th>
+                        <th class="active">Besar Nominal</th>
+                        <th class="active">Tipe Pajak</th>
                         <th class="col-sm-2 active">Action</th>
 
                     </tr>

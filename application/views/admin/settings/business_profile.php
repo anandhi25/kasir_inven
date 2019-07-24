@@ -29,7 +29,7 @@
 
                                 <!-- /.Company Name -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Company Name <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Nama Perusahaan <span class="required">*</span></label>
                                     <input type="text" name="company_name" placeholder="Company Name" required
                                            value="<?php
                                            if (!empty($business_info->company_name)) {
@@ -41,7 +41,7 @@
 
                                 <!-- /.Company Email -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Company Email <span
+                                    <label for="exampleInputEmail1">Email <span
                                             class="required">*</span></label>
                                     <input type="text" placeholder="Company Email" name="email" required
                                            value="<?php
@@ -54,7 +54,7 @@
 
                                 <!-- /.Address -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Address <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Alamat <span class="required">*</span></label>
                                     <textarea name="address" class="form-control autogrow" id="field-ta" required
                                               placeholder="Business Address"><?php
                                         if (!empty($business_info->address)) {
@@ -65,7 +65,7 @@
 
                                 <!-- /.Phone -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Phone</label>
+                                    <label for="exampleInputEmail1">Telepon</label>
                                     <input type="text" placeholder="Phone" name="phone"
                                            value="<?php
                                            if (!empty($business_info->phone)) {
@@ -77,7 +77,7 @@
 
                                 <!-- /.Currency -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Currency <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Mata Uang <span class="required">*</span></label>
                                     <input type="text" placeholder="Currency" name="currency" required
                                            value="<?php
                                            if (!empty($business_info->currency)) {

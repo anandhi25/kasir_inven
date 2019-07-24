@@ -178,11 +178,11 @@ class Web extends FrontController
     public function c($category_id,$seo_category='',$sort_by='a-to-z')
     {
         $this->load->library('pagination');
-        $where = array('category_id' => $category_id);
+        $where = array('tbl_product.category_id' => $category_id);
         $all_data = $this->product_model->get_all_count($where);
         $config['base_url'] = base_url()."c/$category_id/$seo_category/$sort_by/";
         $config['total_rows'] = $all_data;
-        $config['per_page'] = 1;
+        $config['per_page'] = 30;
         $config['full_tag_open'] = "<ul class='pagination justify-content-center mt-4'>";
         $config['full_tag_close'] = "</ul>";
         $config['num_tag_open'] = "<li class='page-item'>";
@@ -363,6 +363,59 @@ class Web extends FrontController
     public function save_order()
     {
 
+    }
+
+    public function search()
+    {
+        $get_category = $this->input->get('product_category');
+        $get_product = $this->input->get('search_product');
+        $this->load->library('pagination');
+        if($get_category == '0')
+        {
+            $where = "tbl_product.product_name LIKE '%$get_product%'";
+        }
+        else
+        {
+            $where = "tbl_product.product_name LIKE '%$get_product%' AND tbl_product.category_id='$get_category'";
+        }
+
+        $all_data = $this->product_model->get_all_count($where);
+        $config['base_url'] = base_url()."web/search?product_category=$get_category&search_product=$get_product";
+        $config['total_rows'] = $all_data;
+        $config['per_page'] = 30;
+        $config['full_tag_open'] = "<ul class='pagination justify-content-center mt-4'>";
+        $config['full_tag_close'] = "</ul>";
+        $config['num_tag_open'] = "<li class='page-item'>";
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = "</span><span class='sr-only'>(current)</span></li>";
+        $config['next_tag_open'] = "<li class='page-item'>";
+        $config['next_tag_close'] = "</li>";
+        $config['prev_tag_open'] = "<li class='page-item'>";
+        $config['prev_tagl_close'] = "</li>";
+        $config['first_tag_open'] = "<li class='page-item'>";
+        $config['first_tagl_close'] = "</li>";
+        $config['last_tag_open'] = "<li class='page-item'>";
+        $config['last_tagl_close'] = "</li>";
+        $config['attributes'] = array('class' => 'page-link');
+        $config['prev_link'] = 'Previous';
+        $config['next_link'] = 'Next';
+        $from = $this->uri->segment(5);
+        $this->pagination->initialize($config);
+        $data['cat_url'] = base_url()."web/search?product_category=$get_category&search_product=$get_product";
+        if($get_category != '0')
+        {
+            $find_category = db_get_row_data('tbl_category',array('category_id' => $category_id));
+            $data['category'] = $find_category;
+        }
+
+        $data['title'] = $get_product;
+        $product = $this->product_model->get_with_limit($where,$config['per_page'],$from,'search');
+
+        $data['product'] = $product;
+        $data['content'] = 'search';
+        $data['links'] = $this->pagination->create_links();
+        $this->render($data);
     }
 }
 

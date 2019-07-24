@@ -32,7 +32,7 @@
 
                                     <!-- /.Company Name -->
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Attribute Name <span class="required">*</span></label>
+                                        <label for="exampleInputEmail1">Nama Attribute <span class="required">*</span></label>
                                         <input type="text" required name="attribute_name" placeholder="Attribute Name"
                                                value="<?php
                                                if (!empty($variasi_info->attribute_name)) {
@@ -62,7 +62,7 @@
                             <thead>
                             <tr>
                                 <th class="active">SL</th>
-                                <th class="active">Attribute Name</th>
+                                <th class="active">Nama Attribute</th>
                                 <th class=" active col-sm-2">Action</th>
 
                             </tr>

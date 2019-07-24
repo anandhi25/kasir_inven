@@ -9,7 +9,7 @@
             <div class="box box-primary">
                 <div class="box-header box-header-background with-border">
                     <div class="col-md-offset-3">
-                        <h3 class="box-title ">Add New Supplier</h3>
+                        <h3 class="box-title ">Tambah Supplier</h3>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -29,7 +29,7 @@
 
                                 <!-- /.Company Name -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Company Name <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Nama Perusahaan <span class="required">*</span></label>
                                     <input type="text" name="company_name" placeholder="Company Name"
                                            value="<?php
                                            if (!empty($supplier->company_name)) {
@@ -41,7 +41,7 @@
 
                                 <!-- /.Company Name -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Supplier Name <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Nama Supplier <span class="required">*</span></label>
                                     <input type="text" name="supplier_name" placeholder="Supplier Name"
                                            value="<?php
                                            if (!empty($supplier->supplier_name)) {
@@ -66,7 +66,7 @@
 
                                 <!-- /.Phone -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Phone<span class="required"> *</span></label>
+                                    <label for="exampleInputEmail1">Telepon<span class="required"> *</span></label>
                                     <input type="text" placeholder="Phone" name="phone"
                                            value="<?php
                                            if (!empty($supplier->phone)) {
@@ -78,7 +78,7 @@
 
                                 <!-- /.Address -->
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Address <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Alamat <span class="required">*</span></label>
                                     <textarea name="address" class="form-control autogrow" rows="10" id="ck_editor"
                                               placeholder="Business Address" required><?php
                                         if (!empty($supplier->address)) {
@@ -94,7 +94,7 @@
                         </div>
                     </div>
                     <div class="box-footer">
-                        <button type="submit" class="btn bg-navy col-md-offset-3" type="submit">Add Supplier
+                        <button type="submit" class="btn bg-navy col-md-offset-3" type="submit">Simpan Supplier
                         </button>
                     </div>
                 </form>

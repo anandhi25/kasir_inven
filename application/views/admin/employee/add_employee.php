@@ -12,7 +12,7 @@
             <div class="box box-primary">
                 <div class="box-header box-header-background with-border">
                     <div class="col-md-offset-1">
-                    <h3 class="box-title">Create User</h3>
+                    <h3 class="box-title">Buat User</h3>
                         </div>
                 </div>
                 <!-- /.box-header -->
@@ -27,7 +27,7 @@
 
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Name <span class="required">*</span></label>
+                                    <label for="exampleInputEmail1">Nama User <span class="required">*</span></label>
                                     <input type="text" placeholder="First" name="name" class="form-control"
                                         value="<?php if(!empty($employee_login_details->name)){
                                             echo $employee_login_details->name;
@@ -75,7 +75,7 @@
                                 <?php endif; ?>
 
                                 <div class="form-group">
-                                    <label for="exampleInputPassword1">User Type</label>
+                                    <label for="exampleInputPassword1">Tipe User</label>
                                     <select id="user_type" name="flag" onchange="show_outlet(this.value)" class="form-control"
                                             <?php
                                             if(!empty($employee_login_details->flag)) {
@@ -132,7 +132,7 @@
 
                                 <!-- /.employee Image -->
                                 <div class="form-group">
-                                    <label>Employee Image</label>
+                                    <label>Image</label>
                                 </div>
                                 <div class="form-group">
                                     <!-- hidden  old_path when update  -->
