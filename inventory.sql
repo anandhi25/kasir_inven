@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 20, 2019 at 09:27 PM
+-- Generation Time: Jul 24, 2019 at 11:32 AM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -155,15 +155,16 @@ CREATE TABLE `tbl_business_profile` (
   `phone` varchar(100) NOT NULL,
   `currency` varchar(100) NOT NULL,
   `tax_sale` int(11) NOT NULL,
-  `tax_purchase` int(11) NOT NULL
+  `tax_purchase` int(11) NOT NULL,
+  `themes` varchar(254) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tbl_business_profile`
 --
 
-INSERT INTO `tbl_business_profile` (`business_profile_id`, `company_name`, `logo`, `full_path`, `email`, `address`, `phone`, `currency`, `tax_sale`, `tax_purchase`) VALUES
-(1, 'Sembakoku', NULL, NULL, 'admin@sembakoku.co.id', 'Sidoarjo', '03158555555', 'Rp', 1, 1);
+INSERT INTO `tbl_business_profile` (`business_profile_id`, `company_name`, `logo`, `full_path`, `email`, `address`, `phone`, `currency`, `tax_sale`, `tax_purchase`, `themes`) VALUES
+(1, 'Sembakoku', NULL, NULL, 'admin@sembakoku.co.id', 'Sidoarjo', '03158555555', 'Rp', 1, 1, 'eltech');
 
 -- --------------------------------------------------------
 
@@ -250,16 +251,37 @@ CREATE TABLE `tbl_customer` (
   `email` varchar(100) NOT NULL,
   `phone` varchar(100) NOT NULL,
   `address` text NOT NULL,
-  `discount` varchar(100) NOT NULL
+  `discount` varchar(100) NOT NULL,
+  `customer_password` varchar(254) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tbl_customer`
 --
 
-INSERT INTO `tbl_customer` (`customer_id`, `customer_code`, `customer_name`, `email`, `phone`, `address`, `discount`) VALUES
-(1, 256332332, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', '0'),
-(2, 8727152, 'Rio', 'rio@gmail.com', '098192882822', '', '0');
+INSERT INTO `tbl_customer` (`customer_id`, `customer_code`, `customer_name`, `email`, `phone`, `address`, `discount`, `customer_password`) VALUES
+(1, 256332332, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', '0', NULL),
+(2, 8727152, 'Rio', 'rio@gmail.com', '098192882822', '', '0', NULL),
+(5, 2702497, 'Rakha Hafiz', 'rakha@gmail.com', '08172772727', '', '0', 'ca083c0c4ab2cfb4e602d6c838d23eff');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_customer_meta`
+--
+
+CREATE TABLE `tbl_customer_meta` (
+  `id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `city_id` int(11) NOT NULL,
+  `district_id` int(11) NOT NULL,
+  `state_id` int(11) NOT NULL,
+  `address` text NOT NULL,
+  `customer_name` varchar(254) NOT NULL,
+  `zip_code` varchar(20) NOT NULL,
+  `tipe` varchar(30) NOT NULL,
+  `phone` varchar(254) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -363,50 +385,50 @@ CREATE TABLE `tbl_menu` (
 INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VALUES
 (1, 'Dashboard', 'admin/dashboard', 'fa fa-dashboard', 0, 1),
 (2, 'Settings', '#', 'fa fa-cogs', 0, 15),
-(3, 'Business Profile', 'admin/settings/business_profile', 'glyphicon glyphicon-briefcase', 2, 1),
-(4, 'Employee Management', '#', 'entypo-users', 0, 20),
-(5, 'Employee List', 'admin/employee/employee_list', 'fa fa-users', 4, 1),
-(6, 'Add Employee', 'admin/employee/add_employee', 'entypo-user-add', 4, 2),
-(7, 'Product', '#', 'glyphicon glyphicon-th-large', 0, 5),
-(8, 'Category', '#', 'glyphicon glyphicon-indent-left', 7, 4),
-(9, 'Product Category', 'admin/product/category', 'glyphicon glyphicon-tag', 8, 1),
-(10, 'Sub Category', 'admin/product/subcategory', 'glyphicon glyphicon-tags', 8, 2),
-(13, 'Add Product', 'admin/product/add_product', 'glyphicon glyphicon-plus', 7, 1),
-(14, 'Manage Product', 'admin/product/manage_product', 'glyphicon glyphicon-th-list', 7, 2),
-(17, 'Manage Tax Rules', 'admin/settings/tax', 'glyphicon glyphicon-credit-card', 2, 2),
-(18, 'Manage Purchase', '#', 'fa fa-truck', 0, 3),
+(3, 'Profil Perusahaan', 'admin/settings/business_profile', 'glyphicon glyphicon-briefcase', 2, 1),
+(4, 'Management User', '#', 'entypo-users', 0, 20),
+(5, 'Daftar User', 'admin/employee/employee_list', 'fa fa-users', 4, 1),
+(6, 'Tambah User', 'admin/employee/add_employee', 'entypo-user-add', 4, 2),
+(7, 'Produk', '#', 'glyphicon glyphicon-th-large', 0, 5),
+(8, 'Kategori', '#', 'glyphicon glyphicon-indent-left', 7, 4),
+(9, 'Kategori Produk', 'admin/product/category', 'glyphicon glyphicon-tag', 8, 1),
+(10, 'Sub Kategori', 'admin/product/subcategory', 'glyphicon glyphicon-tags', 8, 2),
+(13, 'Tambah Produk', 'admin/product/add_product', 'glyphicon glyphicon-plus', 7, 1),
+(14, 'Daftar Produk', 'admin/product/manage_product', 'glyphicon glyphicon-th-list', 7, 2),
+(17, 'Daftar Pajak', 'admin/settings/tax', 'glyphicon glyphicon-credit-card', 2, 2),
+(18, 'Pembelian', '#', 'fa fa-truck', 0, 3),
 (19, 'Supplier', '#', 'glyphicon glyphicon-gift', 18, 1),
-(20, 'Add Supplier', 'admin/purchase/add_supplier', 'glyphicon glyphicon-plus', 19, 1),
-(21, 'Manage Supplier', 'admin/purchase/manage_supplier', 'glyphicon glyphicon-briefcase', 19, 2),
-(22, 'Purchase', '#', 'glyphicon glyphicon-credit-card', 18, 2),
-(23, 'New Purchase', 'admin/purchase/new_purchase', 'glyphicon glyphicon-shopping-cart', 22, 1),
-(24, 'Purchase History', 'admin/purchase/purchase_list', 'glyphicon glyphicon-th-list', 22, 2),
+(20, 'Tambah Supplier', 'admin/purchase/add_supplier', 'glyphicon glyphicon-plus', 19, 1),
+(21, 'Daftar Supplier', 'admin/purchase/manage_supplier', 'glyphicon glyphicon-briefcase', 19, 2),
+(22, 'Pembelian', '#', 'glyphicon glyphicon-credit-card', 18, 2),
+(23, 'Tambah Pembelian', 'admin/purchase/new_purchase', 'glyphicon glyphicon-shopping-cart', 22, 1),
+(24, 'Daftar Pembelian', 'admin/purchase/purchase_list', 'glyphicon glyphicon-th-list', 22, 2),
 (25, 'Customer', '', 'glyphicon glyphicon-user', 0, 7),
-(26, 'Add Customer', 'admin/customer/add_customer', 'glyphicon glyphicon-plus', 25, 1),
-(27, 'Manage Customer', 'admin/customer/manage_customer', 'glyphicon glyphicon-th-list', 25, 2),
-(28, 'Damage Product', 'admin/product/damage_product', 'glyphicon glyphicon-trash', 7, 3),
+(26, 'Tambah Customer', 'admin/customer/add_customer', 'glyphicon glyphicon-plus', 25, 1),
+(27, 'Daftar Customer', 'admin/customer/manage_customer', 'glyphicon glyphicon-th-list', 25, 2),
+(28, 'Produk Rusak', 'admin/product/damage_product', 'glyphicon glyphicon-trash', 7, 3),
 (29, 'Barcode Print', 'admin/product/print_barcode', 'glyphicon glyphicon-barcode', 7, 3),
-(30, 'Order Process', '#', 'glyphicon glyphicon-shopping-cart', 0, 6),
-(31, 'New Order', 'admin/order/new_order', 'fa fa-cart-plus', 30, 1),
-(32, 'Manage Order', 'admin/order/manage_order', 'glyphicon glyphicon-th-list', 30, 2),
-(33, 'Manage Invoice', 'admin/order/manage_invoice', 'glyphicon glyphicon-list-alt', 30, 3),
-(34, 'Report', 'admin/report', 'glyphicon glyphicon-signal', 0, 8),
-(35, 'Sales Report', 'admin/report/sales_report', 'fa fa-bar-chart', 34, 1),
-(36, 'Purchase Report', 'admin/report/purchase_report', 'fa fa-line-chart', 34, 2),
+(30, 'Penjualan', '#', 'glyphicon glyphicon-shopping-cart', 0, 6),
+(31, 'Tambah Penjualan', 'admin/order/new_order', 'fa fa-cart-plus', 30, 1),
+(32, 'Daftar Penjualan', 'admin/order/manage_order', 'glyphicon glyphicon-th-list', 30, 2),
+(33, 'Daftar Invoice', 'admin/order/manage_invoice', 'glyphicon glyphicon-list-alt', 30, 3),
+(34, 'Laporan', 'admin/report', 'glyphicon glyphicon-signal', 0, 8),
+(35, 'Laporan Penjualan', 'admin/report/sales_report', 'fa fa-bar-chart', 34, 1),
+(36, 'Laporan Pembelian', 'admin/report/purchase_report', 'fa fa-line-chart', 34, 2),
 (37, 'Email Campaign', '#', 'glyphicon glyphicon-send', 0, 8),
 (38, 'New campaign', 'admin/campaign/new_campaign', 'glyphicon glyphicon-envelope', 37, 1),
 (39, 'Manage Campaign', 'admin/campaign/manage_campaign', 'glyphicon glyphicon-th-list', 37, 2),
 (40, 'Camaign Result', 'admin/campaign/campaign_result', 'glyphicon glyphicon-bullhorn', 37, 3),
-(41, 'Outlet', 'admin/settings/outlet', 'fa fa-home', 2, 3),
+(41, 'Toko', 'admin/settings/outlet', 'fa fa-home', 2, 3),
 (42, 'Brand', 'admin/product/brand', 'fa fa-globe', 7, 4),
 (43, 'Variasi', 'admin/product/variasi', 'fa fa-list-alt', 7, 4),
-(44, 'Stock Report', 'admin/report/stock_report', 'fa fa-bar-chart', 34, 3),
-(45, 'Profit Loss Report', 'admin/report/profit_loss_report', 'fa fa-bar-chart', 34, 4),
+(44, 'Laporan Stok', 'admin/report/stock_report', 'fa fa-bar-chart', 34, 3),
+(45, 'Laporan Laba Rugi', 'admin/report/profit_loss_report', 'fa fa-bar-chart', 34, 4),
 (46, 'Account', 'admin/settings/account', 'fa fa-code', 2, 4),
-(47, 'Transactions', '#', 'fa fa-exchange', 0, 5),
+(47, 'Transaksi', '#', 'fa fa-exchange', 0, 5),
 (48, 'Pendapatan', 'admin/transaction/income', 'fa fa-money', 47, 1),
 (49, 'Pengeluaran', 'admin/transaction/outcome', 'fa fa-credit-card', 47, 2),
-(50, 'Category', 'admin/transaction/category', 'fa fa-list-alt', 47, 3),
+(50, 'Kategori', 'admin/transaction/category', 'fa fa-list-alt', 47, 3),
 (51, 'Slider', 'admin/settings/slider', 'fa fa-sliders', 2, 5),
 (52, 'Propinsi', 'admin/customer/province', 'fa fa-map-marker', 25, 3),
 (53, 'Kota', 'admin/customer/city', 'fa fa-building-o', 25, 4),
@@ -415,7 +437,7 @@ INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VA
 (56, 'All Pages', 'admin/page/all_page', 'fa fa-circle', 55, 1),
 (57, 'Add Page', 'admin/page/add_page', 'fa fa-plus', 55, 2),
 (58, 'Menu', 'admin/menu_front', 'fa fa-bars', 2, 6),
-(59, 'Payment Method', 'admin/settings/payment', 'fa fa-money', 2, 7),
+(59, 'Metode Pembayaran', 'admin/settings/payment', 'fa fa-money', 2, 7),
 (60, 'Popup', 'admin/settings/popup', 'fa fa-bell', 2, 8);
 
 -- --------------------------------------------------------
@@ -622,12 +644,20 @@ INSERT INTO `tbl_page` (`page_id`, `title`, `slug`, `content`, `description`, `p
 --
 
 CREATE TABLE `tbl_payment_method` (
-  `payment_id` int(11) NOT NULL DEFAULT '0',
+  `payment_id` int(11) NOT NULL,
   `payment_name` varchar(254) NOT NULL,
   `description` text NOT NULL,
   `payment_logo` varchar(250) NOT NULL,
   `status_payment` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_payment_method`
+--
+
+INSERT INTO `tbl_payment_method` (`payment_id`, `payment_name`, `description`, `payment_logo`, `status_payment`) VALUES
+(1, 'Cash On Delivery', '<div class=\"cart__dv__title\">Cash on Delivery</div>\r\n<div class=\"cart__dv__subtitle\">Antar barang melalui Kurir</div>', '', 1),
+(2, 'Transfer Bank BCA', '<p>Pembayaran dapat dilakukan melalui transfer ke rekening Bank BCA</p>\r\n<p>No Rekening 992828288 a/n Rocky</p>', '', 1);
 
 -- --------------------------------------------------------
 
@@ -775,7 +805,11 @@ CREATE TABLE `tbl_product_viewed` (
 
 INSERT INTO `tbl_product_viewed` (`viewed_id`, `product_id`, `viewed_date`, `viewed_count`) VALUES
 (1, 7, '2019-07-20', 7),
-(2, 6, '2019-07-20', 9);
+(2, 6, '2019-07-20', 9),
+(3, 6, '2019-07-22', 2),
+(4, 6, '2019-07-23', 8),
+(5, 7, '2019-07-23', 16),
+(6, 6, '2019-07-24', 1);
 
 -- --------------------------------------------------------
 
@@ -1184,6 +1218,12 @@ ALTER TABLE `tbl_customer`
   ADD PRIMARY KEY (`customer_id`);
 
 --
+-- Indexes for table `tbl_customer_meta`
+--
+ALTER TABLE `tbl_customer_meta`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_damage_product`
 --
 ALTER TABLE `tbl_damage_product`
@@ -1467,7 +1507,13 @@ ALTER TABLE `tbl_city`
 -- AUTO_INCREMENT for table `tbl_customer`
 --
 ALTER TABLE `tbl_customer`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tbl_customer_meta`
+--
+ALTER TABLE `tbl_customer_meta`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_damage_product`
@@ -1548,6 +1594,12 @@ ALTER TABLE `tbl_page`
   MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `tbl_payment_method`
+--
+ALTER TABLE `tbl_payment_method`
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `tbl_popup`
 --
 ALTER TABLE `tbl_popup`
@@ -1587,7 +1639,7 @@ ALTER TABLE `tbl_product_tag`
 -- AUTO_INCREMENT for table `tbl_product_viewed`
 --
 ALTER TABLE `tbl_product_viewed`
-  MODIFY `viewed_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `viewed_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase`
