@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 24, 2019 at 11:32 AM
+-- Generation Time: Jul 28, 2019 at 04:23 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -361,7 +361,7 @@ CREATE TABLE `tbl_invoice` (
 --
 
 INSERT INTO `tbl_invoice` (`invoice_id`, `invoice_no`, `order_id`, `invoice_date`) VALUES
-(1, 86353061, 1, '2019-07-08 06:16:25');
+(2, 50083072, 2, '2019-07-28 06:19:01');
 
 -- --------------------------------------------------------
 
@@ -518,15 +518,16 @@ CREATE TABLE `tbl_order` (
   `down_payment` double NOT NULL,
   `due_date` varchar(65) DEFAULT NULL,
   `discount_type` varchar(65) DEFAULT NULL,
-  `persen_pajak` decimal(10,0) NOT NULL DEFAULT '0'
+  `persen_pajak` decimal(10,0) NOT NULL DEFAULT '0',
+  `jumlah_uang` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tbl_order`
 --
 
-INSERT INTO `tbl_order` (`order_id`, `order_no`, `order_date`, `customer_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_address`, `shipping_address`, `subtotal`, `discount`, `discount_amount`, `tax`, `grand_total`, `payment_method`, `payment_ref`, `order_status`, `note`, `sales_person`, `outlet_id`, `down_payment`, `due_date`, `discount_type`, `persen_pajak`) VALUES
-(1, 82679231, '2019-07-08 06:16:25', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', 'Jl Makasar', 80000, 0, 0, 8000, 88000, 'kredit', NULL, 2, 'cpt kirim', 'Administrator', 1, 50000, '2019-07-28', '', 0);
+INSERT INTO `tbl_order` (`order_id`, `order_no`, `order_date`, `customer_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_address`, `shipping_address`, `subtotal`, `discount`, `discount_amount`, `tax`, `grand_total`, `payment_method`, `payment_ref`, `order_status`, `note`, `sales_person`, `outlet_id`, `down_payment`, `due_date`, `discount_type`, `persen_pajak`, `jumlah_uang`) VALUES
+(2, 4202543, '2019-07-28 06:19:01', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', '', 74000, 0, 0, 7400, 81400, 'kredit', NULL, 2, '                                        ', 'Administrator', 1, 40000, '2019-07-30', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -539,13 +540,6 @@ CREATE TABLE `tbl_order_attribute` (
   `attribute_id` int(11) NOT NULL,
   `order_detail_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `tbl_order_attribute`
---
-
-INSERT INTO `tbl_order_attribute` (`id`, `attribute_id`, `order_detail_id`) VALUES
-(1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -572,7 +566,7 @@ CREATE TABLE `tbl_order_details` (
 --
 
 INSERT INTO `tbl_order_details` (`order_details_id`, `order_id`, `product_code`, `product_name`, `product_quantity`, `buying_price`, `selling_price`, `product_tax`, `sub_total`, `price_option`, `purchase_product_id`) VALUES
-(1, 1, 58186047, 'Beras Rojo Lele', 2, 35000, 40000, NULL, 80000, 'custom_price', 3);
+(2, 2, 58186047, 'Beras Rojo Lele', 2, 35000, 37000, NULL, 74000, 'general', 3);
 
 -- --------------------------------------------------------
 
@@ -835,17 +829,16 @@ CREATE TABLE `tbl_purchase` (
   `due_date` varchar(65) NOT NULL,
   `down_payment` double NOT NULL,
   `subtotal` double NOT NULL,
-  `discount_amount` double NOT NULL
+  `discount_amount` double NOT NULL,
+  `jumlah_uang` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tbl_purchase`
 --
 
-INSERT INTO `tbl_purchase` (`purchase_id`, `order_no`, `supplier_id`, `supplier_name`, `grand_total`, `note`, `payment_method`, `payment_ref`, `purchase_by`, `datetime`, `outlet_id`, `tax`, `discount`, `discount_type`, `due_date`, `down_payment`, `subtotal`, `discount_amount`) VALUES
-(1, 3280762, 1, 'PT Jaya Baru', 363000, 'Barang sampai besok                                                                                                                        ', 'kredit', '', 'Administrator', '2019-07-08 04:04:30', 1, 33000, 0, '', '2019-07-31', 200000, 330000, 0),
-(8, 12989, 0, '', 0, 'Stok awal', '', 'stok awal', 'Administrator', '2019-07-20 08:18:52', 4, 0, 0, '', '', 0, 0, 0),
-(9, 78381, 0, '', 0, 'Stok awal', '', 'stok awal', 'Administrator', '2019-07-20 08:19:54', 4, 0, 0, '', '', 0, 0, 0);
+INSERT INTO `tbl_purchase` (`purchase_id`, `order_no`, `supplier_id`, `supplier_name`, `grand_total`, `note`, `payment_method`, `payment_ref`, `purchase_by`, `datetime`, `outlet_id`, `tax`, `discount`, `discount_type`, `due_date`, `down_payment`, `subtotal`, `discount_amount`, `jumlah_uang`) VALUES
+(1, 3280762, 1, 'PT Jaya Baru', 363000, 'Barang sampai besok                                                                                                                        ', 'kredit', '', 'Administrator', '2019-07-08 04:04:30', 1, 33000, 0, '', '2019-07-31', 200000, 330000, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -891,8 +884,7 @@ CREATE TABLE `tbl_purchase_product` (
 INSERT INTO `tbl_purchase_product` (`purchase_product_id`, `purchase_id`, `product_code`, `product_name`, `qty`, `unit_price`, `sub_total`, `sisa_qty`) VALUES
 (3, 1, '58186047', 'Beras Rojo Lele', 8, 35000, 280000, 8),
 (4, 1, '44433356', 'Beras Sumo Super Premium 20kg', 1, 50000, 50000, 1),
-(7, 8, '44433356', 'Beras Sumo Super Premium 20kg', 20, 250000, 5000000, 20),
-(8, 9, '58186047', 'Beras Rojo Lele', 10, 35000, 350000, 10);
+(9, 0, '', '', 0, 0, 0, 6);
 
 -- --------------------------------------------------------
 
@@ -1537,7 +1529,7 @@ ALTER TABLE `tbl_inventory`
 -- AUTO_INCREMENT for table `tbl_invoice`
 --
 ALTER TABLE `tbl_invoice`
-  MODIFY `invoice_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `invoice_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_menu`
@@ -1561,7 +1553,7 @@ ALTER TABLE `tbl_menu_type`
 -- AUTO_INCREMENT for table `tbl_order`
 --
 ALTER TABLE `tbl_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_attribute`
@@ -1573,7 +1565,7 @@ ALTER TABLE `tbl_order_attribute`
 -- AUTO_INCREMENT for table `tbl_order_details`
 --
 ALTER TABLE `tbl_order_details`
-  MODIFY `order_details_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `order_details_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_serial`
@@ -1657,7 +1649,7 @@ ALTER TABLE `tbl_purchase_attribute`
 -- AUTO_INCREMENT for table `tbl_purchase_product`
 --
 ALTER TABLE `tbl_purchase_product`
-  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `purchase_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_serial`

@@ -427,11 +427,17 @@ class Purchase extends MY_Controller
         $data['discount_type'] = $this->input->post('discount_type');
         $data['grand_total'] = remove_commas($this->input->post('grand_total'));
         $dp =0;
+        $jumlah_uang = 0;
         if($data['payment_method'] == 'kredit')
         {
             $dp = $this->input->post('down_payment');
         }
+        else
+        {
+            $jumlah_uang = $this->input->post('down_payment');
+        }
         $data['down_payment'] = $dp;
+        $data_order['jumlah_uang'] = $jumlah_uang;
         $id = null;
         if(!empty($this->session->userdata('id_purchase'))) {
             $id = $this->session->userdata('id_purchase');
