@@ -12,12 +12,12 @@
             </div>
 
             <div class="form-group">
-                <label for="exampleInputEmail1">Uang Muka <span class="required">*</span></label>
+                <label for="exampleInputEmail1" id="uang_muka_lbl">Uang Muka <span class="required">*</span></label>
                 <input type="text" name="uang_muka" id="uang_muka" class="form-control" autofocus>
             </div>
 
             <div class="form-group">
-                <label for="exampleInputEmail1">Sisa Bayar <span class="required">*</span></label>
+                <label for="exampleInputEmail1" id="sisa">Sisa Bayar <span class="required">*</span></label>
                 <input type="text" name="sisa_bayar" readonly id="sisa_bayar" class="form-control">
             </div>
 
@@ -36,6 +36,13 @@
     }
 
     $("#modal_submit").on('shown.bs.modal', function () {
+
+        if($('#form_order #order_payment_type').val() == 'cash')
+        {
+            $('#uang_muka_lbl').html('Jumlah Uang');
+            $('#sisa').html('Kembalian');
+        }
+
         if($('#form_order #down_payment').val() != '')
         {
             $('#uang_muka').val(numberWithCommas($('#form_order #down_payment').val()));

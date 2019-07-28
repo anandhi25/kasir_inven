@@ -96,4 +96,34 @@ class Order_Model extends MY_Model
         $result = $query_result->result();
         return $result;
     }
+
+    public function delete_order($id)
+    {
+        $get_detail = db_get_all_data('tbl_order_details',array('order_id' => $id));
+        if(count($get_detail) > 0)
+        {
+            foreach ($get_detail as $detail)
+            {
+                $this->db->where(array('order_detail_id' => $detail->order_details_id));
+                $this->db->delete('tbl_order_serial');
+
+                $this->db->where(array('order_detail_id' => $detail->order_details_id));
+                $this->db->delete('tbl_order_attribute');
+            }
+
+            $this->db->where(array('order_id' => $id));
+            $this->db->delete('tbl_order_details');
+
+            $this->db->where(array('order_id' => $id));
+            $this->db->delete('tbl_invoice');
+
+            $this->db->where(array('order_id' => $id));
+            $this->db->delete('tbl_order');
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

@@ -462,6 +462,27 @@ if(!function_exists('get_product_image')) {
     }
 }
 
+if(!function_exists('check_if_sold'))
+{
+    function check_if_sold($purchase_id)
+    {
+        $get_product_pur = db_get_all_data('tbl_purchase_product',array('purchase_id' => $purchase_id));
+        $ret = false;
+        if(count($get_product_pur) > 0)
+        {
+            foreach ($get_product_pur as $pur)
+            {
+                $get_order_det = db_get_all_data('tbl_order_details',array('purchase_product_id' => $pur->purchase_product_id));
+                if(count($get_order_det) > 0)
+                {
+                    $ret = true;
+                }
+            }
+        }
+        return $ret;
+    }
+}
+
 
 
 

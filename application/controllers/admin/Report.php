@@ -27,16 +27,18 @@ class Report extends MY_Controller
     /*** Sales Report ***/
     public function sales_report()
     {
-        $data['title'] = 'View Sales Report';
+        $data['title'] = 'Laporan Penjualan';
 
         $start_date = $this->input->post('start_date', true);
         $end_date = $this->input->post('end_date', true);
+        $outlet = $this->input->post('outlet', true);
 
         // report date
         $data['start_date'] = date('Y-m-d', strtotime($start_date));
         $data['end_date'] = date('Y-m-d', strtotime($end_date));
+        $data['outlet'] = $outlet;
         // invoice information
-        $invoice = $this->report_model->get_invoice_by_date($data['start_date'], $data['end_date']);
+        $invoice = $this->report_model->get_invoice_by_date($data['start_date'], $data['end_date'],$outlet);
 
         if (!empty($invoice)) {
             $this->tbl_order_details('order_details_id');
@@ -47,6 +49,8 @@ class Report extends MY_Controller
             }
         }
 
+        $data['toko'] = db_get_all_data('tbl_outlets');
+
         $data['subview'] = $this->load->view('admin/report/sales_report', $data, true);
         $this->load->view('admin/_layout_main', $data);
     }
@@ -56,10 +60,11 @@ class Report extends MY_Controller
     {
         $start_date = $this->input->post('start_date', true);
         $end_date = $this->input->post('end_date', true);
-
+        $outlet = $this->input->post('outlet', true);
 
         $data['start_date'] = date('Y-m-d', strtotime($start_date));
         $data['end_date'] = date('Y-m-d', strtotime($end_date));
+        $data['outlet'] = $outlet;
         // invoice information
         $invoice = $this->report_model->get_invoice_by_date($data['start_date'], $data['end_date']);
 
@@ -84,7 +89,7 @@ class Report extends MY_Controller
         $html = $this->load->view('admin/report/sales_report_pdf', $data, true);
 
 
-        $filename = 'INV-' . $start_date . ' to ' . $end_date;
+        $filename = 'INV-' . $start_date . ' to ' . $end_date.'.pdf';
         $this->load->library('pdf');
         $pdf = $this->pdf->load();
 
@@ -101,10 +106,12 @@ class Report extends MY_Controller
 
         $start_date = $this->input->post('start_date', true);
         $end_date = $this->input->post('end_date', true);
+        $outlet = $this->input->post('outlet', true);
 
         // report date
         $data['start_date'] = date('Y-m-d', strtotime($start_date));
         $data['end_date'] = date('Y-m-d', strtotime($end_date));
+        $data['outlet'] = $outlet;
         // invoice information
         $invoice = $this->report_model->get_purchase_by_date($data['start_date'], $data['end_date']);
 
@@ -128,10 +135,11 @@ class Report extends MY_Controller
     {
         $start_date = $this->input->post('start_date', true);
         $end_date = $this->input->post('end_date', true);
-
+        $outlet = $this->input->post('outlet', true);
 
         $data['start_date'] = date('Y-m-d', strtotime($start_date));
         $data['end_date'] = date('Y-m-d', strtotime($end_date));
+        $data['outlet'] = $outlet;
 
         $invoice = $this->report_model->get_purchase_by_date($data['start_date'], $data['end_date']);
 
@@ -150,7 +158,7 @@ class Report extends MY_Controller
         $html = $this->load->view('admin/report/purchase_report_pdf', $data, true);
 
 
-        $filename = 'PUR-'.$start_date.' to '.$end_date;
+        $filename = 'PUR-'.$start_date.' to '.$end_date.'.pdf';
         $this->load->library('pdf');
         $pdf = $this->pdf->load();
 

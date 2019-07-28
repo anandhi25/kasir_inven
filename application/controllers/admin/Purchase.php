@@ -148,6 +148,19 @@ class Purchase extends MY_Controller
         redirect('admin/purchase/new_purchase/edit');
     }
 
+    public function delete_purchase($id=null)
+    {
+        $res = $this->purchase_model->delete_purchase($id);
+        if($res)
+        {
+            $this->message->delete_success('admin/purchase/purchase_list');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/purchase/purchase_list','Data gagal disimpan');
+        }
+    }
+
     /*** New Purchase  ***/
     public function new_purchase($flag = null)
     {
@@ -646,6 +659,86 @@ class Purchase extends MY_Controller
         echo json_encode($data);
     }
 
+    public function purchase_tables()
+    {
+        $getData = array();
+        $where = "";
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'purchase_id',
+            1 => 'order_no',
+            2 => 'datetime'
+        );
+        if(!empty($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE order_no LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND order_no LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY datetime DESC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_purchase ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_purchase ".$where);
+        $total = count($listAll);
+        $i = $_GET['start'];
+        foreach ($list as $v_purchase) {
+            $i = $i + 1;
+            $str = btn_view('admin/purchase/purchase_invoice/' . $v_purchase->purchase_id);
+            if(check_if_sold($v_purchase->purchase_id))
+            {
+                $str .= " ".btn_edit_disable('admin/purchase/edit_purchase/'. $v_purchase->purchase_id);
+            }
+            else
+            {
+                $str .= " ".btn_edit('admin/purchase/edit_purchase/'. $v_purchase->purchase_id);
+            }
+            ?>
+            <?php
+            if(check_if_sold($v_purchase->purchase_id))
+            {
+                $str .= " ".btn_delete_disable('admin/purchase/delete_purchase/'. $v_purchase->purchase_id);
+            }
+            else
+            {
+                $str .= " ".btn_delete('admin/purchase/delete_purchase/'. $v_purchase->purchase_id);
+            }
+            $subdata = array();
+            $subdata[] = $i;
+            $subdata[] = "PUR-".$v_purchase->order_no;
+            $subdata[] = $v_purchase->supplier_name;
+            $subdata[] = date('Y-m-d', strtotime($v_purchase->datetime ));
+            $subdata[] = "Rp" .' '. number_format($v_purchase->grand_total,0);
+            $subdata[] = $v_purchase->payment_method;
+            $subdata[] = $v_purchase->purchase_by;
+            $subdata[] = $str;
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
+    }
 
 
 }

@@ -27,7 +27,7 @@ if(!empty($info->currency))
                 <div class="box-body">
 
                         <!-- Table -->
-                    <table class="table table-bordered table-striped" id="dataTables-example">
+                    <table class="table table-bordered table-striped" id="purchase_table">
                         <thead ><!-- Table head -->
                         <tr>
                             <th class="active">#</th>
@@ -35,36 +35,14 @@ if(!empty($info->currency))
                             <th class="active">Nama Supplier</th>
                             <th class="active">Tanggal</th>
                             <th class="active">Grand Total</th>
+                            <th class="active">Pembayaran</th>
                             <th class="active">Oleh</th>
                             <th class="active">Action</th>
 
                         </tr>
                         </thead><!-- / Table head -->
                         <tbody><!-- / Table body -->
-                        <?php $counter =1 ; ?>
-                        <?php if (!empty($purchase)): foreach ($purchase as $v_purchase) : ?>
-                            <tr class="custom-tr">
-                                <td class="vertical-td">
-                                    <?php echo  $counter ?>
-                                </td>
-                                <td class="vertical-td">PUR-<?php echo $v_purchase->order_no ?></td>
-                                <td class="vertical-td"><?php echo $v_purchase->supplier_name ?></td>
-                                <td class="vertical-td"><?php echo date('Y-m-d', strtotime($v_purchase->datetime )) ?></td>
-                                <td class="vertical-td"><?php echo $currency .' '. number_format($v_purchase->grand_total,2) ?></td>
-                                <td class="vertical-td"><?php echo $v_purchase->purchase_by ?></td>
 
-                                <td class="vertical-td">
-                                    <?php echo btn_view('admin/purchase/purchase_invoice/' . $v_purchase->purchase_id); ?>
-                                    <?php echo btn_edit('admin/purchase/edit_purchase/'. $v_purchase->purchase_id);?>
-
-                                </td>
-
-                            </tr>
-                            <?php
-                            $counter++;
-                        endforeach;
-                            ?><!--get all sub category if not this empty-->
-                        <?php endif; ?>
                         </tbody><!-- / Table body -->
                     </table> <!-- / Table -->
 
@@ -76,6 +54,21 @@ if(!empty($info->currency))
     </div>
     <!-- /.row -->
 </section>
+
+<script>
+    $('#purchase_table').DataTable({
+        processing: true,
+        serverSide: true,
+        "bDestroy": true,
+        aaSorting: [[0, 'desc']],
+        "ajax": {
+            url: '<?php echo base_url("admin/purchase/purchase_tables");?>',
+            "data": function (d) {
+
+            }
+        }
+    });
+</script>
 
 
 

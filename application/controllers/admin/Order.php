@@ -629,11 +629,17 @@ class Order extends MY_Controller
 
         }
         $dp =0;
+        $jumlah_uang = 0;
         if($data_order['payment_method'] == 'kredit')
         {
             $dp = $this->input->post('down_payment');
         }
+        else
+        {
+            $jumlah_uang = $this->input->post('down_payment');
+        }
         $data_order['down_payment'] = $dp;
+        $data_order['jumlah_uang'] = $jumlah_uang;
        // $data_order['outlet_id'] = $this->input->post('outlet', true);
 
         //customer
@@ -878,6 +884,19 @@ class Order extends MY_Controller
         $this->load->view('admin/_layout_main', $data);
     }
 
+    public function delete_order($id=null)
+    {
+        $res = $this->order_model->delete_order($id);
+        if($res)
+        {
+            $this->message->delete_success('admin/order/manage_order');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/order/manage_order','Data gagal disimpan');
+        }
+    }
+
     /*** View Order  ***/
     public function view_order($id=null){
         if(empty($id)){
@@ -1043,6 +1062,149 @@ class Order extends MY_Controller
                 'Sorry unable to send your email, without company email');
         }
 
+    }
+
+    public function order_tables()
+    {
+        $getData = array();
+        $where = "";
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'order_id',
+            1 => 'order_no',
+            2 => 'order_date'
+        );
+        if(!empty($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE order_no LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND order_no LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY order_date DESC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_order ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_order ".$where);
+        $total = count($listAll);
+        $i = $_GET['start'];
+        foreach ($list as $v_order) {
+            $i = $i + 1;
+            $str = btn_view('admin/order/view_order/' . $v_order->order_no)."  ".btn_edit('admin/order/edit_order/' . $v_order->order_id)." ".btn_delete('admin/order/delete_order/' . $v_order->order_id);
+            $stat = '';
+            if($v_order->order_status == 0){
+                $stat = 'Pending Order';
+            }elseif($v_order->order_status == 1){
+                $stat = 'Cancel Order';
+            }else{
+                $stat = 'Confirm Order';
+            }
+            $subdata = array();
+            $subdata[] = $i;
+            $subdata[] = "ORD-".$v_order->order_no;
+            $subdata[] = date('Y-m-d', strtotime($v_order->order_date ));
+            $subdata[] = $stat;
+            $subdata[] = "Rp" .' '. number_format($v_order->grand_total,0);
+            $subdata[] = $v_order->sales_person;
+            $subdata[] = $str;
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
+    }
+
+    public function invoice_tables()
+    {
+        $getData = array();
+        $where = "";
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'invoice_id',
+            1 => 'invoice_no',
+            2 => 'invoice_date'
+        );
+        if(!empty($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE invoice_no LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND invoice_no LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+        $this->db->select('tbl_invoice.*, tbl_order.*', false);
+        $this->db->from('tbl_invoice');
+        $this->db->join('tbl_order', 'tbl_order.order_id  =  tbl_invoice.order_id ', 'left');
+        if($where != '')
+        {
+            $this->db->where($where);
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            //$orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+            $this->db->order_by($arrCol[$_GET['order']['0']['column']], $_GET['order'][0]['dir']);
+        }
+        else
+        {
+            $this->db->order_by('invoice_id', 'DESC');
+        }
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                // $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+                $this->db->limit($_GET['length'], $_GET['start']);
+            }
+        }
+        $query_result = $this->db->get();
+        $list = $query_result->result();
+        //$list = $this->global_model->get_by_sql("SELECT * FROM tbl_order ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_invoice ".$where);
+        $total = count($listAll);
+        $i = $_GET['start'];
+        foreach ($list as $v_invoice) {
+            $i = $i + 1;
+            $str = btn_view('admin/order/order_invoice/' . $v_invoice->invoice_no);
+            $subdata = array();
+            $subdata[] = $i;
+            $subdata[] = "INV-".$v_invoice->invoice_no ;
+            $subdata[] = "ORD-".$v_invoice->order_no ;
+            $subdata[] = date('Y-m-d', strtotime($v_invoice->invoice_date));
+            $subdata[] = $v_invoice->customer_name;
+            $subdata[] = $v_invoice->payment_method;
+            $subdata[] = "Rp" .' '. number_format($v_invoice->grand_total,2) ;
+            $subdata[] = $str;
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
     }
 
 

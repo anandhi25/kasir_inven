@@ -34,7 +34,7 @@ if(!empty($info->currency))
                     <div id="printableArea">
 
                         <!-- Table -->
-                        <table class="table table-bordered table-striped" id="dataTables-example">
+                        <table class="table table-bordered table-striped" id="order_table">
                             <thead ><!-- Table head -->
                             <tr>
                                 <th class="active">#</th>
@@ -48,40 +48,7 @@ if(!empty($info->currency))
                             </tr>
                             </thead><!-- / Table head -->
                             <tbody><!-- / Table body -->
-                            <?php $counter =1 ; ?>
-                            <?php if (!empty($order)): foreach ($order as $v_order) : ?>
-                                <tr class="custom-tr">
-                                    <td class="vertical-td">
-                                        <?php echo  $counter ?>
-                                    </td>
-                                    <td class="vertical-td">ORD-<?php echo $v_order->order_no ?></td>
-                                    <td class="vertical-td"><?php echo date('Y-m-d', strtotime($v_order->order_date ))?></td>
-                                    <td class="vertical-td">
-                                        <?php
-                                          if($v_order->order_status == 0){
-                                              echo 'Pending Order';
-                                          }elseif($v_order->order_status == 1){
-                                              echo 'Cancel Order';
-                                        }else{
-                                            echo 'Confirm Order';
-                                        }
-                                        ?>
-                                    </td>
-                                    <td class="vertical-td"><?php echo $currency .' '. number_format($v_order->grand_total,2)  ?></td>
-                                    <td class="vertical-td"><?php echo $v_order->sales_person ?></td>
 
-                                    <td class="vertical-td">
-                                        <?php echo btn_view('admin/order/view_order/' . $v_order->order_no); ?>
-                                        <?php echo btn_edit('admin/order/edit_order/' . $v_order->order_id); ?>
-
-                                    </td>
-
-                                </tr>
-                            <?php
-                                $counter++;
-                            endforeach;
-                            ?><!--get all sub category if not this empty-->
-                            <?php endif; ?>
                             </tbody><!-- / Table body -->
                         </table> <!-- / Table -->
                         </div>
@@ -95,6 +62,20 @@ if(!empty($info->currency))
     <!-- /.row -->
 </section>
 
+<script>
+    $('#order_table').DataTable({
+        processing: true,
+        serverSide: true,
+        "bDestroy": true,
+        aaSorting: [[0, 'desc']],
+        "ajax": {
+            url: '<?php echo base_url("admin/order/order_tables");?>',
+            "data": function (d) {
+
+            }
+        }
+    });
+</script>
 
 
 

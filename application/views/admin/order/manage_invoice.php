@@ -34,7 +34,7 @@ if(!empty($info->currency))
 
                     <div id="printableArea">
                         <!-- Table -->
-                        <table class="table table-bordered table-striped" id="dataTables-example">
+                        <table class="table table-bordered table-striped" id="invoice_table">
                             <thead ><!-- Table head -->
                             <tr>
                                 <th class="active">#</th>
@@ -49,29 +49,7 @@ if(!empty($info->currency))
                             </tr>
                             </thead><!-- / Table head -->
                             <tbody><!-- / Table body -->
-                            <?php $counter =1 ; ?>
-                            <?php if (!empty($invoice)): foreach ($invoice as $v_invoice) : ?>
-                                <tr class="custom-tr">
-                                    <td class="vertical-td">
-                                        <?php echo  $counter ?>
-                                    </td>
-                                    <td class="vertical-td">INV-<?php echo $v_invoice->invoice_no ?></td>
-                                    <td class="vertical-td">ORD-<?php echo $v_invoice->order_no ?></td>
-                                    <td class="vertical-td"><?php echo date('Y-m-d', strtotime($v_invoice->invoice_date)) ?></td>
-                                    <td class="vertical-td"><?php echo $v_invoice->customer_name ?></td>
-                                    <td class="vertical-td"><?php echo $v_invoice->payment_method ?></td>
-                                    <td class="vertical-td"><?php echo $currency .' '. number_format($v_invoice->grand_total,2)  ?></td>
 
-                                    <td class="vertical-td">
-                                        <?php echo btn_view('admin/order/order_invoice/' . $v_invoice->invoice_no); ?>
-                                    </td>
-
-                                </tr>
-                            <?php
-                                $counter++;
-                            endforeach;
-                            ?><!--get all sub category if not this empty-->
-                            <?php endif; ?>
                             </tbody><!-- / Table body -->
                         </table> <!-- / Table -->
                         </div>
@@ -84,6 +62,22 @@ if(!empty($info->currency))
     </div>
     <!-- /.row -->
 </section>
+
+
+<script>
+    $('#invoice_table').DataTable({
+        processing: true,
+        serverSide: true,
+        "bDestroy": true,
+        aaSorting: [[0, 'desc']],
+        "ajax": {
+            url: '<?php echo base_url("admin/order/invoice_tables");?>',
+            "data": function (d) {
+
+            }
+        }
+    });
+</script>
 
 
 

@@ -95,6 +95,24 @@ if(!empty($info->address)){
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="control-label">Toko<span class="required"> *</span></label>
+                                        <div class="input-group">
+                                            <select name="outlet" id="outlet" class="form-control">
+                                                <option value="0">Semua</option>
+                                                <?php
+                                                if(count($toko) > 0)
+                                                {
+                                                    foreach ($toko as $tok)
+                                                    {
+                                                        echo '<option value="'.$tok->outlet_id.'">'.$tok->name.'</option>';
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <button type="submit" class="btn bg-navy" type="submit">Generate Report
                                     </button><br/><br/>
                                 </div>
@@ -153,7 +171,7 @@ if(!empty($info->address)){
 
                                 <main class="invoice_report">
 
-                                    <h4>Purchase Report from: <strong><?php echo $start_date ?></strong> to <strong><?php echo $end_date ?></strong></h4>
+                                    <h4>Laporan Pembelian: <strong><?php echo $start_date ?></strong> - <strong><?php echo $end_date ?></strong></h4>
                                     <br/>
                                     <br/>
 
@@ -170,7 +188,7 @@ if(!empty($info->address)){
                                         <tr>
                                             <th class="no text-right"> <strong>PUR-<?php echo $invoice_no  ?></strong></th>
                                             <th class="no text-left">Supplier: <strong><?php echo $purchase[$key]->supplier_name  ?></strong></th>
-                                            <th class="desc">Invoice Date: <?php echo date('Y-m-d', strtotime($purchase[$key]->datetime)) ?></th>
+                                            <th class="desc">Tanggal Invoice : <?php echo date('Y-m-d', strtotime($purchase[$key]->datetime)) ?></th>
                                         </tr>
                                         </thead>
                                     </table>
@@ -178,9 +196,9 @@ if(!empty($info->address)){
                                         <thead>
                                         <tr style="background-color: #ECECEC">
                                             <th class="no text-right">#</th>
-                                            <th class="desc">Product Code</th>
-                                            <th class="desc">Description</th>
-                                            <th class="unit text-right">Buying Price</th>
+                                            <th class="desc">Kode Produk</th>
+                                            <th class="desc">Nama Produk</th>
+                                            <th class="unit text-right">Harga Beli</th>
                                             <th class="qty text-right">Qty</th>
                                             <th class="total text-right ">TOTAL</th>
                                         </tr>
@@ -215,9 +233,43 @@ if(!empty($info->address)){
                                         <tfoot>
                                         <tr>
                                             <td colspan="3"></td>
-                                            <td colspan="2">Grand Total</td>
-                                            <td><?php echo $currency.' '.number_format( $purchase[$key]->grand_total,2) ?></td>
+                                            <td colspan="2">Subtotal</td>
+                                            <td><?php echo $currency.' '.number_format( $purchase[$key]->subtotal,0) ?></td>
                                         </tr>
+                                        <?php
+                                        if($purchase[$key]->discount_amount != '0')
+                                        {
+                                            ?>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td colspan="2">Diskon</td>
+                                                <td><?php echo $currency.' '.number_format( $purchase[$key]->discount_amount,0) ?></td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td colspan="3"></td>
+                                            <td colspan="2">Pajak</td>
+                                            <td><?php echo $currency.' '.number_format( $purchase[$key]->tax,0) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3"></td>
+                                            <td colspan="2"><strong>Grand Total</strong></td>
+                                            <td><?php echo $currency.' '.number_format( $purchase[$key]->grand_total,0) ?></td>
+                                        </tr>
+                                        <?php
+                                        if($purchase[$key]->payment_method == 'kredit')
+                                        {
+                                            ?>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td colspan="2">Uang Muka</td>
+                                                <td><?php echo $currency.' '.number_format( $purchase[$key]->down_payment,0) ?></td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
                                         </tfoot>
 
 

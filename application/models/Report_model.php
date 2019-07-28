@@ -20,15 +20,20 @@ class Report_Model extends MY_Model
     public $_order_by;
     public $_primary_key;
 
-    public function get_invoice_by_date($start_date, $end_date)
+    public function get_invoice_by_date($start_date, $end_date, $outlet='0')
     {
         $this->db->select('tbl_invoice.*', false);
         $this->db->select('tbl_order.*', false);
         $this->db->from('tbl_invoice');
         $this->db->join('tbl_order', 'tbl_order.order_id  =  tbl_invoice.order_id', 'left');
+        if($outlet != '0')
+        {
+            $this->db->where('outlet_id', $outlet);
+        }
         if ($start_date == $end_date) {
             $this->db->like('tbl_invoice.invoice_date', $start_date);
         } else {
+
             $this->db->where('tbl_invoice.invoice_date >=', $start_date);
             $this->db->where('tbl_invoice.invoice_date <=', $end_date.'23:59:59');
         }
@@ -38,13 +43,18 @@ class Report_Model extends MY_Model
         return $result;
     }
 
-    public function get_purchase_by_date($start_date, $end_date)
+    public function get_purchase_by_date($start_date, $end_date,$outlet='0')
     {
         $this->db->select('tbl_purchase.*', false);
         $this->db->from('tbl_purchase');
+        if($outlet != '0')
+        {
+            $this->db->where('outlet_id', $outlet);
+        }
         if ($start_date == $end_date) {
             $this->db->like('datetime', $start_date);
         } else {
+
             $this->db->where('datetime >=', $start_date);
             $this->db->where('datetime <=', $end_date.'23:59:59');
         }

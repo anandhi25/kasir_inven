@@ -115,5 +115,32 @@ class Purchase_Model extends MY_Model
         return $arr_ret;
     }
 
+    public function delete_purchase($id)
+    {
+        $get_detail = db_get_all_data('tbl_purchase_product',array('purchase_id' => $id));
+        if(count($get_detail) > 0)
+        {
+            foreach ($get_detail as $detail)
+            {
+                $this->db->where(array('purchase_product_id' => $detail->purchase_product_id));
+                $this->db->delete('tbl_purchase_serial');
+
+                $this->db->where(array('purchase_product_id' => $detail->purchase_product_id));
+                $this->db->delete('tbl_purchase_attribute');
+            }
+
+            $this->db->where(array('purchase_id' => $id));
+            $this->db->delete('tbl_purchase_product');
+
+            $this->db->where(array('purchase_id' => $id));
+            $this->db->delete('tbl_purchase');
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
 }

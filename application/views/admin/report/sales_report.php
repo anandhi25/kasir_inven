@@ -97,6 +97,24 @@ if(!empty($info->address)){
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label class="control-label">Toko<span class="required"> *</span></label>
+                                        <div class="input-group">
+                                            <select name="outlet" id="outlet" class="form-control">
+                                                <option value="0">Semua</option>
+                                                <?php
+                                                if(count($toko) > 0)
+                                                {
+                                                    foreach ($toko as $tok)
+                                                    {
+                                                        echo '<option value="'.$tok->outlet_id.'">'.$tok->name.'</option>';
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <button type="submit" class="btn bg-navy" type="submit">Generate Report
                                     </button><br/><br/>
                                 </div>
@@ -122,6 +140,7 @@ if(!empty($info->address)){
                                 </button>
                                     <input type="hidden" name="start_date" value="<?php echo $start_date ?>">
                                     <input type="hidden" name="end_date" value="<?php echo $end_date ?>">
+                                    <input type="hidden" name="outlet" value="<?php echo $outlet ?>">
 
                             </div>
                             </form>
@@ -155,7 +174,7 @@ if(!empty($info->address)){
 
                                 <main class="invoice_report">
 
-                                    <h4>Sales Report from: <strong><?php echo $start_date ?></strong> to <strong><?php echo $end_date ?></strong></h4>
+                                    <h4>Laporan Penjualan dari: <strong><?php echo $start_date ?></strong> - <strong><?php echo $end_date ?></strong></h4>
                                     <br/>
                                     <br/>
 
@@ -171,7 +190,7 @@ if(!empty($info->address)){
                                         <thead>
                                         <tr>
                                             <th class="no text-right">INVOICE <?php echo $invoice_no  ?></th>
-                                            <th class="desc">Invoice Date: <?php echo date('Y-m-d', strtotime($order[$key]->invoice_date)) ?></th>
+                                            <th class="desc">Tanggal Invoice: <?php echo date('Y-m-d', strtotime($order[$key]->invoice_date)) ?></th>
                                         </tr>
                                         </thead>
                                     </table>
@@ -179,11 +198,11 @@ if(!empty($info->address)){
                                         <thead>
                                         <tr style="background-color: #ECECEC">
                                             <th class="no text-right">#</th>
-                                            <th class="desc">Description</th>
-                                            <th class="unit text-right">Buying Price</th>
-                                            <th class="unit text-right">Selling Price</th>
+                                            <th class="desc">Produk</th>
+                                            <th class="unit text-right">Harga Beli</th>
+                                            <th class="unit text-right">Harga Jual</th>
                                             <th class="qty text-right">Qty</th>
-                                            <th class="qty text-right">Tax</th>
+                                            <th class="qty text-right">Pajak</th>
                                             <th class="total text-right ">TOTAL</th>
                                         </tr>
                                         </thead>
@@ -193,12 +212,12 @@ if(!empty($info->address)){
                                             <tr>
                                                 <td class="no"><?php echo $k ?></td>
                                                 <td class="desc"><h3><?php echo $v_order->product_name ?></h3></td>
-                                                <td class="unit"><?php echo number_format($v_order->buying_price,2)  ?></td>
+                                                <td class="unit"><?php echo number_format($v_order->buying_price,0)  ?></td>
                                                 <?php $total_buying_price += $v_order->buying_price; ?>
-                                                <td class="unit"><?php echo number_format($v_order->selling_price,2) ?></td>
+                                                <td class="unit"><?php echo number_format($v_order->selling_price,0) ?></td>
                                                 <td class="qty"><?php echo $v_order->product_quantity ?></td>
                                                 <td class="qty"><?php echo $v_order->product_tax ?></td>
-                                                <td class="total"><?php echo number_format($v_order->sub_total + $v_order->product_tax,2)  ?></td>
+                                                <td class="total"><?php echo number_format($v_order->sub_total + $v_order->product_tax,0)  ?></td>
                                             </tr>
                                         <?php $k++?>
                                         <?php $total_cost += $v_order->buying_price; ?>
@@ -211,29 +230,47 @@ if(!empty($info->address)){
 
                                         </tbody>
                                         <tfoot>
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="2">Subtotal</td>
+                                            <td><?php echo $currency.' '.number_format($order[$key]->subtotal ,0) ?></td>
+                                        </tr>
 
                                         <?php if($order[$key]->discount_amount !=0): ?>
                                             <tr>
                                                 <td colspan="4"></td>
-                                                <td colspan="2">Discount Amount</td>
-                                                <td><?php echo number_format($order[$key]->discount_amount,2) ?></td>
+                                                <td colspan="2">Diskon</td>
+                                                <td><?php echo number_format($order[$key]->discount_amount,0) ?></td>
                                             </tr>
                                         <?php endif; ?>
 
                                         <tr>
                                             <td colspan="4"></td>
-                                            <td colspan="2">Grand Total</td>
-                                            <td><?php echo $currency.' '.number_format($order[$key]->grand_total ,2) ?></td>
+                                            <td colspan="2">Pajak</td>
+                                            <td><?php echo $currency.' '.number_format($order[$key]->tax ,0) ?></td>
                                         </tr>
+
                                         <tr>
                                             <td colspan="4"></td>
-                                            <td colspan="2">Profit</td>
-                                            <td><?php echo $currency.' '.number_format( $order[$key]->grand_total - $total_buying_price,2) ?></td>
+                                            <td colspan="2"><strong>Grand Total</strong></td>
+                                            <td><?php echo $currency.' '.number_format($order[$key]->grand_total ,0) ?></td>
                                         </tr>
+                                        <?php
+                                        if($order[$key]->payment_method == 'kredit')
+                                        {
+                                            ?>
+                                            <tr>
+                                                <td colspan="4"></td>
+                                                <td colspan="2">Uang Muka</td>
+                                                <td><?php echo $currency.' '.number_format( $order[$key]->down_payment,0) ?></td>
+                                            </tr>
+                                            <?php
+                                        }
+                                        ?>
                                         </tfoot>
                                         <?php
-                                        $total_sell += $order[$key]->grand_total;
-                                        $total_profit += $order[$key]->grand_total - $total_buying_price;
+                                        $total_sell += $order[$key]->subtotal;
+                                        $total_profit += $order[$key]->subtotal - $total_buying_price;
                                         ?>
 
                                     </table>
@@ -244,15 +281,15 @@ if(!empty($info->address)){
                                     <table>
                                         <thead>
                                         <tr style="background-color: #ccc">
-                                            <th class="no text-right">Total Cost</th>
-                                            <th class="no text-right">Total Sell</th>
+                                            <th class="no text-right">Total Beli</th>
+                                            <th class="no text-right">Total Jual</th>
                                             <th class="no text-right">Total Profit</th>
                                         </tr>
                                         </thead>
                                         <tbody style="background-color: #c5c5c5">
-                                        <td class="total"><?php echo  $currency.' '.number_format( $total_cost,2) ?></td>
-                                        <td class="total"><?php echo $currency.' '.number_format( $total_sell,2) ?></td>
-                                        <td class="total"><?php echo $currency.' '.number_format( $total_profit,2) ?></td>
+                                        <td class="total"><?php echo  $currency.' '.number_format( $total_cost,0) ?></td>
+                                        <td class="total"><?php echo $currency.' '.number_format( $total_sell,0) ?></td>
+                                        <td class="total"><?php echo $currency.' '.number_format( $total_profit,0) ?></td>
                                         </tbody>
                                     </table>
 
