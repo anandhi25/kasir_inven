@@ -126,4 +126,89 @@ class Order_Model extends MY_Model
             return false;
         }
     }
+
+    public function get_total_piutang_by_customer($customer_id)
+    {
+        $get_order = $this->get_query_by('tbl_order',array('customer_id' => $customer_id,'payment_method' => 'kredit'));
+        $total_piutang = 0;
+        if(count($get_order) > 0)
+        {
+            foreach ($get_order as $order)
+            {
+                $grand_total = $order->grand_total;
+                $get_bayar = $this->get_query_by('tbl_penerimaan_piutang_order',array('order_id' => $order->order_id));
+                $total_bayar = 0;
+                if(count($get_bayar) > 0)
+                {
+                    foreach ($get_bayar as $bayar)
+                    {
+                        $total_bayar = $total_bayar + ($bayar->potongan + $bayar->bayar);
+                    }
+                }
+                $total_piutang = $total_piutang + ($grand_total-$total_bayar);
+            }
+        }
+        return $total_piutang;
+    }
+
+    public function get_nota_by_customer($customer_id,$status_nota)
+    {
+        $get_order = $this->get_query_by('tbl_order',array('customer_id' => $customer_id,'payment_method' => 'kredit','order_status' => $status_nota));
+        $nota = '';
+        if(count($get_order) > 0)
+        {
+            foreach ($get_order as $order)
+            {
+                $grand_total = $order->grand_total;
+                $get_bayar = $this->get_query_by('tbl_penerimaan_piutang_order',array('order_id' => $order->order_id));
+                $total_bayar = 0;
+                if(count($get_bayar) > 0)
+                {
+                    foreach ($get_bayar as $bayar)
+                    {
+                        $total_bayar = $total_bayar + ($bayar->potongan + $bayar->bayar);
+                    }
+                }
+                $saldo_piutang = $grand_total-$total_bayar;
+                $nota .= '<tr>
+                            <td style="vertical-align: middle;"><input type="hidden" name="order_no[]" value="'.$order->order_no.'"><input type="hidden" name="order_id[]" value="'.$order->order_id.'">'.$order->order_no.'</td>
+                            <td><input type="text" name="saldo_piutang[]" readonly class="form-control input-saldo" value="'.number_format($saldo_piutang).'"></td>
+                            <td style="vertical-align: middle;"><input type="hidden" name="pajak[]" value="'.number_format($order->tax).'">'.number_format($order->tax).'</td>
+                            <td><input type="text" name="potongan[]" class="form-control input-potongan" value="0"></td>
+                            <td><input type="text" name="bayar[]" class="form-control input-bayar" value="0"></td>
+                            <td><input type="text" name="sisa_piutang[]" class="form-control input-sisa" value="0"></td>
+                            <td><button type="button" name="hapus" id="hapus" class="btn btn-danger remove_row"><i class="fa fa-trash"></i></button></td>
+                          </tr> ';
+            }
+        }
+        return $nota;
+    }
+
+    public function delete_debt($id,$master='')
+    {
+        $check_penerimaan_piutang = db_get_all_data('tbl_penerimaan_piutang_order',array('penerimaan_piutang_id' => $id));
+        if(count($check_penerimaan_piutang) > 0)
+        {
+            foreach ($check_penerimaan_piutang as $terima)
+            {
+                $data_status = array(
+                    'order_status' => BELUM_LUNAS
+                );
+                $this->db->where('order_id', $terima->order_id);
+                $this->db->update('tbl_order', $data_status);
+
+                $this->db->where('piutang_order_id', $terima->piutang_order_id);
+                $this->db->delete('tbl_penerimaan_piutang_order');
+            }
+            if($master == '')
+            {
+                $this->db->where('piutang_id', $id);
+                $this->db->delete('tbl_penerimaan_piutang');
+            }
+
+            return true;
+        }
+        return false;
+    }
+
 }

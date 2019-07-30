@@ -94,27 +94,30 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label>Brand / Merek</label>
-                                            <select name="brand_id" class="form-control col-sm-5" id="brand_id">
-                                                <option value="0">Tidak Ada Brand</option>
-                                                <?php if (!empty($brand)): ?>
-                                                    <?php foreach ($brand as $v_brand) : ?>
-                                                        <option value="<?php echo $v_brand->brand_id; ?>"
-                                                            <?php
-                                                            if (!empty($product_info)) {
-                                                                echo $v_brand->brand_id == $product_info->brand_id ? 'selected' : '';
-                                                            }
-                                                            ?> >
-                                                            <?php echo $v_brand->name; ?>
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-                                            </select>
+                                            <label>Brand / Merek &nbsp;&nbsp;&nbsp;</label>
+                                                <select name="brand_id" class="form-control col-sm-5" id="brand_id">
+                                                    <option value="0">Tidak Ada Brand</option>
+                                                    <?php if (!empty($brand)): ?>
+                                                        <?php foreach ($brand as $v_brand) : ?>
+                                                            <option value="<?php echo $v_brand->brand_id; ?>"
+                                                                <?php
+                                                                if (!empty($product_info)) {
+                                                                    echo $v_brand->brand_id == $product_info->brand_id ? 'selected' : '';
+                                                                }
+                                                                ?> >
+                                                                <?php echo $v_brand->name; ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </select>
+                                            <?php
+                                            echo btn_add_modal('admin/product/add_modal_brand','myModal','Tambah');
+                                            ?>
                                         </div>
 
                                         <!-- /.Category -->
                                         <div class="form-group">
-                                            <label>Kategori Produk<span class="required">*</span></label>
+                                            <label>Kategori Produk<span class="required">*</span> &nbsp;&nbsp;&nbsp</label>
                                             <select name="category_id" class="form-control col-sm-5" id="category" onchange="get_category(this.value)">
                                                 <option value="0">Select Product Category</option>
                                                 <?php if (!empty($category)): ?>
@@ -141,6 +144,9 @@
                                                     <?php endforeach; ?>
                                                 <?php endif; ?>
                                             </select>
+                                            <?php
+                                            echo btn_add_modal('admin/product/add_modal_category','myModal','Tambah');
+                                            ?>
                                         </div>
 
                                         <!-- /.Sub Category -->

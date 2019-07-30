@@ -1280,4 +1280,84 @@ class Product extends MY_Controller
 
     }
 
+    public function add_modal_brand()
+    {
+        $data['title'] = "Tambah Brand / Merek";
+        $data['url_action'] = base_url('admin/product/save_modal_brand');
+        $data['modal_subview'] = $this->load->view('admin/product/add_brand_modal', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
+    public function add_modal_category()
+    {
+        $data['title'] = "Tambah Kategori";
+        $data['url_action'] = base_url('admin/product/save_modal_category');
+        $data['modal_subview'] = $this->load->view('admin/product/add_category_modal', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
+    public function save_modal_category()
+    {
+        $this->product_model->_table_name = 'tbl_category';
+        $this->product_model->_primary_key = 'category_id';
+
+        $data['category_name'] = $this->input->post('category_name', true);
+        $res = $this->product_model->save($data);
+        if($res)
+        {
+            $q_category = db_get_all_data('tbl_category');
+            $str = '';
+            if(count($q_category) > 0)
+            {
+                foreach ($q_category as $cat)
+                {
+                    $sel = '';
+                    if($cat->category_id == $res)
+                    {
+                        $sel = 'selected';
+                    }
+                    $str .= '<option value="'.$cat->category_id.'" '.$sel.'>'.$cat->category_name.'</option>';
+                }
+            }
+            echo json_encode(array('success' => true,'message' => 'data berhasil disimpan','qcategory' => $str));
+        }
+        else
+        {
+            echo json_encode(array('success' => false,'message' => 'data gagal disimpan'));
+        }
+    }
+
+    public function save_modal_brand()
+    {
+        $this->product_model->_table_name = 'tbl_brand';
+        $this->product_model->_primary_key = 'brand_id';
+
+        $data['name'] = $this->input->post('name', true);
+        $data['description'] = $this->input->post('description', true);
+
+        $res = $this->product_model->save($data);
+        if($res)
+        {
+            $q_brand = db_get_all_data('tbl_brand');
+            $str = '';
+            if(count($q_brand) > 0)
+            {
+                foreach ($q_brand as $brand)
+                {
+                    $sel = '';
+                    if($brand->brand_id == $res)
+                    {
+                        $sel = 'selected';
+                    }
+                    $str .= '<option value="'.$brand->brand_id.'" '.$sel.'>'.$brand->name.'</option>';
+                }
+            }
+            echo json_encode(array('success' => true,'message' => 'data berhasil disimpan','qbrand' => $str));
+        }
+        else
+        {
+            echo json_encode(array('success' => false,'message' => 'data gagal disimpan'));
+        }
+    }
+
 }

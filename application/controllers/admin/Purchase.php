@@ -431,10 +431,12 @@ class Purchase extends MY_Controller
         if($data['payment_method'] == 'kredit')
         {
             $dp = $this->input->post('down_payment');
+            $data['status_purchase'] = BELUM_LUNAS;
         }
         else
         {
             $jumlah_uang = $this->input->post('down_payment');
+            $data['status_purchase'] = LUNAS;
         }
         $data['down_payment'] = $dp;
         $data_order['jumlah_uang'] = $jumlah_uang;
@@ -676,7 +678,7 @@ class Purchase extends MY_Controller
             1 => 'order_no',
             2 => 'datetime'
         );
-        if(!empty($_GET["search"]["value"]))
+        if(isset($_GET["search"]["value"]))
         {
             if ($where == '') {
                 $where = "WHERE order_no LIKE '%".$_GET["search"]["value"]."%'";
@@ -701,6 +703,7 @@ class Purchase extends MY_Controller
                 $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
             }
         }
+
         $list = $this->global_model->get_by_sql("SELECT * FROM tbl_purchase ".$where.' '.$orderby.' '.$limit);
         $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_purchase ".$where);
         $total = count($listAll);
@@ -746,5 +749,61 @@ class Purchase extends MY_Controller
         echo json_encode($data);
     }
 
+    public function supplier_hutang_table()
+    {
+        $getData = array();
+        $where = '';
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'company_name',
+            1 => 'supplier_name',
+        );
+        if(isset($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE company_name LIKE '%".$_GET["search"]["value"]."%' OR supplier_name LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND company_name LIKE '%".$_GET["search"]["value"]."%' OR supplier_name LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY supplier_name ASC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_supplier ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_supplier ".$where);
+        $total = count($listAll);
+        foreach ($list as $post) {
+            $tot_hutang = $this->purchase_model->get_total_hutang_by_supplier($post->supplier_id);
+            $list_nota = $this->purchase_model->get_nota_by_supplier($post->supplier_id,'0');
+            $subdata = array();
+            $subdata[] = $post->company_name;
+            $subdata[] = $post->supplier_name;
+            $subdata[] = number_format($tot_hutang);
+            $subdata[] = '<a href="#" onclick="'.htmlspecialchars('choose_supplier('.json_encode($post).','.$tot_hutang.','.json_encode($list_nota).')', ENT_QUOTES).'"><i class="fa fa-plus"></i>Pilih</a>';
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
+    }
 
 }

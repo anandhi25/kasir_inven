@@ -213,6 +213,16 @@ class MY_Model extends CI_Model
         return $result;
     }
 
+    public function get_query_by($table,$where)
+    {
+        $this->db->select('*', false);
+        $this->db->from($table);
+        $this->db->where($where);
+        $query_result = $this->db->get();
+        $result = $query_result->result();
+        return $result;
+    }
+
     public function get_by_sql($sql)
     {
         $query_result = $this->db->query($sql);

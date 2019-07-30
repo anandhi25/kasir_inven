@@ -628,6 +628,12 @@ class Order extends MY_Controller
             $data_order['order_status'] = 2;
 
         }
+        if($payment_method == 'kredit')
+        {
+            $data_order['payment_method'] = $payment_method;
+            $data_order['order_status'] = BELUM_LUNAS;
+        }
+
         $dp =0;
         $jumlah_uang = 0;
         if($data_order['payment_method'] == 'kredit')
@@ -1205,6 +1211,63 @@ class Order extends MY_Controller
             "data"            => $getData
         );
         echo json_encode($data);
+    }
+
+    public function customer_piutang_table()
+    {
+        $getData = array();
+        $where = '';
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'customer_code'
+        );
+        if(isset($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE customer_code LIKE '%".$_GET["search"]["value"]."%' OR customer_name LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND customer_code LIKE '%".$_GET["search"]["value"]."%' OR customer_name LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY customer_name ASC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_customer ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_customer ".$where);
+        $total = count($listAll);
+        foreach ($list as $post) {
+            $tot_piutang = $this->order_model->get_total_piutang_by_customer($post->customer_id);
+            $list_nota = $this->order_model->get_nota_by_customer($post->customer_id,'0');
+            $subdata = array();
+            $subdata[] = $post->customer_code;
+            $subdata[] = $post->customer_name;
+            $subdata[] = number_format($tot_piutang);
+            $subdata[] = '<a href="#" onclick="'.htmlspecialchars('choose_customer('.json_encode($post).','.$tot_piutang.','.json_encode($list_nota).')', ENT_QUOTES).'"><i class="fa fa-plus"></i>Pilih</a>';
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
+
     }
 
 

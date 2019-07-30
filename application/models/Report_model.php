@@ -64,5 +64,35 @@ class Report_Model extends MY_Model
         return $result;
     }
 
+    public function get_order_by_date($start_date, $end_date, $outlet='0',$filter='total')
+    {
+        $this->db->select('*', false);
+        $this->db->from('tbl_order');
+        if($outlet != '0')
+        {
+            $this->db->where('outlet_id', $outlet);
+        }
+        if($filter == 'kredit')
+        {
+            $this->db->where('payment_method', 'kredit');
+        }
+        if($filter == 'cash')
+        {
+            $this->db->where('payment_method', 'cash');
+        }
+
+        if ($start_date == $end_date) {
+            $this->db->like('order_date', $start_date);
+        } else {
+
+            $this->db->where('order_date >=', $start_date);
+            $this->db->where('order_date <=', $end_date.'23:59:59');
+        }
+        $query_result = $this->db->get();
+        $result = $query_result->result();
+
+        return $result;
+    }
+
 
 }

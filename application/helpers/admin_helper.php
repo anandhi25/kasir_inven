@@ -79,6 +79,10 @@ function btn_view($uri) {
     return anchor($uri, '<span class="glyphicon glyphicon-search"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'View'));
 }
 
+function btn_view_custom($uri,$btnClass="btn bg-olive btn-xs",$title='') {
+    return anchor($uri, '<span class="glyphicon glyphicon-search"></span>'.$title, array('class' => $btnClass,'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'View', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
+}
+
 function btn_save($uri) {
     return anchor($uri, '<span <i class="fa fa-plus-circle"></i></span>', array('class' => "btn btn-success btn-xs", 'title'=>'Save', 'data-toggle'=>'tooltip', 'data-placement'=>'top'));
 }
