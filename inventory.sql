@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 28, 2019 at 04:23 PM
+-- Generation Time: Jul 31, 2019 at 05:56 AM
 -- Server version: 5.6.34-log
 -- PHP Version: 5.6.31
 
@@ -137,7 +137,9 @@ CREATE TABLE `tbl_brand` (
 
 INSERT INTO `tbl_brand` (`brand_id`, `name`, `description`, `logo`) VALUES
 (1, 'Asus', 'Brand Buat Asus', 'img/uploads/asus.png'),
-(2, 'Sumo', 'Merek beras', 'img/uploads/beras-sumo.jpg');
+(2, 'Sumo', 'Merek beras', 'img/uploads/beras-sumo.jpg'),
+(3, 'Lenovo', 'merek lenovo', NULL),
+(4, 'Apple', 'Merek Apple', NULL);
 
 -- --------------------------------------------------------
 
@@ -214,7 +216,8 @@ CREATE TABLE `tbl_category` (
 --
 
 INSERT INTO `tbl_category` (`category_id`, `category_name`, `created_datetime`, `cat_icon`) VALUES
-(1, 'Sembako', '2019-06-25 06:58:21', 'img/uploads/no-category.jpg');
+(1, 'Sembako', '2019-06-25 06:58:21', 'img/uploads/no-category.jpg'),
+(2, 'Laptop', '2019-07-30 20:57:49', NULL);
 
 -- --------------------------------------------------------
 
@@ -438,7 +441,11 @@ INSERT INTO `tbl_menu` (`menu_id`, `label`, `link`, `icon`, `parent`, `sort`) VA
 (57, 'Add Page', 'admin/page/add_page', 'fa fa-plus', 55, 2),
 (58, 'Menu', 'admin/menu_front', 'fa fa-bars', 2, 6),
 (59, 'Metode Pembayaran', 'admin/settings/payment', 'fa fa-money', 2, 7),
-(60, 'Popup', 'admin/settings/popup', 'fa fa-bell', 2, 8);
+(60, 'Popup', 'admin/settings/popup', 'fa fa-bell', 2, 8),
+(61, 'Penjualan', 'admin/report/sales', 'fa fa-bar-chart', 34, 5),
+(62, 'Penerimaan Piutang', 'admin/transaction/piutang', 'fa fa-check-square', 47, 4),
+(63, 'Pembayaran Hutang', 'admin/transaction/hutang', 'fa fa-check-square', 47, 5),
+(64, 'Pembelian', 'admin/report/purchase', 'fa fa-bar-chart', 34, 6);
 
 -- --------------------------------------------------------
 
@@ -527,7 +534,7 @@ CREATE TABLE `tbl_order` (
 --
 
 INSERT INTO `tbl_order` (`order_id`, `order_no`, `order_date`, `customer_id`, `customer_name`, `customer_email`, `customer_phone`, `customer_address`, `shipping_address`, `subtotal`, `discount`, `discount_amount`, `tax`, `grand_total`, `payment_method`, `payment_ref`, `order_status`, `note`, `sales_person`, `outlet_id`, `down_payment`, `due_date`, `discount_type`, `persen_pajak`, `jumlah_uang`) VALUES
-(2, 4202543, '2019-07-28 06:19:01', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', '', 74000, 0, 0, 7400, 81400, 'kredit', NULL, 2, '                                        ', 'Administrator', 1, 40000, '2019-07-30', '', 0, 0);
+(2, 4202543, '2019-07-28 06:19:01', 1, 'Robby Geisha', 'robby@gmail.com', '0189282992', '', '', 74000, 0, 0, 7400, 81400, 'kredit', NULL, 0, '                                        ', 'Administrator', 1, 40000, '2019-07-30', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -652,6 +659,106 @@ CREATE TABLE `tbl_payment_method` (
 INSERT INTO `tbl_payment_method` (`payment_id`, `payment_name`, `description`, `payment_logo`, `status_payment`) VALUES
 (1, 'Cash On Delivery', '<div class=\"cart__dv__title\">Cash on Delivery</div>\r\n<div class=\"cart__dv__subtitle\">Antar barang melalui Kurir</div>', '', 1),
 (2, 'Transfer Bank BCA', '<p>Pembayaran dapat dilakukan melalui transfer ke rekening Bank BCA</p>\r\n<p>No Rekening 992828288 a/n Rocky</p>', '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_pembayaran_hutang`
+--
+
+CREATE TABLE `tbl_pembayaran_hutang` (
+  `hutang_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `supplier_name` varchar(254) NOT NULL,
+  `hutang_date` varchar(60) NOT NULL,
+  `hutang_no` varchar(254) NOT NULL,
+  `total_bayar` double NOT NULL,
+  `total_denda` double NOT NULL,
+  `grand_total` double NOT NULL,
+  `status_hutang` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_pembayaran_hutang`
+--
+
+INSERT INTO `tbl_pembayaran_hutang` (`hutang_id`, `supplier_id`, `supplier_name`, `hutang_date`, `hutang_no`, `total_bayar`, `total_denda`, `grand_total`, `status_hutang`) VALUES
+(2, 1, 'Jaya Baru', '2019-07-30', '7602344', 363000, 0, 363000, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_pembayaran_hutang_purchase`
+--
+
+CREATE TABLE `tbl_pembayaran_hutang_purchase` (
+  `hutang_purchase_id` int(11) NOT NULL,
+  `purchase_id` int(11) NOT NULL,
+  `purchase_no` varchar(254) NOT NULL,
+  `saldo_hutang` double NOT NULL,
+  `ppn` double NOT NULL,
+  `potongan` double NOT NULL,
+  `bayar` double NOT NULL,
+  `sisa_hutang` double NOT NULL,
+  `pembayaran_hutang_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_pembayaran_hutang_purchase`
+--
+
+INSERT INTO `tbl_pembayaran_hutang_purchase` (`hutang_purchase_id`, `purchase_id`, `purchase_no`, `saldo_hutang`, `ppn`, `potongan`, `bayar`, `sisa_hutang`, `pembayaran_hutang_id`) VALUES
+(3, 1, '3280762', 363000, 33000, 25000, 250000, 88000, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_penerimaan_piutang`
+--
+
+CREATE TABLE `tbl_penerimaan_piutang` (
+  `piutang_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  `customer_name` varchar(254) NOT NULL,
+  `piutang_date` varchar(60) NOT NULL,
+  `piutang_no` varchar(254) NOT NULL,
+  `total_bayar` double NOT NULL,
+  `total_denda` double NOT NULL,
+  `grand_total` double NOT NULL,
+  `status_piutang` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_penerimaan_piutang`
+--
+
+INSERT INTO `tbl_penerimaan_piutang` (`piutang_id`, `customer_id`, `customer_name`, `piutang_date`, `piutang_no`, `total_bayar`, `total_denda`, `grand_total`, `status_piutang`) VALUES
+(2, 1, 'Robby Geisha', '2019-07-30', '9935346', 81400, 8000, 89400, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_penerimaan_piutang_order`
+--
+
+CREATE TABLE `tbl_penerimaan_piutang_order` (
+  `piutang_order_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `order_no` varchar(254) NOT NULL,
+  `saldo_piutang` double NOT NULL,
+  `ppn` double NOT NULL,
+  `potongan` double NOT NULL,
+  `bayar` double NOT NULL,
+  `sisa_piutang` double NOT NULL,
+  `penerimaan_piutang_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tbl_penerimaan_piutang_order`
+--
+
+INSERT INTO `tbl_penerimaan_piutang_order` (`piutang_order_id`, `order_id`, `order_no`, `saldo_piutang`, `ppn`, `potongan`, `bayar`, `sisa_piutang`, `penerimaan_piutang_id`) VALUES
+(3, 2, '4202543', 81400, 7400, 25000, 40000, 16400, 2);
 
 -- --------------------------------------------------------
 
@@ -830,15 +937,16 @@ CREATE TABLE `tbl_purchase` (
   `down_payment` double NOT NULL,
   `subtotal` double NOT NULL,
   `discount_amount` double NOT NULL,
-  `jumlah_uang` double NOT NULL
+  `jumlah_uang` double NOT NULL,
+  `status_purchase` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tbl_purchase`
 --
 
-INSERT INTO `tbl_purchase` (`purchase_id`, `order_no`, `supplier_id`, `supplier_name`, `grand_total`, `note`, `payment_method`, `payment_ref`, `purchase_by`, `datetime`, `outlet_id`, `tax`, `discount`, `discount_type`, `due_date`, `down_payment`, `subtotal`, `discount_amount`, `jumlah_uang`) VALUES
-(1, 3280762, 1, 'PT Jaya Baru', 363000, 'Barang sampai besok                                                                                                                        ', 'kredit', '', 'Administrator', '2019-07-08 04:04:30', 1, 33000, 0, '', '2019-07-31', 200000, 330000, 0, 0);
+INSERT INTO `tbl_purchase` (`purchase_id`, `order_no`, `supplier_id`, `supplier_name`, `grand_total`, `note`, `payment_method`, `payment_ref`, `purchase_by`, `datetime`, `outlet_id`, `tax`, `discount`, `discount_type`, `due_date`, `down_payment`, `subtotal`, `discount_amount`, `jumlah_uang`, `status_purchase`) VALUES
+(1, 3280762, 1, 'PT Jaya Baru', 363000, 'Barang sampai besok                                                                                                                        ', 'kredit', '', 'Administrator', '2019-07-30 12:10:29', 1, 33000, 0, '', '2019-07-31', 200000, 330000, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1300,6 +1408,30 @@ ALTER TABLE `tbl_payment_method`
   ADD PRIMARY KEY (`payment_id`);
 
 --
+-- Indexes for table `tbl_pembayaran_hutang`
+--
+ALTER TABLE `tbl_pembayaran_hutang`
+  ADD PRIMARY KEY (`hutang_id`);
+
+--
+-- Indexes for table `tbl_pembayaran_hutang_purchase`
+--
+ALTER TABLE `tbl_pembayaran_hutang_purchase`
+  ADD PRIMARY KEY (`hutang_purchase_id`);
+
+--
+-- Indexes for table `tbl_penerimaan_piutang`
+--
+ALTER TABLE `tbl_penerimaan_piutang`
+  ADD PRIMARY KEY (`piutang_id`);
+
+--
+-- Indexes for table `tbl_penerimaan_piutang_order`
+--
+ALTER TABLE `tbl_penerimaan_piutang_order`
+  ADD PRIMARY KEY (`piutang_order_id`);
+
+--
 -- Indexes for table `tbl_popup`
 --
 ALTER TABLE `tbl_popup`
@@ -1463,7 +1595,7 @@ ALTER TABLE `tbl_attribute_set`
 -- AUTO_INCREMENT for table `tbl_brand`
 --
 ALTER TABLE `tbl_brand`
-  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `brand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `tbl_business_profile`
@@ -1487,7 +1619,7 @@ ALTER TABLE `tbl_campaign_result`
 -- AUTO_INCREMENT for table `tbl_category`
 --
 ALTER TABLE `tbl_category`
-  MODIFY `category_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `category_id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbl_city`
@@ -1535,7 +1667,7 @@ ALTER TABLE `tbl_invoice`
 -- AUTO_INCREMENT for table `tbl_menu`
 --
 ALTER TABLE `tbl_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `tbl_menu_front`
@@ -1559,7 +1691,7 @@ ALTER TABLE `tbl_order`
 -- AUTO_INCREMENT for table `tbl_order_attribute`
 --
 ALTER TABLE `tbl_order_attribute`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tbl_order_details`
@@ -1590,6 +1722,30 @@ ALTER TABLE `tbl_page`
 --
 ALTER TABLE `tbl_payment_method`
   MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tbl_pembayaran_hutang`
+--
+ALTER TABLE `tbl_pembayaran_hutang`
+  MODIFY `hutang_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tbl_pembayaran_hutang_purchase`
+--
+ALTER TABLE `tbl_pembayaran_hutang_purchase`
+  MODIFY `hutang_purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `tbl_penerimaan_piutang`
+--
+ALTER TABLE `tbl_penerimaan_piutang`
+  MODIFY `piutang_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tbl_penerimaan_piutang_order`
+--
+ALTER TABLE `tbl_penerimaan_piutang_order`
+  MODIFY `piutang_order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_popup`
@@ -1637,7 +1793,7 @@ ALTER TABLE `tbl_product_viewed`
 -- AUTO_INCREMENT for table `tbl_purchase`
 --
 ALTER TABLE `tbl_purchase`
-  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `purchase_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tbl_purchase_attribute`
