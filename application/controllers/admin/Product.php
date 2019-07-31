@@ -580,9 +580,9 @@ class Product extends MY_Controller
 
         //******************Product Price Information ************************//
 
-        $general_price = $this->product_model->array_from_post(array(
-            'buying_price',
-            'selling_price', ));
+
+        $general_price['buying_price'] = remove_commas($this->input->post('buying_price'));
+        $general_price['selling_price'] = remove_commas($this->input->post('selling_price'));
         $general_price['product_id'] = $product_id;
 
         $this->tbl_product_price('product_price_id');
@@ -693,7 +693,7 @@ class Product extends MY_Controller
                 );
                 $this->product_model->_table_name = 'tbl_product_subcategory';
                 $this->product_model->_primary_key = 'sub_id';
-                $this->global_model->save($product_sub);
+                $this->product_model->save($product_sub);
             }
         }
 

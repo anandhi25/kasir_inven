@@ -258,7 +258,7 @@
                                                         echo '$';
                                                     } ?>
                                                 </span>
-                                                <input class="form-control" name="selling_price" placeholder="Selling Price"
+                                                <input class="form-control" name="selling_price" id="selling_price" placeholder="Selling Price"
                                                        value="<?php
                                                        if (!empty($product_price)) {
                                                            echo $product_price->selling_price;
@@ -749,6 +749,24 @@
 <script lang="javascript">
 
     $(document).ready(function() {
+        $('#selling_price').on('change input',function () {
+            var sellingEl = $(this);
+            if(sellingEl.val() != '')
+            {
+                var selling = removeCommas(sellingEl.val());
+                $('#selling_price').val(numberWithCommas(selling.toString()));
+            }
+        });
+
+        $('#buying_price').on('change input',function () {
+            var buyingEl = $(this);
+            if(buyingEl.val() != '')
+            {
+                var buying = removeCommas(buyingEl.val());
+                $('#buying_price').val(numberWithCommas(buying.toString()));
+            }
+        });
+
         //***************** Tier Price Option Start *****************//
         $(".addTire").click(function() {
             $("#tireFields").append(

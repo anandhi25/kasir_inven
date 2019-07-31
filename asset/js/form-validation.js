@@ -68,19 +68,13 @@ $().ready(function() {
             },
             selling_price: {
                 required: true,
-                number:true,
-                greaterThanSelling: "#buying_price"
+                number:true
 
             },
             product_quantity: {
                 required: true,
                 number:true
 
-            },
-            notify_quantity: {
-                required: true,
-                number:true,
-                greaterThanInventory: "#product_quantity"
             },
             offer_price: {
                 number:true
