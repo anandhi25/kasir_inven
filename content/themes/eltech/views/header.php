@@ -35,7 +35,7 @@
     <![endif]-->
 </head>
 <body>
-<div id="wrap" class="layout-3">
+<div id="wrap" <?php if($content == 'home') echo 'class="layout-3"';?>>
 
     <!-- Top bar -->
     <div class="top-bar">
@@ -117,7 +117,7 @@
                 <!-- Categories -->
                 <div class="cate-lst"> <a  data-toggle="collapse" class="cate-style" href="#cater"><i class="fa fa-list-ul"></i> Our Categories </a>
                     <div class="cate-bar-in">
-                        <div id="cater" class="collapse in">
+                        <div id="cater" class="collapse <?php if($content == 'home') echo 'in';?>">
                             <ul>
                                 <?php
                                 if(count($get_category) > 0)

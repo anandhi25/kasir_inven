@@ -37,51 +37,76 @@
 <?php
 $get_category = get_product_category();
 if(count($get_category) > 0) {
- ?>
-<section class="padding-top-30 padding-bottom-30">
-    <div class="container">
-        <!-- heading -->
-        <div class="heading">
-            <h2>Featured Categories</h2>
-            <hr>
-        </div>
-        <section class="row">
-            <?php
-                $i=0;
+    ?>
+    <section class="padding-top-30 padding-bottom-30">
+        <div class="container">
+            <!-- heading -->
+            <div class="heading">
+                <h2>Featured Categories</h2>
+                <hr>
+            </div>
+            <div class="row">
+                <?php
+                $i=1;
                 foreach ($get_category as $cat) {
-                    ?>
-                        <div class="col-md-4">
-                            <div class="some-cate">
-                                <h5><?php echo $cat->category_name; ?></h5>
-                                <?php
-                                $get_subcategory = db_get_all_data('tbl_subcategory', array('category_id' => $cat->category_id));
-                                if (count($get_subcategory) > 0) {
-                                    echo '<ul>';
-                                    foreach ($get_subcategory as $sub_cat)
-                                    {
-                                        echo '<li><a href="'.base_url('c/'.$sub_cat->subcategory_id.'/'.seo_title($sub_cat->subcategory_name)).'"> '.$sub_cat->subcategory_name.'</a></li>';
-                                    }
-                                    echo '</ul>';
+                ?>
+                <div class="col-md-4">
+                    <div class="some-cate">
+                        <?php
+                        if($cat->cat_icon != '')
+                        {
+                            echo '<img src="'.base_url($cat->cat_icon).'" alt="" >';
+                        }
+
+                        ?>
+                        <h5><?php echo $cat->category_name; ?></h5>
+                        <?php
+                        $get_subcategory = db_get_all_data('tbl_subcategory', array('category_id' => $cat->category_id));
+                        if (count($get_subcategory) > 0) {
+                            echo '<ul>';
+                            $j=0;
+                            foreach ($get_subcategory as $sub_cat)
+                            {
+                                echo '<li><a href="'.base_url('c/'.$sub_cat->subcategory_id.'/'.seo_title($sub_cat->subcategory_name)).'"> '.$sub_cat->subcategory_name.'</a></li>';
+                                $j=$j+1;
+                            }
+                            if($j < 5)
+                            {
+                                for ($a=$j; $a < 5; $a++) {
+                                    echo '<li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;</a></li>';
                                 }
-                                $i = $i + 1;
-                                if($i % 3 == 0)
-                                {
-                                    echo '
+                            }
+                            echo '</ul>';
+                        }
+                        else
+                        {
+                            echo '<ul>';
+                            for($i=0;$i<5;$i++)
+                            {
+                                echo '<li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;</a></li>';
+                            }
+                            echo '</ul>';
+                        }
+
+                        if($i % 4 == 0)
+                        {
+                            echo '
                                     </div>
                                     <div class="row"> ';
-                                }
-                                else
-                                {
-                                    echo '</div>
+                        }
+                        else
+                        {
+                            echo '</div>
                                       </div>';
-                                }
-                }
+                        }
+                        $i = $i + 1;
+                        }
 
-                ?>
-    </div>
-</div>
-</section>
-<?php
+                        ?>
+                    </div>
+                </div>
+    </section>
+    <?php
 }
 ?>
 <section class="padding-bottom-60">
@@ -95,13 +120,13 @@ if(count($get_category) > 0) {
         <!-- Items Slider -->
         <div class="item-slide-4 with-nav">
             <?php
-                if(count($latest) > 0)
+            if(count($latest) > 0)
+            {
+                foreach ($latest as $prod)
                 {
-                    foreach ($latest as $prod)
-                    {
-                        echo show_single_product($prod);
-                    }
+                    echo show_single_product($prod);
                 }
+            }
             ?>
         </div>
     </div>
