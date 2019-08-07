@@ -32,6 +32,7 @@ class MY_Model extends CI_Model
     {
         $this->_table_name = $nama_table;
         $this->_order_by = $order_by;
+        $this->_primary_key = $order_by;
     }
 
     // CURD FUNCTION

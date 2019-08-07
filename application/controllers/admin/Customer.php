@@ -563,7 +563,18 @@ class Customer extends MY_Controller
 
     public function do_login()
     {
+        $email_phone = $this->input->post('email');
+        $pssword = $this->input->post('password');
 
+        $cek_cust = db_get_all_data('tbl_customer',array('email' => $email_phone,'customer_password' => md5($pssword)));
+        if(count($cek_cust) > 0)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
     public function do_register()

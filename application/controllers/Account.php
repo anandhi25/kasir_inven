@@ -10,6 +10,7 @@ class Account extends FrontController
         $this->load->model('global_model');
         $this->load->model('customer_model');
         $this->load->helper('text');
+        $this->load->library('message');
 
     }
 
@@ -179,6 +180,222 @@ class Account extends FrontController
         );
         echo json_encode($arr);
     }
+
+    public function my($page='profile')
+    {
+        $data['title'] = 'My Account';
+        $data['content'] = 'my_account';
+        $data['page'] = $page;
+        $data['state'] = db_get_all_data('tbl_state');
+        $data_customer = db_get_row_data('tbl_customer',array('customer_id' => $this->session->userdata('customer_id')));
+        $meta_customer = db_get_row_data('tbl_customer_meta',array('customer_id' => $this->session->userdata('customer_id')));
+        $data['customer'] = $data_customer;
+        $data['customer_meta'] = $meta_customer;
+        $this->render($data);
+    }
+
+    public function detail_order($order_no='')
+    {
+        $data_order = db_get_row_data('tbl_order',array('order_no' => $order_no));
+        $order_product = db_get_all_data('tbl_order_details',array('order_id' => $data_order->order_id));
+        $data['title'] = 'Detail Order #'.$order_no;
+        $data['content'] = 'my_account';
+        $data['page'] = 'detail_order';
+        $data['order'] = $data_order;
+        $data['detail_order'] = $order_product;
+        $data_customer = db_get_row_data('tbl_customer',array('customer_id' => $this->session->userdata('customer_id')));
+        $data['customer'] = $data_customer;
+        $this->render($data);
+    }
+
+    public function order_tables()
+    {
+        $customer_id = $this->input->get('customer_id');
+        $getData = array();
+        $where = "WHERE customer_id = '$customer_id' ";
+        $limit = '';
+        $orderby = '';
+        $arrCol = array(
+            0 => 'order_id',
+            1 => 'order_no',
+            2 => 'order_date'
+        );
+        if(!empty($_GET["search"]["value"]))
+        {
+            if ($where == '') {
+                $where = "WHERE order_no LIKE '%".$_GET["search"]["value"]."%'";
+            } else {
+                $where .= " AND order_no LIKE '%".$_GET["search"]["value"]."%'";
+            }
+        }
+
+        if(isset($_GET["order"]))
+        {
+            //$clsPdo->orderByCols = array($_GET['order']['0']['column']);
+            //$clsPdo->orderByCols = array($arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir']);
+            $orderby = " ORDER BY ".$arrCol[$_GET['order']['0']['column']]." ".$_GET['order'][0]['dir'];
+        }
+        else
+        {
+            $orderby = " ORDER BY order_date DESC";
+        }
+
+        if(isset($_GET["length"])) {
+            if ($_GET["length"] != -1) {
+                $limit = " LIMIT ".$_GET['start'] . ',' . $_GET['length'];
+            }
+        }
+        $list = $this->global_model->get_by_sql("SELECT * FROM tbl_order ".$where.' '.$orderby.' '.$limit);
+        $listAll = $this->global_model->get_by_sql("SELECT * FROM tbl_order ".$where);
+        $total = count($listAll);
+        $i = $_GET['start'];
+        foreach ($list as $v_order) {
+            $i = $i + 1;
+            $str = btn_view_order('account/detail_order/' . $v_order->order_no);
+            $stat = '';
+            if($v_order->order_status == 0){
+                $stat = 'Pending Order';
+            }elseif($v_order->order_status == 1){
+                $stat = 'Cancel Order';
+            }else{
+                $stat = 'Confirm Order';
+            }
+            $subdata = array();
+            $subdata[] = $i;
+            $subdata[] = "ORD-".$v_order->order_no;
+            $subdata[] = date('Y-m-d', strtotime($v_order->order_date ));
+            $subdata[] = $stat;
+            $subdata[] = "Rp" .' '. number_format($v_order->grand_total,0);
+            $subdata[] = $str;
+            $getData[] = $subdata;
+        }
+        $data = array(
+            "draw"            => intval( $_GET['draw'] ),
+            "recordsTotal"    => $total,
+            "recordsFiltered" => $total,
+            "data"            => $getData
+        );
+        echo json_encode($data);
+    }
+
+    public function logout()
+    {
+        $this->session->sess_destroy();
+        redirect(base_url());
+    }
+
+    public function update_profile()
+    {
+        $customer_name = $this->input->post('customer_name');
+        $phone = $this->input->post('phone');
+        $email = $this->input->post('email');
+        $passwd = $this->input->post('passwd');
+        $confirm = $this->input->post('confirmpasswd');
+
+        if(empty($passwd))
+        {
+            $data_cust = array(
+                'customer_name' => $customer_name,
+                'email' => $email,
+                'phone' => $phone
+            );
+            $this->customer_model->init_table('tbl_customer','customer_id');
+            $save_model = $this->customer_model->save($data_cust,$this->session->userdata('customer_id'));
+            if($save_model)
+            {
+                $this->message->save_success(base_url('account/my'));
+            }
+            else
+            {
+                $this->message->custom_error_msg(base_url('account/my'),"Data gagal disimpan");
+            }
+        }
+        else
+        {
+            if($passwd == $confirm)
+            {
+                $data_cust = array(
+                    'customer_name' => $customer_name,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'customer_password' => md5($passwd)
+                );
+                $this->customer_model->init_table('tbl_customer','customer_id');
+                $save_model = $this->customer_model->save($data_cust,$this->session->userdata('customer_id'));
+                if($save_model)
+                {
+                    $this->message->save_success(base_url('account/my'));
+                }
+                else
+                {
+                    $this->message->custom_error_msg(base_url('account/my'),"Data gagal disimpan");
+                }
+            }
+            else
+            {
+                $this->message->custom_error_msg(base_url('account/my'),"password dan konfirmasi password tidak sama");
+            }
+        }
+    }
+
+    public function update_address()
+    {
+        $state = $this->input->post('state');
+        $city = $this->input->post('city');
+        $district = $this->input->post('district');
+        $zip_code = $this->input->post('zip_code');
+        $address = $this->input->post('address');
+
+        $check = db_get_all_data('tbl_customer_meta',array('customer_id' => $this->session->userdata('customer_id')));
+        if(count($check) > 0)
+        {
+            $data_update = array(
+                'city_id' => $city,
+                'district_id' => $district,
+                'state_id' => $state,
+                'address' => $address,
+                'zip_code' => $zip_code,
+            );
+            $this->db->set($data_update);
+            $this->db->where('customer_id', $this->session->userdata('customer_id'));
+            $save_model = $this->db->update('tbl_customer_meta');
+            if($save_model)
+            {
+                $this->message->save_success(base_url('account/my/address'));
+            }
+            else
+            {
+                $this->message->custom_error_msg(base_url('account/my/address'),"Data gagal disimpan");
+            }
+        }
+        else
+        {
+            $data_update = array(
+                'customer_id' => $this->session->userdata('customer_id'),
+                'city_id' => $city,
+                'district_id' => $district,
+                'state_id' => $state,
+                'address' => $address,
+                'customer_name' => '',
+                'zip_code' => $zip_code,
+                'tipe' => 'billing',
+                'phone' => '',
+            );
+            $this->customer_model->init_table('tbl_customer_meta','id');
+            $save_model = $this->customer_model->save($data_update);
+            if($save_model)
+            {
+                $this->message->save_success(base_url('account/my/address'));
+            }
+            else
+            {
+                $this->message->custom_error_msg(base_url('account/my/address'),"Data gagal disimpan");
+            }
+        }
+
+
+    }
+
 
 }
 

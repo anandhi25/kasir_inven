@@ -60,6 +60,10 @@ function btn_active($uri) {
     ));    
 }
 
+function btn_modal_active($uri) {
+    return anchor($uri, '<span class="fa fa-check"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'View', 'data-toggle'=>'modal', 'data-target'=>'#myModal'));
+}
+
 function btn_print() {
     return anchor('','<span class="glyphicon glyphicon-print"></i></span>', array('class' => "btn btn-primary btn-xs", 'title'=>'Print','data-toggle'=>'tooltip', 'data-placement'=>'top', 'onclick'=>'printDiv("printableArea")'));
 }
@@ -107,6 +111,10 @@ function btn_delete_attr($uri,$i_class = "fa fa-trash-o",$a_class='btn btn-dange
     return anchor($uri, '<i class="'.$i_class.'"></i>', array(
         'class' => $a_class, 'title'=>'Delete', 'data-toggle'=>'tooltip', 'data-placement'=>'top', 'onclick' => "return confirm('Are you sure want to delete this record ?');"
     ));
+}
+
+function btn_view_order($uri) {
+    return anchor($uri, '<span class="fa fa-eye"></span>', array('class' => "btn bg-olive btn-xs",'data-toggle'=>'tooltip', 'data-placement'=>'top', 'title'=>'View'));
 }
 
 if(!function_exists('remove_commas')) {
@@ -350,14 +358,14 @@ if(!function_exists('get_profile')) {
 
 if(!function_exists('get_customer_login_url')) {
     function get_customer_login_url() {
-        $ret_url = base_url('admin/customer/do_login');
+        $ret_url = base_url('account/do_login');
         return $ret_url;
     }
 }
 
 if(!function_exists('get_customer_signup_url')) {
     function get_customer_signup_url() {
-        $ret_url = base_url('admin/customer/do_register');
+        $ret_url = base_url('account/user_signup');
         return $ret_url;
     }
 }
@@ -484,6 +492,35 @@ if(!function_exists('check_if_sold'))
             }
         }
         return $ret;
+    }
+}
+
+if(!function_exists('get_arr_attribute'))
+{
+    function get_arr_attribute($arr)
+    {
+        if(is_array($arr))
+        {
+            $str = '';
+            for($i=0;$i<count($arr);$i++)
+            {
+                $get_attr = db_get_row_data('tbl_attribute',array('attribute_id' => $arr[$i]));
+                if($str == '')
+                {
+                    $str = $get_attr->attribute_name." : ".$get_attr->attribute_value;
+                }
+                else
+                {
+                    $str .= ', '.$get_attr->attribute_name." : ".$get_attr->attribute_value;
+                }
+            }
+            return $str;
+        }
+        else
+        {
+            $get_attr = db_get_row_data('tbl_attribute',array('attribute_id' => $arr));
+            return $get_attr->attribute_name." : ".$get_attr->attribute_value;
+        }
     }
 }
 

@@ -9,7 +9,7 @@
     </div>
 </section>
 
-<section class="shop-single section-padding pt-3">
+<form id="cart_form" action="<?php echo base_url('web/add_to_cart_web');?>" class="shop-single section-padding pt-3">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -67,7 +67,7 @@
                         echo '<span class="badge badge-success">'.$persen.'% OFF</span>';
                     }
                     ?>
-
+                    <input type="hidden" name="product_code" value="<?php echo $product->product_code;?>">
                     <h2><?php echo $product->product_name?></h2>
                     <?php
                     if($price_discount != '0') {
@@ -111,7 +111,7 @@
                     <?php
                     }
                     ?>
-                    <button type="button" onclick="add_to_cart_btn('<?php echo $product->product_id;?>')" <?php echo $btn_stok;?>><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
+                    <button type="button" onclick="add_to_cart_btn_detail();" <?php echo $btn_stok;?>><i class="mdi mdi-cart-outline"></i> Add To Cart</button>
 
                     <div class="short-description">
                         <h5>
@@ -151,7 +151,9 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
+    </form>
     </div>
 </section>
 

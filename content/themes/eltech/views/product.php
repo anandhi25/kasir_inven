@@ -13,6 +13,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="product-detail">
+                        <form id="detail_form" method="post" action="<?php echo base_url('web/add_to_cart_web');?>">
                         <div class="product">
                             <div class="row">
                                 <!-- Slider Thumb -->
@@ -143,6 +144,7 @@
                                 </div>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,16 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <a href="<?php echo base_url(); ?>"><strong><span class="mdi mdi-home"></span> Home</strong></a> <span class="mdi mdi-chevron-right"></span> <a href="#"><?php echo $title;?></a>
+                <a href="<?php echo base_url(); ?>"><strong><span class="mdi mdi-home"></span> Home</strong></a> <span class="mdi mdi-chevron-right"></span> <a href="#"><?php
+                    if(!empty($category))
+                    {
+                        echo $category->category_name;
+                    }
+                    else
+                    {
+                        echo 'Semua Kategori';
+                    }
+                    ?></a>
             </div>
         </div>
     </div>
@@ -18,41 +27,26 @@
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Kategori <span class="mdi mdi-chevron-down float-right"></span>
+                                        Category <span class="mdi mdi-chevron-down float-right"></span>
                                     </button>
                                 </h5>
                             </div>
                             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                 <div class="card-body card-shop-filters">
-                                    <?php
-                                    if(empty($sub_category)) {
-                                        $sub_kat = db_get_all_data('tbl_subcategory', array('category_id' => $category->category_id));
-                                        if (count($sub_kat) > 0) {
-                                            foreach ($sub_kat as $sub) {
-                                                ?>
-                                                <div class="custom-control custom-checkbox">
-                                                    <label class="custom-control-label" for="cb8"><a
-                                                                href="<?php echo base_url('sub/' . $sub->subcategory_id . '/' . seo_title($sub->subcategory_name)); ?>"><?php echo $sub->subcategory_name; ?></a></label>
-                                                </div>
-                                                <?php
-                                            }
-                                        }
-                                    }
-                                    else
+                                   <?php
+                                    if(count($all_category) > 0)
                                     {
-                                        if(count($category) > 0)
+                                        foreach ($all_category as $cat)
                                         {
-                                            foreach ($category as $cat)
-                                            {
-                                                ?>
-                                                <div class="custom-control custom-checkbox">
-                                                    <label class="custom-control-label" for="cb8"><a
-                                                                href="<?php echo base_url('c/' . $cat->category_id . '/' . seo_title($cat->category_name)); ?>"><?php echo $cat->category_name; ?></a></label>
-                                                </div>
-                                                <?php
-                                            }
+                                            ?>
+                                            <div class="custom-control custom-checkbox">
+                                                <label class="custom-control-label" for="cb8"><a
+                                                        href="<?php echo base_url('c/' . $cat->category_id . '/' . seo_title($cat->category_name)); ?>"><?php echo $cat->category_name; ?></a></label>
+                                            </div>
+                                            <?php
                                         }
                                     }
+
                                     ?>
 
                                 </div>
@@ -89,18 +83,25 @@
             </div>
             <div class="col-md-9">
                 <div class="shop-head">
-                    <a href="<?php echo base_url(); ?>"><span class="mdi mdi-home"></span> Home</a> <span class="mdi mdi-chevron-right"></span> <a href="#"><?php echo $title?></a>
+                    <a href="<?php echo base_url(); ?>"><span class="mdi mdi-home"></span> Home</a> <span class="mdi mdi-chevron-right"></span> <a href="#"><?php if(!empty($category))
+                        {
+                            echo $category->category_name;
+                        }
+                        else
+                        {
+                            echo 'Semua Kategori';
+                        }?></a>
                     <div class="btn-group float-right mt-2">
                         <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Sort by Products &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="<?php echo $cat_url."low-to-high";?>">Price (Low to High)</a>
-                            <a class="dropdown-item" href="<?php echo $cat_url."high-to-low";?>">Price (High to Low)</a>
-                            <a class="dropdown-item" href="<?php echo $cat_url."a-to-z";?>">Name (A to Z)</a>
+                            <a class="dropdown-item" href="<?php echo $cat_url."&filter=low-to-high";?>">Price (Low to High)</a>
+                            <a class="dropdown-item" href="<?php echo $cat_url."&filter=high-to-low";?>">Price (High to Low)</a>
+                            <a class="dropdown-item" href="<?php echo $cat_url."&filter=a-to-z";?>">Name (A to Z)</a>
                         </div>
                     </div>
-                    <h5 class="mb-3"><?php echo $title?></h5>
+                    <h5 class="mb-3"><?php echo $title;?></h5>
                 </div>
                 <?php
                 if (!(empty($product))) {
@@ -142,8 +143,8 @@
                     {
                         echo '<div class="row no-gutters">
                             <div class="col-md-12 text-center">
-                                <img src="'.base_url().'asset/img/oops.png" alt="produk kosong">
-                                <h2 class="page_title">Produk dari kategori ini kosong</h2>
+                                <img src="'.base_url().'assets/website/img/oops.png" alt="oops image">
+                                <h2 class="page_title">Produk yang anda cari tidak ditemukan<</h2>
                             </div>
                         </div>';
                     }

@@ -164,9 +164,9 @@ if(!empty($info->address)){
                             <tr>
                                 <td class="no"><?php echo $counter ?></td>
                                 <td class="desc"><h3><?php echo $v_order->product_name ?></h3></td>
-                                <td class="unit"><?php echo number_format($v_order->selling_price, 2); ?></td>
+                                <td class="unit"><?php echo number_format($v_order->selling_price, 0); ?></td>
                                 <td class="qty"><?php echo $v_order->product_quantity ?></td>
-                                <td class="total"><?php echo number_format($v_order->sub_total,2) ?></td>
+                                <td class="total"><?php echo number_format($v_order->sub_total,0) ?></td>
                             </tr>
                                 <?php $counter ++?>
                             <?php endforeach; ?>
@@ -175,28 +175,28 @@ if(!empty($info->address)){
                             <tr>
                                 <td colspan="2"></td>
                                 <td colspan="2">SUBTOTAL</td>
-                                <td><?php echo number_format($order_info->subtotal,2) ?></td>
+                                <td><?php echo number_format($order_info->subtotal,0) ?></td>
                             </tr>
 
                             <?php if($order_info->discount):?>
                                 <tr>
                                     <td colspan="2"></td>
                                     <td colspan="2">DISKON</td>
-                                    <td><?php echo number_format($order_info->discount_amount,2) ?></td>
+                                    <td><?php echo number_format($order_info->discount_amount,0) ?></td>
                                 </tr>
                             <?php endif; ?>
 
                             <tr>
                                 <td colspan="2"></td>
                                 <td colspan="2">PAJAK</td>
-                                <td><?php echo number_format($order_info->tax,2) ?></td>
+                                <td><?php echo number_format($order_info->tax,0) ?></td>
                             </tr>
 
 
                             <tr>
                                 <td colspan="2"></td>
                                 <td colspan="2">GRAND TOTAL</td>
-                                <td><?php echo $currency.' '.number_format($order_info->grand_total,2) ?></td>
+                                <td><?php echo $currency.' '.number_format($order_info->grand_total,0) ?></td>
                             </tr>
                             <?php
                             if($order_info->payment_method == 'kredit') {

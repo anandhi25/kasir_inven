@@ -37,6 +37,7 @@
 
     <!-- Custom styles for this template -->
     <link href="<?php echo theme_asset().'css/osahan.min.css';?>" rel="stylesheet">
+    <link href="<?php echo theme_asset().'css/checkout_style.css';?>" rel="stylesheet">
     <!-- EasyZoom CSS -->
     <link rel="stylesheet" href="<?php echo theme_asset().'vendor/easyzoom/easyzoom.min.css';?>">
 
@@ -91,7 +92,7 @@
                                 <!-- Tab panes -->
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="login" role="tabpanel">
-                                        <form action="<?php echo get_customer_login_url();?>">
+                                        <form id="login_form" action="<?php echo get_customer_login_url();?>">
                                             <h5 class="heading-design-h5">Login to your account</h5>
                                             <fieldset class="form-group">
                                                 <label>Enter Email/Mobile number</label>
@@ -106,14 +107,14 @@
                                             </fieldset>
 
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                                <input type="checkbox" class="custom-control-input">
                                                 <label class="custom-control-label" for="customCheck1">Remember me</label>
                                             </div>
                                         </form>
                                     </div>
 
                                     <div class="tab-pane" id="register" role="tabpanel">
-                                        <form action="<?php echo base_url('website/customer/signup/user_signup')?>">
+                                        <form id="register_form" action="<?php echo base_url('website/customer/signup/user_signup')?>">
                                             <h5 class="heading-design-h5"><?php echo 'Buat Akun'?></h5>
                                             <fieldset class="form-group">
                                                 <label>Masukkan No Telp</label>
@@ -137,7 +138,7 @@
                                                 <button type="submit" class="btn btn-lg btn-secondary btn-block"><?php echo 'Buat Akun'?></button>
                                             </fieldset>
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck2">
+                                                <input type="checkbox" class="custom-control-input">
                                                 <label class="custom-control-label" for="customCheck2">I Agree with <a href="#">Term and Conditions</a></label>
                                             </div>
                                         </form>
@@ -182,7 +183,7 @@
         <button class="navbar-toggler navbar-toggler-white" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <form method="GET" action="<?php echo base_url('search') ?>">
+        <form method="GET" action="<?php echo base_url('web/search')?>">
             <div class="navbar-collapse" id="navbarNavDropdown">
                 <div class="navbar-nav mr-auto mt-2 mt-lg-0 margin-auto top-categories-search-main">
                     <div class="top-categories-search">
@@ -201,7 +202,7 @@
                                    ?>
                                </select>
                             </span>
-                            <input class="form-control" placeholder="Cari produk yang saya inginkan" aria-label="Cari produk yang saya inginkan" type="text" name="cari_produk">
+                            <input class="form-control" placeholder="Cari produk yang saya inginkan" aria-label="Cari produk yang saya inginkan" type="text" name="search_product">
                             <span class="input-group-btn">
                                 <button class="btn btn-secondary" type="submit"><i class="mdi mdi-file-find"></i> Cari</button>
                             </span>
@@ -221,7 +222,7 @@
                             else
                             {
                                 ?>
-                                <a href="<?php echo base_url('my_account') ?>" class="btn btn-link"><i
+                                <a href="<?php echo base_url('account/my') ?>" class="btn btn-link"><i
                                             class="mdi mdi-account"></i> Akun Saya</a>
                                 <?php
                             }
@@ -245,7 +246,7 @@
                  foreach (get_menu('main menu') as $menu):
                 ?>
                 <li class="nav-item">
-                    <a href="<?= site_url($menu->link); ?>" class="nav-link"><?= strtoupper($menu->label); ?></a>
+                    <a href="<?= $menu->link; ?>" class="nav-link"><?= strtoupper($menu->label); ?></a>
                 </li>
                  <?php endforeach; ?>
 

@@ -49,6 +49,14 @@ $route['cart'] = 'web/cart';
 $route['payment'] = 'web/payment';
 $route['delivery'] = 'web/delivery';
 $route['confirmation'] = 'web/confirmation';
+$route['success'] = 'web/order_success';
+$route['sub/(:any)/(:any)'] = 'web/sub/$1/$2';
+$route['sub/(:any)/(:any)/(:any)'] = 'web/sub/$1/$2/$3';
+$route['sub/(:any)/(:any)/(:any)/(:any)'] = 'web/sub/$1/$2/$3/$4';
+
+$route['brand/(:any)/(:any)'] = 'web/brand/$1/$2';
+$route['brand/(:any)/(:any)/(:any)'] = 'web/brand/$1/$2/$3';
+$route['brand/(:any)/(:any)/(:any)/(:any)'] = 'web/brand/$1/$2/$3/$4';
 
 
 /* End of file routes.php */

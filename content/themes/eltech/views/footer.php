@@ -119,6 +119,27 @@
 <script type="text/javascript" src="<?php echo theme_asset();?>rs-plugin/js/jquery.tp.min.js"></script>
 <script src="<?php echo theme_asset();?>js/main.js"></script>
 <script>
+    function add_to_cart_btn_detail() {
+        var form_post = $('#detail_form');
+        var data_post = form_post.serializeArray();
+        $.ajax({
+            type: "post",
+            url: form_post.attr('action'),
+            data: data_post,
+            success: function(data) {
+                $(".cart-value").html(data);
+                $("#cart-total-items").html("("+data+") item");
+                // $("#cart-side").load(location.href+" #cart-side>*","");
+                // loadAwal();
+                $("#cart-body").load(location.href+" #cart-body>*","");
+                $("#cart-footer").load(location.href+" #cart-footer>*","");
+
+            },
+            error: function() {
+                alert('Request Failed, Please check your code and try again!');
+            }
+        });
+    }
     function add_to_cart_btn(product_id) {
         $.ajax({
             type: "post",

@@ -228,16 +228,45 @@
 <!-- Simple Share js -->
 <script src="<?php echo theme_asset().'js/jquery.simpleSocialShare.min.js';?>"></script>
 <script src="<?php echo theme_asset().'js/custom.min.js';?>"></script>
+<script src="<?php echo theme_asset().'js/bootbox.js';?>"></script>
 
 <!-- Custom scripts for this template -->
 <script src="<?php echo theme_asset().'js/theme.js';?>"></script>
 
-<link href="<?php echo theme_asset().'vendor/datatables/datatables.min.css';?>" rel="stylesheet" />
-<script src="<?php echo theme_asset().'vendor/datatables/datatables.min.js';?>"></script>
+
 <script>
     $(document).ready(function() {
         $('.datatabel').DataTable();
     } );
+
+    function add_to_cart_btn_detail() {
+        //console.log('tes');
+        var form_post = $('#cart_form');
+        var data_post = form_post.serializeArray();
+        console.log(data_post);
+        $.ajax({
+            url: form_post.attr('action'),
+            type: 'POST',
+            dataType: 'json',
+            data: data_post,
+        })
+        .done(function(res) {
+            $(".cart-value").html(res);
+            $("#cart-total-items").html("("+res+") item");
+            // $("#cart-side").load(location.href+" #cart-side>*","");
+            // loadAwal();
+            $("#cart-body").load(location.href+" #cart-body>*","");
+            $("#cart-footer").load(location.href+" #cart-footer>*","");
+
+        })
+        .fail(function() {
+            alert('Request Failed, Please check your code and try again!');
+        })
+        .always(function() {
+
+        });
+
+    }
 
     function add_to_cart_btn(product_id) {
         $.ajax({
@@ -245,6 +274,7 @@
             url: '<?php echo base_url('web/add_to_cart_web')?>',
             data: {product_code:product_id},
             success: function(data) {
+                console.log(data);
                 $(".cart-value").html(data);
                 $("#cart-total-items").html("("+data+") item");
                 // $("#cart-side").load(location.href+" #cart-side>*","");
@@ -271,6 +301,50 @@
                 // loadAwal();
                 $("#cart-body").load(location.href+" #cart-body>*","");
                 $("#cart-footer").load(location.href+" #cart-footer>*","");
+
+            },
+            error: function() {
+                alert('Request Failed, Please check your code and try again!');
+            }
+        });
+    }
+
+    function show_city(str) {
+        if(str == '0')
+        {
+            alert('Anda belum memilih propinsi');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: '<?php echo base_url('account/show_city')?>',
+            data: {state_id:str},
+            success: function(data) {
+                $("#city").html(data);
+
+
+
+            },
+            error: function() {
+                alert('Request Failed, Please check your code and try again!');
+            }
+        });
+    }
+
+    function show_district(str) {
+        if(str == '0')
+        {
+            alert('Anda belum memilih kota');
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: '<?php echo base_url('account/show_district')?>',
+            data: {city_id:str},
+            success: function(data) {
+                $("#district").html(data);
+
+
 
             },
             error: function() {

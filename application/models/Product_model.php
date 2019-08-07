@@ -170,7 +170,7 @@ class Product_Model extends MY_Model
 
     }
 
-    public function get_with_limit($where,$number,$offset,$orderby='a-to-z')
+    public function get_with_limit($where,$number,$offset,$orderby='a-to-z',$filter='')
     {
         $query = '';
         if($orderby == 'a-to-z')
@@ -228,7 +228,22 @@ class Product_Model extends MY_Model
             $this->db->join('tbl_subcategory', 'tbl_subcategory.subcategory_id  =  tbl_product.subcategory_id ', 'left');
             $this->db->join('tbl_category', 'tbl_category.category_id  =  tbl_subcategory.category_id ', 'left');
             $this->db->where($where);
-            $this->db->order_by('tbl_product.product_name', 'ASC');
+            if($filter == '')
+            {
+                $this->db->order_by('tbl_product.product_name', 'ASC');
+            }
+            else if($filter == 'a-to-z')
+            {
+                $this->db->order_by('tbl_product.product_name', 'ASC');
+            }
+            else if($filter == 'high-to-low')
+            {
+                $this->db->order_by('tbl_product_price.selling_price', 'DESC');
+            }
+            else if($filter == 'low-to-high')
+            {
+                $this->db->order_by('tbl_product_price.selling_price', 'ASC');
+            }
             $this->db->limit($number,$offset);
             $query = $this->db->get()->result();
         }

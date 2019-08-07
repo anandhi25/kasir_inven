@@ -59,6 +59,15 @@ class Order extends MY_Controller
         $this->load->view('admin/_layout_custom_modal', $data);
     }
 
+    public function modal_status($order_id)
+    {
+        $data['title'] = 'Ganti Status Order';
+        $data['order_info'] = db_get_row_data('tbl_order',array('order_id' => $order_id));
+        $data['url_action'] = base_url('admin/order/update_status');
+        $data['modal_subview'] = $this->load->view('admin/order/modal_status_order', $data, FALSE);
+        $this->load->view('admin/_layout_modal', $data);
+    }
+
     public function modal_serial($row_id)
     {
         $data['title'] = 'Input Serial';
@@ -82,6 +91,25 @@ class Order extends MY_Controller
         $data['title'] = 'Pembayaran';
         $data['modal_subview'] = $this->load->view('admin/order/modal_bayar', $data, FALSE);
         $this->load->view('admin/_layout_custom_modal', $data);
+    }
+
+    public function update_status()
+    {
+        $order_id = $this->input->post('order_id');
+        $status_order = $this->input->post('status_order');
+        $data_update = array(
+            'order_status' => $status_order
+        );
+        $this->tbl_order('order_id');
+        $res = $this->global_model->save($data_update,$order_id);
+        if($res)
+        {
+            echo json_encode(array('success' => true));
+        }
+        else
+        {
+            echo json_encode(array('success' => false));
+        }
     }
 
     public function save_diskon()
@@ -1112,7 +1140,7 @@ class Order extends MY_Controller
         $i = $_GET['start'];
         foreach ($list as $v_order) {
             $i = $i + 1;
-            $str = btn_view('admin/order/view_order/' . $v_order->order_no)."  ".btn_edit('admin/order/edit_order/' . $v_order->order_id)." ".btn_delete('admin/order/delete_order/' . $v_order->order_id);
+            $str = btn_view('admin/order/view_order/' . $v_order->order_no)."  ".btn_modal_active('admin/order/modal_status/' . $v_order->order_id)."  ".btn_edit('admin/order/edit_order/' . $v_order->order_id)." ".btn_delete('admin/order/delete_order/' . $v_order->order_id);
             $stat = '';
             if($v_order->order_status == 0){
                 $stat = 'Pending Order';
@@ -1121,13 +1149,18 @@ class Order extends MY_Controller
             }else{
                 $stat = 'Confirm Order';
             }
+            $person = $v_order->sales_person;
+            if($v_order->sales_person == '0')
+            {
+                $person = '-';
+            }
             $subdata = array();
             $subdata[] = $i;
             $subdata[] = "ORD-".$v_order->order_no;
             $subdata[] = date('Y-m-d', strtotime($v_order->order_date ));
             $subdata[] = $stat;
             $subdata[] = "Rp" .' '. number_format($v_order->grand_total,0);
-            $subdata[] = $v_order->sales_person;
+            $subdata[] = $person;
             $subdata[] = $str;
             $getData[] = $subdata;
         }
