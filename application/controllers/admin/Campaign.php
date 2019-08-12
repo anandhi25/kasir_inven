@@ -59,7 +59,7 @@ class Campaign extends MY_Controller
     /*** Manage Campaign ***/
     public function manage_campaign(){
         $this->tbl_campaign('campaign_id','desc');
-        $data['campaign'] = $this->global_model->get();
+        $data['campaign'] = db_get_all_data('tbl_campaign',"campaign_name != 'registrasi' AND campaign_name != 'forgot' AND campaign_name != 'invoice'");
 
         $data['title'] = 'Manage Campaign';
         $data['subview'] = $this->load->view('admin/campaign/manage_campaign', $data, true);

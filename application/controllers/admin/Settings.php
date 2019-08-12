@@ -42,6 +42,13 @@ class Settings extends MY_Controller
         $this->load->view('admin/_layout_main', $data);
     }
 
+    public function email_template()
+    {
+        $data['title'] = 'Email Template';
+        $data['subview'] = $this->load->view('admin/settings/email_template', $data, true);
+        $this->load->view('admin/_layout_main', $data);
+    }
+
     /*** Save Business Information ***/
     public function save_business_profile($id = null)
     {
@@ -588,6 +595,79 @@ class Settings extends MY_Controller
         $this->settings_model->_primary_key = 'popup_id';
         $this->settings_model->delete($id);
         $this->message->delete_success('admin/settings/popup');
+    }
+
+    public function save_registrasi()
+    {
+        $subject = $this->input->post('registrasi_subject');
+        $content = $this->input->post('registrasi_content');
+        $res = $this->save_template('registrasi',$subject,$content);
+        if($res)
+        {
+            $this->message->save_success('admin/settings/email_template');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/settings/email_template','Data Gagal disimpan');
+        }
+    }
+
+    public function save_forgot()
+    {
+        $subject = $this->input->post('forgot_subject');
+        $content = $this->input->post('forgot_content');
+        $res = $this->save_template('forgot',$subject,$content);
+        if($res)
+        {
+            $this->message->save_success('admin/settings/email_template');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/settings/email_template','Data Gagal disimpan');
+        }
+    }
+
+    public function save_invoice()
+    {
+        $subject = $this->input->post('invoice_subject');
+        $content = $this->input->post('invoice_content');
+        $res = $this->save_template('invoice',$subject,$content);
+        if($res)
+        {
+            $this->message->save_success('admin/settings/email_template');
+        }
+        else
+        {
+            $this->message->custom_error_msg('admin/settings/email_template','Data Gagal disimpan');
+        }
+    }
+
+    private function save_template($campaign_name,$subject,$content)
+    {
+        $cek = db_get_all_data('tbl_campaign',array('campaign_name' => 'registrasi'));
+        $this->settings_model->init_table('tbl_campaign','campaign_id');
+        $this->settings_model->_primary_key = 'campaign_id';
+        $res = '';
+        if(count($cek) > 0)
+        {
+            $data_simpan = array(
+                'subject' => $subject,
+                'email_body' => $content
+            );
+            $res = $this->settings_model->save($data_simpan,$cek[0]->campaign_id);
+
+        }
+        else
+        {
+            $data_simpan = array(
+                'subject' => $subject,
+                'email_body' => $content,
+                'campaign_name' => $campaign_name,
+                'created_by' => $this->session->userdata('name')
+            );
+            $res = $this->settings_model->save($data_simpan);
+        }
+        return $res;
     }
 
 }
