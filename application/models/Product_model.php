@@ -91,7 +91,7 @@ class Product_Model extends MY_Model
         $this->db->select('tbl_category.category_name', false);
         $this->db->select('tbl_inventory.product_quantity, tbl_inventory.notify_quantity ', false);
         $this->db->from('tbl_product');
-        $this->db->join('tbl_product_image', 'tbl_product_image.product_id  =  tbl_product.product_id ', 'left');
+        $this->db->join('tbl_product_image', 'tbl_product_image.product_id  =  tbl_product.product_id AND tbl_product_image.featured = 1', 'left');
         $this->db->join('tbl_subcategory', 'tbl_subcategory.subcategory_id  =  tbl_product.subcategory_id ', 'left');
         $this->db->join('tbl_category', 'tbl_category.category_id  =  tbl_subcategory.category_id ', 'left');
         $this->db->join('tbl_inventory', 'tbl_inventory.product_id  =  tbl_product.product_id ', 'left');

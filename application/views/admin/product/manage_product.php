@@ -78,6 +78,7 @@
                                     </td>
                                     <td class="vertical-td">
                                         <?php echo btn_view_modal('admin/product/view_product/' . $v_product->product_id); ?>
+                                        <a href="<?php echo base_url('admin/product/add_image/'. $v_product->product_id); ?>" class="btn btn-primary btn-xs"><i class="fa fa-image"></i> </a>
                                         <?php echo btn_edit('admin/product/add_product/' . $v_product->product_id); ?>
                                         <?php echo btn_delete('admin/product/delete_product/' . $v_product->product_id); ?>
                                     </td>

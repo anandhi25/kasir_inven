@@ -57,6 +57,15 @@ class Product extends MY_Controller
         $this->load->view('admin/_layout_main', $data); // main page
     }
 
+    public function add_image($id)
+    {
+        $data['title'] = 'Tambah Image';
+        $data['id_product'] = $id;
+        $data['images'] = db_get_all_data('tbl_product_image',array('product_id' => $id,'featured' => '0'));
+        $data['subview'] = $this->load->view('admin/product/add_image', $data, true); // sub view
+        $this->load->view('admin/_layout_main', $data); // main page
+    }
+
     /*** Save Category ***/
     public function save_category($id = null)
     {
@@ -106,6 +115,55 @@ class Product extends MY_Controller
         //redirect users to view page
         set_message($type, $message);
         redirect('admin/product/category');
+    }
+
+    private function insert_product_image($file_name,$old_path,$id_product)
+    {
+        $this->product_model->_table_name = 'tbl_product_image';
+        $this->product_model->_order_by = 'product_image_id';
+        $data['product_id'] = $id_product;
+        $data['featured'] = '0';
+        if (!empty($_FILES[$file_name]['name'])) {
+            $old_path = $this->input->post($old_path);
+            if ($old_path) { // if old path is no empty
+                unlink($old_path);
+            } // upload file
+            $val = $this->product_model->uploadImage($file_name);
+            // $val == true || redirect('admin/product/category');
+
+            $data['filename'] = $val['path'];
+            $data['image_path'] = $val['fullPath'];
+            $res = $this->product_model->save($data);
+            return $res;
+        }
+        else
+        {
+           // $old_path = $this->input->post($old_path);
+            //$data['filename'] = $old_path;
+            return false;
+
+        }
+
+
+    }
+
+    public function save_images()
+    {
+        $id_product = $this->input->post('id_product');
+        $this->product_model->_table_name = 'tbl_product_image';
+        $this->product_model->_order_by = 'product_image_id';
+        $check = db_get_all_data('tbl_product_image',array('product_id' => $id_product,'featured' => '0'));
+        if(count($check) > 0)
+        {
+            $this->db->where(array('product_id' => $id_product,'featured' => '0'));
+            $this->db->delete('tbl_product_image');
+        }
+        $res_1 = $this->insert_product_image('logo','old_path',$id_product);
+        $res_2 = $this->insert_product_image('logo1','old_path_1',$id_product);
+        $res_3 = $this->insert_product_image('logo2','old_path_2',$id_product);
+        $res_4 = $this->insert_product_image('logo3','old_path_3',$id_product);
+        set_message("success", "Data berhasil disimpan");
+        redirect('admin/product/add_image/'.$id_product);
     }
 
     /*** Category Delete ***/
@@ -571,6 +629,7 @@ class Product extends MY_Controller
             $image_data['filename'] = $val['path'];
             $image_data['image_path'] = $val['fullPath'];
             $image_data['product_id'] = $product_id;
+            $image_data['featured'] = '1';
             if (!empty($product_image_id)) {
                 $this->global_model->save($image_data, $product_image_id); // save and update function
             } else {
